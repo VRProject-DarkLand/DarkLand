@@ -4,8 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 [RequireComponent(typeof (CharacterController))]
 [AddComponentMenu("Control Script/FPS Input")]
-public class FPSInput : MonoBehaviour
-{
+public class FPSInput : MonoBehaviour{    
+    private const float WALK_SPEED = 6.0f;
+    private const float RUN_SPEED = 9.0f;
     public float speed = 6.0f;
     public float jumpHeight = 2f;
     private float gravity = -9.8f;
@@ -16,20 +17,38 @@ public class FPSInput : MonoBehaviour
     private float dirX; 
     private float dirZ; 
     private bool onGround = false;
-    private CharacterController _charController ;
-    // Start is called before the first frame update
+    private bool crouch = false;
+    private CharacterController _charController;
+    private Camera _camera;
     // Start is called before the first frame update
     void Start()
     {
-        _charController = GetComponent<CharacterController>();      
+        _charController = GetComponent<CharacterController>();   
+        _camera = GetComponentInChildren<Camera>();
     }
 
 
     private void resetVelocity(){
         dirX =  Input.GetAxis("Horizontal");
         dirZ =  Input.GetAxis("Vertical");
+        if(Input.GetKeyDown(KeyCode.C)){
+            if(!crouch){
+                crouch = true;
+                _camera.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+            }
+        }else if(Input.GetKeyUp(KeyCode.C)){
+            if(crouch){
+                crouch = false;
+                _camera.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+            }
+        }
+        if (Input.GetKey(KeyCode.LeftShift)){
+            speed = FPSInput.RUN_SPEED;
+        }else{
+           speed = FPSInput.WALK_SPEED;
+        }
         deltaX = speed;
-        deltaZ = speed;
+        deltaZ = speed; 
         if (Input.GetKeyDown(KeyCode.Space)){
             onGround = false;
             deltaY = Mathf.Sqrt(jumpHeight * -2f * gravity);
