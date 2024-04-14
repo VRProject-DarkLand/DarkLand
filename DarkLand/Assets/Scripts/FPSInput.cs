@@ -79,9 +79,10 @@ public class FPSInput : MonoBehaviour{
     }
 
         private void readActionFromInput(){
-        dirX =  Input.GetAxis("Horizontal");
-        dirZ =  Input.GetAxis("Vertical");
-        
+        if (onGround){
+            dirX =  Input.GetAxis("Horizontal");
+            dirZ =  Input.GetAxis("Vertical");
+        }
         if(Input.GetKeyDown(KeyCode.C)){
             actions.Add(Actions.Crouch);
         }else if(Input.GetKeyUp(KeyCode.C)){
