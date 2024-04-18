@@ -123,6 +123,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &51385180
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 33.153217
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00000047683716
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 84.05991
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_Name
+      value: ScaryGirl 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 3fc3335dd67c2fc4d8c908949e5d3ac1, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
 --- !u!1 &458241940
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,7 +244,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.03773582, g: 0.03773582, b: 0.03773582, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -345,6 +406,66 @@ Transform:
   - {fileID: 1461928483}
   m_Father: {fileID: 458241941}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &807967715
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30.057081
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 81.138336
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      propertyPath: m_Name
+      value: ScaryGirl 2 (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1348670395}
+  m_SourcePrefab: {fileID: 100100000, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
 --- !u!1001 &891434271
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -589,6 +710,32 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1b8f84a2404bdb458d8637c42a5d999, type: 3}
+--- !u!1 &1348670394 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+  m_PrefabInstance: {fileID: 807967715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1348670395
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348670394}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 28e686a5a319ee94a8b4d30c75a1e37e, type: 3}
+  m_Controller: {fileID: 9100000, guid: 3fc3335dd67c2fc4d8c908949e5d3ac1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1461928483 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8266484804799875678, guid: 17379fdebae7c484bb797bc412cb0b48, type: 3}
@@ -924,3 +1071,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 705507995}
   - {fileID: 458241941}
+  - {fileID: 807967715}
+  - {fileID: 51385180}
