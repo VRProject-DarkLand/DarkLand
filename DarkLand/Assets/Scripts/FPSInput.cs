@@ -6,11 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof (CharacterController))]
 [AddComponentMenu("Control Script/FPS Input")]
 public class FPSInput : MonoBehaviour{    
-    private const float WALK_SPEED = 6.0f;
-    private const float CROUCH_SPEED = 3.0f;
-    private const float RUN_SPEED = 9.0f;
-    public float speed = 6.0f;
-    public float jumpHeight = 2f;
+    private const float WALK_SPEED = 3.0f;
+    private const float CROUCH_SPEED = 2.0f;
+    private const float RUN_SPEED = 5.5f;
+    public float speed = 4.0f;
+    private float jumpHeight = 1f;
     private float gravity = -9.8f;
     private float airResistance = -0.2f;
     private float deltaY = 0;
@@ -118,6 +118,7 @@ public class FPSInput : MonoBehaviour{
         if(onGround){
             deltaX = speed;
             deltaZ = speed;
+            deltaY = gravity*Time.deltaTime;
         }
         if(!onGround) {
             //we omit the friction when deciding to move 

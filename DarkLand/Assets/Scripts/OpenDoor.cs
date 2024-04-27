@@ -8,6 +8,8 @@ public class OpenDoor : MonoBehaviour
     private Quaternion open;
     private Quaternion close;
     private bool opened ;
+
+    [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
     // Start is called before the first frame update
     void Start()
@@ -16,7 +18,7 @@ public class OpenDoor : MonoBehaviour
         {
             opened = false;
             close  = door.transform.rotation;
-            open = close*Quaternion.Euler(0, door.transform.rotation.y-90f, 0);
+            open = close*Quaternion.Euler(0, door.transform.rotation.y+rotation, 0);
         }
     }
 
