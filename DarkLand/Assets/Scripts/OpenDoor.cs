@@ -12,9 +12,12 @@ public class OpenDoor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        opened = false;
-        close  = door.transform.rotation;
-        open = close*Quaternion.Euler(0, door.transform.rotation.y-90f, 0);
+        if(door != null)
+        {
+            opened = false;
+            close  = door.transform.rotation;
+            open = close*Quaternion.Euler(0, door.transform.rotation.y-90f, 0);
+        }
     }
 
     // Update is called once per frame
