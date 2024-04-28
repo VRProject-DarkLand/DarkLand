@@ -8,6 +8,7 @@ public class OpenDoubleDoor : MonoBehaviour
     private Tuple<Quaternion,Quaternion> open;
     private Tuple<Quaternion,Quaternion> close;
     private bool opened ;
+    private bool enteredInRange;
     [SerializeField] private float left_rotation;
     [SerializeField] private float right_rotation;
     [SerializeField] private GameObject left;
@@ -15,6 +16,7 @@ public class OpenDoubleDoor : MonoBehaviour
     // Start is called before the first frame updatevoid Start()
     void Start(){
         opened = false;
+        enteredInRange = false;
         close  = Tuple.Create(left.transform.rotation, right.transform.rotation);
         open = Tuple.Create(close.Item1*Quaternion.Euler(0, left.transform.rotation.y+left_rotation, 0), close.Item2*Quaternion.Euler(0, right.transform.rotation.y+right_rotation, 0));
     }
@@ -22,7 +24,10 @@ public class OpenDoubleDoor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(enteredInRange){
+            if(Input.GetKeyDown(KeyCode.E))
+                ChangeState(); 
+        } 
     }
 
     public void ChangeState(){
@@ -39,13 +44,13 @@ public class OpenDoubleDoor : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider collider){
-        if(Input.GetKeyDown(KeyCode.E)){
-            ChangeState();
-        } 
+        if(collider.gameObject.tag == Settings.PLAYER_TAG)
+            enteredInRange = true;
     }
-    void OnTriggerStay(Collider collider){
-        if(Input.GetKeyDown(KeyCode.E)){
-            ChangeState();
-        }  
+
+    void OnTriggerExit(Collider collider){
+        if(collider.gameObject.tag == Settings.PLAYER_TAG)
+            enteredInRange = false;
+        
     }
 }

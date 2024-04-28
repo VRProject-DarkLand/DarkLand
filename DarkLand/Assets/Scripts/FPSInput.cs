@@ -29,6 +29,7 @@ public class FPSInput : MonoBehaviour{
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Idle};
+        gameObject.tag = Settings.PLAYER_TAG;
     }
 
 
@@ -71,11 +72,11 @@ public class FPSInput : MonoBehaviour{
     private void MovePlayer(Vector3 movement) {
         //transform the movement from local to global coordinates
         movement = transform.TransformDirection(movement);
-        CollisionFlags flags = _charController.Move(movement);
-        if ((!onGround) && (flags & CollisionFlags.Below) != 0){
-            actions.RemoveAll(action => action == Actions.Jump);
-            onGround = true;
-        }
+        _charController.Move(movement);
+        // if ((!onGround) && (flags & CollisionFlags.Below) != 0){
+        //     actions.RemoveAll(action => action == Actions.Jump);
+        //     onGround = true;
+        // }
     }
 
         private void readActionFromInput(){
@@ -100,11 +101,19 @@ public class FPSInput : MonoBehaviour{
         }
     } 
 
+    private void detectOnGround(){
+         onGround = false;
+         if (( _charController.collisionFlags & CollisionFlags.Below) != 0){
+            //actions.RemoveAll(action => action == Actions.Jump);
+            onGround = true;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        detectOnGround();
         readActionFromInput();
-
         Actions action = actions.Last();
 
         if(action == Actions.Idle){
@@ -118,7 +127,7 @@ public class FPSInput : MonoBehaviour{
         if(onGround){
             deltaX = speed;
             deltaZ = speed;
-            deltaY = gravity*Time.deltaTime;
+            deltaY = 0;
         }
         if(!onGround) {
             //we omit the friction when deciding to move 
