@@ -14,8 +14,8 @@ public class MouseLook : MonoBehaviour
     public float sensitivityHor = 9.0f;
     public float sensitivityVer = 9.0f;
 
-    public float minimumVert = -45f;
-    public float maximumVert = 45f;
+    public float minimumVert = -60f;
+    public float maximumVert = 60f;
 
     private float _rotationX = 0;
     // Start is called before the first frame update
