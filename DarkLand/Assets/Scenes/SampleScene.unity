@@ -1434,6 +1434,10 @@ PrefabInstance:
       propertyPath: m_BounceIntensity
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 9103121788619666008, guid: f35c7ef220bbeaf41982f8cd0c037482, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

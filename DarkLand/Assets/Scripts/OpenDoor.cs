@@ -9,7 +9,7 @@ public class OpenDoor : MonoBehaviour
     private Quaternion close;
     private bool opened ;
     private bool enteredInRange;
-
+    private Transform playerTransform;
     [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
     // Start is called before the first frame update
@@ -28,8 +28,12 @@ public class OpenDoor : MonoBehaviour
     void Update()
     {
         if(enteredInRange){
-            if(Input.GetKeyDown(KeyCode.E))
-                ChangeState(); 
+            if(Input.GetKeyDown(KeyCode.E)){
+                Vector3 directionToPlayer =  door.transform.position - playerTransform.position;
+                if (Vector3.Dot(playerTransform.forward, directionToPlayer)>0 ){
+                    ChangeState();
+                 }
+            }
         } 
     }
 
@@ -41,13 +45,15 @@ public class OpenDoor : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider collider){
-        if(collider.tag == Settings.PLAYER_TAG)
+        if(collider.tag == Settings.PLAYER_TAG){
             enteredInRange = true;
+            playerTransform = collider.gameObject.transform;
+        }
 
     }
     void OnTriggerExit(Collider collider){
         if(collider.tag == Settings.PLAYER_TAG)
-            enteredInRange = false;  
-    }
+            enteredInRange = false;    
+        }
 
 }
