@@ -135,7 +135,7 @@ public class FPSInput : MonoBehaviour{
                 Jump();
                 Debug.Log(" ");
             }else{
-                Debug.Log("CIAOUS");
+               //Debug.Log("CIAOUS");
                 _ySpeed = minFall;
                 deltaX = speed;
                 deltaZ = speed;
