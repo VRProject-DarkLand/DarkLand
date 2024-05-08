@@ -10,7 +10,7 @@ public class FPSInput : MonoBehaviour{
     private const float CROUCH_SPEED = 2.0f;
     private const float RUN_SPEED = 5.5f;
     public float speed = 4.0f;
-    private float jumpSpeed = 8f;
+    private float jumpSpeed = 10f;
     private float minFall = -1.5f;
     private float _ySpeed ;
     private float gravity = -9.81f;
@@ -26,6 +26,7 @@ public class FPSInput : MonoBehaviour{
     private ControllerColliderHit _contact; 
     private Camera _camera;
     private List<Actions> actions;
+    private Quaternion jumpRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +56,7 @@ public class FPSInput : MonoBehaviour{
     private void Jump(){
         if(!crouch && onGround){
             _ySpeed = jumpSpeed;
+            jumpRotation = transform.rotation;
         }
     }
     private void Idle(){
@@ -73,7 +75,14 @@ public class FPSInput : MonoBehaviour{
 
     private void MovePlayer(Vector3 movement) {
         //transform the movement from local to global coordinates
-        movement = transform.TransformDirection(movement);
+        if(onGround)
+            movement = transform.TransformDirection(movement);
+        else{
+            Quaternion rot = transform.rotation;
+            transform.rotation = jumpRotation;
+            movement = transform.TransformDirection(movement);
+            transform.rotation = rot;
+        }
         _charController.Move(movement);
         // if ((!onGround) && (flags & CollisionFlags.Below) != 0){
         //     actions.RemoveAll(action => action == Actions.Jump);
@@ -133,7 +142,6 @@ public class FPSInput : MonoBehaviour{
         if(onGround){
             if (Input.GetButtonDown("Jump")){
                 Jump();
-                Debug.Log(" ");
             }else{
                //Debug.Log("CIAOUS");
                 _ySpeed = minFall;
@@ -158,7 +166,7 @@ public class FPSInput : MonoBehaviour{
         if(!onGround){
              if(_charController.isGrounded){
                 if(Vector3.Dot(velocity, _contact.normal) < 0){
-                    velocity = _contact.normal * speed;
+                    velocity -= _contact.normal * speed;
                 }
                 else{
                     velocity += _contact.normal * speed;
