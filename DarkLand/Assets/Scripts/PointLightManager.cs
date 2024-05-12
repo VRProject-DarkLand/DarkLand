@@ -63,7 +63,6 @@ public class PointLightManager : MonoBehaviour
             // Output the sorted list
             int randomIndex = Random.Range(0, Mathf.Min(lightDistances.Count, 4));
             Light selectedLight = lightDistances[randomIndex].Key;
-            Debug.Log("Randomly selected light: " + selectedLight.gameObject.name);
             StartCoroutine(Blink(selectedLight.gameObject));
             yield return new WaitForSeconds(Random.Range(3f, 12f));
         }

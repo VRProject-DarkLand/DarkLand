@@ -11,7 +11,7 @@ public class FPSInput : MonoBehaviour{
     private const float CROUCH_SPEED = 2.0f;
     private const float RUN_SPEED = 5.5f;
     public float speed = 4.0f;
-    private float _minFall = -1.5f;
+    private float _minFall = -3f;
     private float jumpHeight = 1f;
     private float gravity = -9.8f;
     private float airResistance = -0.2f;
@@ -111,8 +111,8 @@ public class FPSInput : MonoBehaviour{
     private bool detectOnGround(){
         bool hitGround = false;
         RaycastHit hit;
-        if(deltaY < 0 && Physics.Raycast(transform.position ,Vector3.down, out hit)){
-            float check = (_charController.height+ _charController.radius)/0.95f;
+        if(deltaY <= 0 && Physics.Raycast(transform.position ,Vector3.down, out hit)){
+            float check = (_charController.height + _charController.radius)/1.3f;
             hitGround = hit.distance <= check;
         }
         return hitGround;
@@ -183,7 +183,7 @@ public class FPSInput : MonoBehaviour{
             }
 
         }
-        velocity *= Time.deltaTime;     
+        velocity *= Time.deltaTime;  
         MovePlayer(velocity);
     }
 

@@ -29,11 +29,6 @@ public class OpenDoor : MonoBehaviour, IInteractableObject{
 
     // Update is called once per frame
     void Update(){
-        if(canInteract && !isMoving){
-            if(Input.GetKeyDown(KeyCode.E) ){
-                ChangeState();
-            }
-        }
         if(isMoving){
             Quaternion begin = open;
             Quaternion end = close;
@@ -59,6 +54,7 @@ public class OpenDoor : MonoBehaviour, IInteractableObject{
     }
 
     public void Interact(){
-       ChangeState();
+        if(!isMoving)
+            ChangeState();
     }
 }
