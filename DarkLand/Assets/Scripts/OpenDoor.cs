@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class OpenDoor : MonoBehaviour
-{
+[RequireComponent(typeof(InteractableTrigger))]
+public class OpenDoor : MonoBehaviour, IInteractableObject{
     private Quaternion open;
     private Quaternion close;
     private bool opened ;
     private bool isMoving;
-    private bool enteredInRange;
     private float speed;
     private float timeCount;
-    private Transform playerTransform;
+    private bool canInteract;
     [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
     // Start is called before the first frame update
-    void Start()
-    {
-        if(door != null)
-        {
-            enteredInRange = false;
+    void Start(){
+        if(door != null){
+            canInteract = false;
             isMoving = false;
             opened = false;
             close  = door.transform.rotation;
@@ -31,16 +28,12 @@ public class OpenDoor : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(enteredInRange&& !isMoving){
+    void Update(){
+        if(canInteract && !isMoving){
             if(Input.GetKeyDown(KeyCode.E) ){
-                Vector3 directionToPlayer =  door.transform.position - playerTransform.position;
-                if (Vector3.Dot(playerTransform.forward, directionToPlayer)>0 ){
-                    ChangeState();
-                 }
+                ChangeState();
             }
-        } 
+        }
         if(isMoving){
             Quaternion begin = open;
             Quaternion end = close;
@@ -65,16 +58,7 @@ public class OpenDoor : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider collider){
-        if(collider.tag == Settings.PLAYER_TAG){
-            enteredInRange = true;
-            playerTransform = collider.gameObject.transform;
-        }
-
+    public void Interact(){
+       ChangeState();
     }
-    void OnTriggerExit(Collider collider){
-        if(collider.tag == Settings.PLAYER_TAG)
-            enteredInRange = false;    
-        }
-
 }

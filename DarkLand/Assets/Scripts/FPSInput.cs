@@ -15,7 +15,7 @@ public class FPSInput : MonoBehaviour{
     private float jumpHeight = 1f;
     private float gravity = -9.8f;
     private float airResistance = -0.2f;
-    private float _terminalVelocity = -15f;
+    private float _terminalVelocity = -25f;
     private float deltaY = 0;
     private float deltaX = 0;
     private float deltaZ = 0;
@@ -29,20 +29,18 @@ public class FPSInput : MonoBehaviour{
     private ControllerColliderHit _contact; 
     private Quaternion _jumpRotation;
     public float temp;
-    private bool _jumping;
     // Start is called before the first frame update
     void Start()
     {
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
-        actions = new List<Actions>(){Actions.Idle};
+        actions = new List<Actions>(){Actions.Walk};
         gameObject.tag = Settings.PLAYER_TAG;
-        _jumping = false;
     }
 
 
     private enum Actions{
-        Idle = 0,
+        Walk = 0,
         Crouch = 1,
         Run = 2, 
         Jump = 3
@@ -59,16 +57,15 @@ public class FPSInput : MonoBehaviour{
 
     private void Jump(){
         if(!crouch && onGround){
-            _jumping = true;
             onGround = false;
             deltaY = Mathf.Sqrt(jumpHeight * -2f * gravity);
             _jumpRotation = transform.rotation;
         }
     }
-    private void Idle(){
+    private void Walk(){
         crouch = false;
         _camera.transform.localPosition = new Vector3(0f, 0.5f, 0f);
-        speed = FPSInput.WALK_SPEED;     
+        speed = FPSInput.WALK_SPEED;
     }
 
     private void Run(){
@@ -106,8 +103,8 @@ public class FPSInput : MonoBehaviour{
             actions.RemoveAll(x => x == Actions.Run);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)){
-            Jump();
+        if(Input.GetKeyDown(KeyCode.E)){
+            InteractableManager.InteractWithSelectedItem();
         }
     } 
 
@@ -126,10 +123,13 @@ public class FPSInput : MonoBehaviour{
     {
         onGround = detectOnGround();
         readActionFromInput();
+        
         Actions action = actions.Last();
-
-        if(action == Actions.Idle){
-            Idle();
+        if(GameEvent.isInDialog){
+            dirX = 0;
+            dirZ = 0;
+        }else if(action == Actions.Walk){
+            Walk();
         }else if(action == Actions.Crouch){
             Crouch();
         }else{
@@ -138,7 +138,9 @@ public class FPSInput : MonoBehaviour{
 
         if(onGround){
             if (Input.GetButtonDown("Jump")){
-                Jump();
+                if(!GameEvent.isInDialog){
+                    Jump();
+                }
             }else{
                 deltaY = _minFall;
                 deltaX = speed;

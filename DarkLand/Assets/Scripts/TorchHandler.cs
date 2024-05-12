@@ -18,7 +18,7 @@ public class TorchHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)){
+        if (Input.GetMouseButtonDown(0) && ! GameEvent.isInDialog){
           torch.GetComponent<Light>().enabled = !torch.GetComponent<Light>().enabled;
         } 
     }
