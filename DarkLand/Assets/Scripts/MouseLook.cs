@@ -30,16 +30,23 @@ public class MouseLook : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameEvent.isInDialog || GameEvent.isHiding)
+        if(GameEvent.isInDialog )
             return;
+        
         if(axes == RotationAxes.MouseX){
+            if( GameEvent.isHiding)
+            {return;}
             transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityHor, 0);
         }
         else if(axes == RotationAxes.MouseY){
-            
-            _rotationX -=  Input.GetAxis("Mouse Y") * sensitivityVer;
-            _rotationX = Mathf.Clamp(_rotationX, minimumVert, maximumVert);
 
+            _rotationX -=  Input.GetAxis("Mouse Y") * sensitivityVer;
+            
+            if(!GameEvent.isHiding)
+                _rotationX = Mathf.Clamp(_rotationX, minimumVert, maximumVert);
+            else 
+                _rotationX = Mathf.Clamp(_rotationX, -10, 10);
+            
             float rotationY = transform.localEulerAngles.y;
             
             transform.localEulerAngles = new Vector3(_rotationX,rotationY,0);

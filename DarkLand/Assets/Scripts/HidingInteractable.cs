@@ -31,9 +31,10 @@ public class HidingInteractable : IInteractableObject{
         quad.SetActive(true);
         Vector3 begin = player.transform.position;
         Vector3 end = gameObject.transform.position;
+
         Quaternion beginRot = player.transform.rotation;
-        Quaternion endRot = Quaternion.FromToRotation(player.transform.forward, gameObject.transform.forward);
-    
+        Quaternion endRot = Quaternion.LookRotation(transform.forward);
+        
         Vector3 startQuad = offQuadPosition;
         Vector3 endQuad = new Vector3(0f, startQuad.y, startQuad.z);
         if(isHiding){
@@ -43,19 +44,17 @@ public class HidingInteractable : IInteractableObject{
             startQuad = quad.transform.localPosition;
             endQuad = offQuadPosition;
         }
-        endRot = Quaternion.Euler(beginRot.x, endRot.y, beginRot.z);
+        //endRot = Quaternion.Euler(beginRot.x, endRot.y, beginRot.z);
         if(!isHiding){
             isMoving = true;
             while(isMoving){
                 RotateAndMovePlayer(begin, end, beginRot, endRot);
-                Debug.Log("OOOOO " + isMoving);
                 yield return null;
             }
 
             isMoving = true;
             while(isMoving){
                 SlideQuad(startQuad, endQuad);
-                Debug.Log("OOOOO " + isMoving);
                 yield return null;
             }
         }
@@ -79,8 +78,9 @@ public class HidingInteractable : IInteractableObject{
     void RotateAndMovePlayer(Vector3 begin, Vector3 end, Quaternion beginRot, Quaternion endRot){
         player.transform.position = Vector3.Lerp(begin, end,  timeCount * speed);
         player.transform.rotation = Quaternion.Lerp(beginRot, endRot, speed*timeCount);
+        //player.transform.LookAt(lookToMe.transform);
         timeCount += Time.deltaTime;
-        if(player.transform.position == end ){
+        if(player.transform.position == end){
             isMoving = false;
             timeCount = 0;
         } 
@@ -98,7 +98,6 @@ public class HidingInteractable : IInteractableObject{
         if(isMoving)
             return;
         isMoving = true;
-        Debug.Log("initial pos "+ exitPos +" "+Time.frameCount );
         GameEvent.isHiding=!isHiding;
         StartCoroutine(AnimateHiding());
         

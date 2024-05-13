@@ -117,7 +117,7 @@ public class FPSInput : MonoBehaviour{
             actions.RemoveAll(x => x == Actions.Run);
         }
 
-        if(Input.GetKeyDown(KeyCode.E)){
+        if(Input.GetKeyDown(KeyCode.E) && onGround){
             InteractableManager.InteractWithSelectedItem();
         }
     } 

@@ -21,6 +21,8 @@ public class TorchHandler : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && ! GameEvent.isInDialog){
           torch.GetComponent<Light>().enabled = !torch.GetComponent<Light>().enabled;
         } 
+        if(GameEvent.isHiding)
+            torch.GetComponent<Light>().enabled = false;
     }
     void OnGUI() {
         int size = 50;
