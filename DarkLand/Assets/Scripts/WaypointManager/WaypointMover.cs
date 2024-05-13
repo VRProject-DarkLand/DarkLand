@@ -6,25 +6,29 @@ using UnityEngine.AI;
 public class WaypointMover : MonoBehaviour
 {
     [SerializeField] private Waypoints waypoints;
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float distanceThreshold = 0.1f;
+    [SerializeField] private float attackThreshold = 2.5f;
     private NavMeshAgent navMeshAgent;
     [SerializeField] private GameObject target;
-
+    private Animator animator;
     private bool alive = false;
+
+    private bool isAttacking = false;
     private Transform currentWaypoint = null;
     // Start is called before the first frame update
     void Start(){
+        animator = GetComponentInChildren<Animator>();
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
         transform.position = currentWaypoint.position;
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
-        GetComponentInChildren<Animator>().SetBool("Idle", true);
+       animator.SetBool("Idle", true);
     }
 
     // Update is called once per frame
     void Update(){
         if (alive && currentWaypoint != null){
-            GetComponentInChildren<Animator>().SetBool("Idle", false);
+           animator.SetBool("Idle", false);
             transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.position, moveSpeed * Time.deltaTime);
             if (Vector3.Distance(transform.position,currentWaypoint.position) < distanceThreshold){
                 currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
@@ -46,16 +50,36 @@ public class WaypointMover : MonoBehaviour
                 navMeshAgent.SetDestination(target.transform.position);
                 NavMeshPath path = new NavMeshPath();
                 navMeshAgent.CalculatePath(target.transform.position, path);
-                Debug.Log(path.status);
-                GetComponentInChildren<Animator>().SetBool("Idle", false);
+               animator.SetBool("Idle", false);
                 RotateTowardsDestination();
+                if(Vector3.Distance(target.transform.position, transform.position) < attackThreshold && !isAttacking){
+                    StartCoroutine(Attack());
+                }
             }
             else
             {
-                GetComponentInChildren<Animator>().SetBool("Idle", true);
+               animator.SetBool("Idle", true);
             }
         }
     }
+
+    private IEnumerator Attack(){
+        animator.SetBool("Attack", true);
+        isAttacking = true;
+        yield return new WaitForSeconds(0.5f);
+        RaycastHit hit;
+        if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
+            if(hit.collider.gameObject == target)
+            {
+                Debug.Log("Ti scasciai "+Time.frameCount );
+            }
+        }
+        yield return new WaitForSeconds(3f);
+        animator.SetBool("Attack", false);
+
+        isAttacking = false;
+    }
+
     public void WakeUp(){
         alive = true;
     }
