@@ -5,10 +5,9 @@ using UnityEngine;
 public class HidingInteractable : IInteractableObject
 {
     private bool isHiding;
-    private bool isMoving;
+    public  bool isMoving;
     private GameObject player;
-    private Vector3 initialPos ;
-    private Quaternion initialRot;
+    private Vector3 exitPos ;
     private float speed;
     private float timeCount;
 
@@ -19,7 +18,7 @@ public class HidingInteractable : IInteractableObject
         player = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         timeCount = 0;
         speed = 0.5f;
-        initialPos = Vector3.zero;
+        exitPos = gameObject.transform.position+gameObject.transform.forward;
 
     }
 
@@ -32,22 +31,21 @@ public class HidingInteractable : IInteractableObject
     private IEnumerator AnimateHiding(){
         //Messenger<bool>.Broadcast(GameEvent.IS_HIDING, !isHiding);
         
-        Vector3 begin = initialPos;
+        Vector3 begin = player.transform.position;
         Vector3 end = gameObject.transform.position;
-        Quaternion beginRot = initialRot;
+        Quaternion beginRot = player.transform.rotation;
         Quaternion endRot = Quaternion.FromToRotation(player.transform.forward, gameObject.transform.forward);
         if(isHiding){
             begin = gameObject.transform.position;
-            end = initialPos;
-            beginRot=player.transform.rotation;
-            endRot = initialRot;
+            end = exitPos;
+            beginRot=endRot;
         }
         endRot = Quaternion.Euler(beginRot.x, endRot.y, beginRot.z);
         while(isMoving){
             player.transform.position = Vector3.Lerp(begin, end,  timeCount * speed);
             player.transform.rotation = Quaternion.Lerp(beginRot, endRot, speed*timeCount);
             timeCount += Time.deltaTime;
-            if(player.transform.position == end && player.transform.rotation == endRot){
+            if(player.transform.position == end ){
                 isMoving = false;
                 timeCount = 0;
             }
@@ -63,11 +61,7 @@ public class HidingInteractable : IInteractableObject
         if(isMoving)
             return;
         isMoving = true;
-        if(!isHiding){   
-            initialPos = player.transform.position;
-            initialRot = player.transform.rotation;
-        }
-        Debug.Log("initial pos "+ initialPos +" "+Time.frameCount );
+        Debug.Log("initial pos "+ exitPos +" "+Time.frameCount );
         GameEvent.isHiding=!isHiding;
         StartCoroutine(AnimateHiding());
 
