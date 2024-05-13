@@ -31,12 +31,11 @@ public class DialogHandler : MonoBehaviour
         StartCoroutine(RevealText());
     }
     public void DestroyDialog(){   
-        Debug.Log("Broadcast close dialog");
         currentText = "";
         DialogContent.text = "";
         enabled = false;
         gameObject.SetActive(false);
-        Messenger<string>.Broadcast(GameEvent.CloseDialog, gameObject.name);
+        Messenger<string>.Broadcast(GameEvent.CLOSE_DIALOG, gameObject.name);
         Destroy(gameObject);
     }
 }

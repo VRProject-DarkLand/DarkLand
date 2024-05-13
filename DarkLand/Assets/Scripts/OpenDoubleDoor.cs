@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class OpenDoubleDoor : MonoBehaviour
+public class OpenDoubleDoor :  IInteractableObject
 {
     private Tuple<Quaternion,Quaternion> open;
     private Tuple<Quaternion,Quaternion> close;
     private bool opened ;    
     private bool isMoving;
-    private bool enteredInRange;
+    private bool canInteract;
     private float speed;
     private float timeCount;
     private Transform playerTransform;
@@ -21,7 +21,7 @@ public class OpenDoubleDoor : MonoBehaviour
     // Start is called before the first frame updatevoid Start()
     void Start(){
         opened = false;
-        enteredInRange = false;
+        canInteract = false;
         isMoving = false;
         speed = 1f;
         timeCount = 0f; 
@@ -29,25 +29,14 @@ public class OpenDoubleDoor : MonoBehaviour
         open = Tuple.Create(close.Item1*Quaternion.Euler(0, left.transform.rotation.y+left_rotation, 0), close.Item2*Quaternion.Euler(0, right.transform.rotation.y+right_rotation, 0));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(enteredInRange && !isMoving){
-            if(Input.GetKeyDown(KeyCode.E)){
-                Vector3 directionToPlayerLeft =  left.transform.position - playerTransform.position;
-                Vector3 directionToPlayerRight =  right.transform.position - playerTransform.position;
-                if (Mathf.Max(Vector3.Dot(playerTransform.forward, directionToPlayerLeft), Vector3.Dot(playerTransform.forward, directionToPlayerRight) )>0 ){
-                    ChangeState(); 
-                }
-            }
+       private IEnumerator AnimateDoor(){
+        Tuple<Quaternion,Quaternion> begin = close;
+        Tuple<Quaternion,Quaternion> end = open;
+        if(!opened){
+            begin = open;
+            end = close;
         }
-        if(isMoving){
-            Tuple<Quaternion,Quaternion> begin = close;
-            Tuple<Quaternion,Quaternion> end = open;
-            if(!opened){
-                begin = open;
-                end = close;
-            }    
+        while(isMoving){
             left.transform.rotation = Quaternion.Lerp(begin.Item1, end.Item1,  timeCount * speed);
             right.transform.rotation = Quaternion.Lerp(begin.Item2, end.Item2, timeCount * speed);
             timeCount += Time.deltaTime;
@@ -55,6 +44,7 @@ public class OpenDoubleDoor : MonoBehaviour
                 isMoving = false;
                 timeCount = 0;
             }
+            yield return null;
         }
     }
 
@@ -71,16 +61,10 @@ public class OpenDoubleDoor : MonoBehaviour
                 isMoving = true;  
         }
     }
-
-    void OnTriggerEnter(Collider collider){
-        if(collider.gameObject.tag == Settings.PLAYER_TAG)
-            enteredInRange = true;
-            playerTransform = collider.gameObject.transform;
-    }
-
-    void OnTriggerExit(Collider collider){
-        if(collider.gameObject.tag == Settings.PLAYER_TAG)
-            enteredInRange = false;
-        
+    public override void Interact(){
+        if(!isMoving){
+            ChangeState();
+            StartCoroutine(AnimateDoor());
+        }
     }
 }

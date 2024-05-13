@@ -34,6 +34,8 @@ public class WaypointMover : MonoBehaviour
                 else
                 {
                     navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
+                    navMeshAgent.radius = 1;
+                    navMeshAgent.height = 1;
                     navMeshAgent.speed = 3f;
                 }
             }

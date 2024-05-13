@@ -25,7 +25,7 @@ public class InteractableManager : MonoBehaviour{
                 if(interactable == selectedInteractable.Item1){
                     interactableChanged = true;
                     Debug.Log("Sending delete message");
-                    Messenger<string, string>.Broadcast(GameEvent.InteractionDisabledMessage, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
+                    Messenger<string, string>.Broadcast(GameEvent.INTERACTION_DISABLED_MESSAGE, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
                     selectedInteractable = new Tuple<InteractableTrigger, float>(null, 0);
                 }
             }
@@ -39,7 +39,7 @@ public class InteractableManager : MonoBehaviour{
     void LateUpdate(){
         if(selectedInteractable.Item1 != null && interactableChanged){
             //Debug.Log("Late update");
-            Messenger<string, string>.Broadcast(GameEvent.InteractionEnabledMessage, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
+            Messenger<string, string>.Broadcast(GameEvent.INTERACTION_ENABLED_MESSAGE, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
         }
         interactableChanged = false;
     }

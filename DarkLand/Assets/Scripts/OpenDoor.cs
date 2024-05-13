@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(InteractableTrigger))]
-public class OpenDoor : MonoBehaviour, IInteractableObject{
+
+public class OpenDoor : IInteractableObject{
     private Quaternion open;
     private Quaternion close;
     private bool opened ;
@@ -28,20 +28,38 @@ public class OpenDoor : MonoBehaviour, IInteractableObject{
     }
 
     // Update is called once per frame
-    void Update(){
-        if(isMoving){
-            Quaternion begin = open;
-            Quaternion end = close;
-            if(opened){
-                begin = close;
-                end = open;
-            }
+    // void Update(){
+    //     if(isMoving){
+    //         Quaternion begin = open;
+    //         Quaternion end = close;
+    //         if(opened){
+    //             begin = close;
+    //             end = open;
+    //         }
+    //         door.transform.rotation = Quaternion.Lerp(begin, end,  timeCount * speed);
+    //         timeCount += Time.deltaTime;
+    //         if(door.transform.rotation == end){
+    //             isMoving = false;
+    //             timeCount = 0;
+    //         }
+    //     }
+    // }
+
+    private IEnumerator AnimateDoor(){
+        Quaternion begin = open;
+        Quaternion end = close;
+        if(opened){
+            begin = close;
+            end = open;
+        }
+        while(isMoving){
             door.transform.rotation = Quaternion.Lerp(begin, end,  timeCount * speed);
             timeCount += Time.deltaTime;
             if(door.transform.rotation == end){
                 isMoving = false;
                 timeCount = 0;
             }
+            yield return null;
         }
     }
 
@@ -53,8 +71,10 @@ public class OpenDoor : MonoBehaviour, IInteractableObject{
         }
     }
 
-    public void Interact(){
-        if(!isMoving)
+    public override void Interact(){
+        if(!isMoving){
             ChangeState();
+            StartCoroutine(AnimateDoor());
+        }
     }
 }

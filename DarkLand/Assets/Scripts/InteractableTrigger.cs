@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class InteractableTrigger : MonoBehaviour{
     [SerializeField] public GameEvent.InteractWithMessage InteractionMessage {get; private set;}
+    [SerializeField] protected bool ignoreLookingScore = false;
     protected bool enteredInRange = false;
     protected Transform playerTransform;
 
@@ -67,6 +68,8 @@ public class InteractableTrigger : MonoBehaviour{
     }
 
     public float LookingCondition(Transform source, Transform target){
+        if(ignoreLookingScore)
+            return 1f;
         Vector3 sourceDirection =  target.transform.position - source.position;
         return Vector3.Dot(source.forward, sourceDirection) ;
     }

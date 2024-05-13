@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 [RequireComponent(typeof (CharacterController))]
@@ -23,11 +24,14 @@ public class FPSInput : MonoBehaviour{
     private float dirZ; 
     public bool onGround = false;
     private bool crouch = false;
+    private bool hide;
     private CharacterController _charController;
     private Camera _camera;
     private List<Actions> actions;
     private ControllerColliderHit _contact; 
     private Quaternion _jumpRotation;
+    private Vector3 standingCamera;
+    private Vector3 crouchCamera;
     public float temp;
     // Start is called before the first frame update
     void Start()
@@ -36,6 +40,10 @@ public class FPSInput : MonoBehaviour{
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Walk};
         gameObject.tag = Settings.PLAYER_TAG;
+        //Messenger<bool>.AddListener(GameEvent.IS_HIDING, Hide);
+        hide = false;
+        standingCamera = new Vector3(0f, 0.5f, 0f);
+        crouchCamera = new Vector3(0f, 0.2f, 0f);
     }
 
 
@@ -46,11 +54,17 @@ public class FPSInput : MonoBehaviour{
         Jump = 3
     } 
 
+    private void setCamera(Vector3 position){
+        if(!GameEvent.isHiding){
+            _camera.transform.localPosition = position;
+        }
+    }
+
                 
     private void Crouch(){
         if(onGround){
               crouch = true;
-              _camera.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+              setCamera(crouchCamera);
               speed = FPSInput.CROUCH_SPEED;
         } 
     }
@@ -64,14 +78,14 @@ public class FPSInput : MonoBehaviour{
     }
     private void Walk(){
         crouch = false;
-        _camera.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+        setCamera(standingCamera);
         speed = FPSInput.WALK_SPEED;
     }
 
     private void Run(){
         if(onGround){
             speed = FPSInput.RUN_SPEED;  
-            _camera.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+            setCamera(standingCamera);
             crouch = false;
         }
     }
@@ -125,7 +139,7 @@ public class FPSInput : MonoBehaviour{
         readActionFromInput();
         
         Actions action = actions.Last();
-        if(GameEvent.isInDialog){
+        if(GameEvent.isInDialog || GameEvent.isHiding){
             dirX = 0;
             dirZ = 0;
         }else if(action == Actions.Walk){
@@ -187,7 +201,16 @@ public class FPSInput : MonoBehaviour{
         MovePlayer(velocity);
     }
 
+    // private void Hide(bool hide){
+    //     this.hide = hide;
+    // }
+
     void OnControllerColliderHit(ControllerColliderHit hit){
         _contact = hit;
     }
+
+    void OnDestroy(){
+        //Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, Hide);
+    }
+
 }

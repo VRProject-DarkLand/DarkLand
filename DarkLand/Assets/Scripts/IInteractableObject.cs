@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInteractableObject{
-    public void Interact();
+[RequireComponent(typeof(InteractableTrigger))]
+public abstract class IInteractableObject: MonoBehaviour{
+    public abstract void Interact();
 }

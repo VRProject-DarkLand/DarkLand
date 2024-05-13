@@ -16,38 +16,26 @@ public class DialogsManager : MonoBehaviour
     private GameObject talkToText = null;
     private bool talkToTextVisible = false;
     private string _interactionMessage;
-    public  bool isInDialog;
 
-
-    // // Update is called once per frame
-    // void Update(){
-    //     if(Input.GetKey(KeyCode.T) && talkToTextVisible){
-    //         CreateDialog();
-    //     }  
-    // }
-    void Start(){
-        
-    }
     public void Awake(){
-        Messenger<string, string>.AddListener(GameEvent.InteractionEnabledMessage, ActivateTalkToText);
-        Messenger<string, string>.AddListener(GameEvent.InteractionDisabledMessage, DeactivateTalkToText);
+        Messenger<string, string>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
+        Messenger<string, string>.AddListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.AddListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
-        Messenger<string>.AddListener(GameEvent.OpenDialog, CreateDialog);
-        Messenger<string>.AddListener(GameEvent.CloseDialog, CloseDialog);
+        Messenger<string>.AddListener(GameEvent.OPEN_DIALOG, CreateDialog);
+        Messenger<string>.AddListener(GameEvent.CLOSE_DIALOG, CloseDialog);
     }
     public void OnDestroy(){
-        Messenger<string, string>.RemoveListener(GameEvent.InteractionEnabledMessage, ActivateTalkToText);
-        Messenger<string, string>.RemoveListener(GameEvent.InteractionDisabledMessage, DeactivateTalkToText);
+        Messenger<string, string>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
+        Messenger<string, string>.RemoveListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_ENTERED_NPC_RANGE.ToString(), ActivateTalkToText);
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
-        Messenger<string>.RemoveListener(GameEvent.CloseDialog, CloseDialog);
-        Messenger<string>.RemoveListener(GameEvent.OpenDialog, CreateDialog);
+        Messenger<string>.RemoveListener(GameEvent.CLOSE_DIALOG, CloseDialog);
+        Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG, CreateDialog);
     }
     void ActivateTalkToText(string entityName, string _interactionMessage){
         if(talkToTextVisible){
             DeactivateTalkToText("", "");
         }
-        Debug.Log("Creating talkToText FOR " + entityName +" "+ Time.frameCount);
         _interactionMessage = DialogsKeeper.INTERACT_LABEL_TEXT;
         talkToEntityName = entityName;
         talkToText = Instantiate(interactionPopupPrefab, canvas.transform) as GameObject;
@@ -59,38 +47,30 @@ public class DialogsManager : MonoBehaviour
         talkToTextVisible = true;
     }
     void DeactivateTalkToText(string entityName, string _interactionMessage){
-       Debug.Log("Deleting talk to text");
         if(talkToTextVisible){
-            //talkToEntityName = null;
             Destroy(talkToText);
-            //Debug.Log("Destroyed talk to TEXT");
         }
         talkToTextVisible = false;
     }
 
     public void CreateDialog(string entityName){
         GameEvent.isInDialog = true;
-        Debug.Log("Creating dialog");
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         GameObject currentDialog = Instantiate(dialogPrefab, canvas.transform);
         DialogHandler dialogHandler = currentDialog.GetComponent<DialogHandler>();
         if(dialogHandler!= null){
             dialogHandler.OpenDialog(talkToEntityName);
-            //destroty talk-to message (I expect only one talk-to to be active at a given time)
-            //DeactivateTalkToText("", "");
             talkToText.SetActive(false);
         }
     }
 
     public void CloseDialog(string entityName){
         GameEvent.isInDialog = false;
-        Debug.Log("Closing dialog");
         //reactivate talkToDialog  
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;      
         talkToTextVisible = true;
-        //ActivateTalkToText(talkToEntityName, _interactionMessage);
         talkToText.SetActive(true);
     }
 }
