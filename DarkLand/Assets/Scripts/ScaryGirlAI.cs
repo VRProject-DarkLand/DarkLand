@@ -6,9 +6,11 @@ using UnityEngine.AI;
 public class ScaryGirlAI : MonoBehaviour
 {
     [SerializeField] private GameObject target;
+    private Vector3 spawnPosition;
     private NavMeshAgent navMeshAgent;
     private float defaultSpeed;
-    private bool running = false;
+    [SerializeField] private  bool chasing = false;
+    [SerializeField] private float maxDistance = 30f;
     private Animator animator;
     // Start is called before the first frame update
     void Start()
@@ -16,6 +18,7 @@ public class ScaryGirlAI : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         defaultSpeed = navMeshAgent.speed;
         animator = GetComponent<Animator>();
+        spawnPosition = gameObject.transform.position;
     }
 
     public void WakeUp(){
@@ -28,22 +31,42 @@ public class ScaryGirlAI : MonoBehaviour
     }
 
     public void StartRunning(){
-        running = true;
+        chasing = true;
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log("Fuori");
-        if (running){
+        RaycastHit hit ;
+        Vector3 direction = target.transform.position-transform.position;
+        Debug.Log(Vector3.Distance(target.transform.position,transform.position));
+        if(GameEvent.isHiding){
+            chasing = false;
+        }
+        if (chasing && Vector3.Distance(target.transform.position,transform.position)<15f){
+            navMeshAgent.speed=2*defaultSpeed;
             navMeshAgent.SetDestination(target.transform.position);
-            Debug.Log("Dentro");
             if (navMeshAgent.isOnOffMeshLink){
-                navMeshAgent.speed = 1.2f;
+                navMeshAgent.speed = 2.5f;
             }
-            else{
-                navMeshAgent.speed = defaultSpeed;
+        }
+        else if (Physics.Raycast(transform.position, direction, out hit, maxDistance )){
+            if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
+                chasing = true;
+                navMeshAgent.speed=2*defaultSpeed;    
+                navMeshAgent.SetDestination(target.transform.position);
+                if (navMeshAgent.isOnOffMeshLink){
+                    navMeshAgent.speed = 2.5f;
+                }
+            }else {
+                chasing = false;
             }
+        }
+        if(!chasing){
+                //maybe sample position for random point in navmesh
+            navMeshAgent.speed=defaultSpeed;
+            navMeshAgent.SetDestination(spawnPosition);
         }
     }
 }
