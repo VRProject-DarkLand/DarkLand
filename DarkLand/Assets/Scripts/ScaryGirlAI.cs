@@ -43,6 +43,7 @@ public class ScaryGirlAI : MonoBehaviour
     private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
         while(true){
+            Debug.Log("YEAH");
             Vector3 startRaycast = gameObject.transform.position+new Vector3(0,1.5f,0);
             RaycastHit hit ;
             Vector3 direction = target.transform.position-startRaycast;
