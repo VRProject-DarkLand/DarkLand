@@ -7,7 +7,7 @@ public class ScaryGirlTrigger : MonoBehaviour
     [SerializeField] private GameObject scaryGirl;
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")){
+        if (other.CompareTag(Settings.PLAYER_TAG)){
             scaryGirl.GetComponent<ScaryGirlAI>().WakeUp();
         }
     }

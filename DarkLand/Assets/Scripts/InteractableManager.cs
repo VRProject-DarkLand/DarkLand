@@ -24,7 +24,6 @@ public class InteractableManager : MonoBehaviour{
             if(!isCollectable){
                 if(interactable == selectedInteractable.Item1){
                     interactableChanged = true;
-                    Debug.Log("Sending delete message");
                     Messenger<string, string>.Broadcast(GameEvent.INTERACTION_DISABLED_MESSAGE, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
                     selectedInteractable = new Tuple<InteractableTrigger, float>(null, 0);
                 }

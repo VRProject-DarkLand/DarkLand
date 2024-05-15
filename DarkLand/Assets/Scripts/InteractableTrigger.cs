@@ -35,14 +35,12 @@ public class InteractableTrigger : MonoBehaviour{
             if(lookingScore > 0){
                 InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float>(this, lookingScore), isCollectable);
                 if(!looking){
-                    Debug.Log("Looking");
                     looking = true;
                 }
             }else{
                 if(looking){
                     looking = false;
                     InteractableManager.DeselectInteractableGameObject(this, isCollectable);
-                    Debug.Log("Not Looking anymore");
                 }
             }
         }     
@@ -59,7 +57,6 @@ public class InteractableTrigger : MonoBehaviour{
             enteredInRange = false;
             if(looking){
                 looking = false;
-                Debug.Log("Exited");
                 //Messenger<string, string>.Broadcast(_toSendExitMessage.ToString(), gameObject.name, InteractionMessage.ToString());
                 InteractableManager.DeselectInteractableGameObject(this, isCollectable);
                 //gameObject.SendMessage("CannotInteract");
