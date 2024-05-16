@@ -25,6 +25,8 @@ public class OpenDoubleDoor :  IInteractableObject
         isMoving = false;
         speed = 1f;
         timeCount = 0f; 
+        interactableTrigger = GetComponent<InteractableTrigger>();
+        interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
         close  = Tuple.Create(left.transform.rotation, right.transform.rotation);
         open = Tuple.Create(close.Item1*Quaternion.Euler(0, left.transform.rotation.y+left_rotation, 0), close.Item2*Quaternion.Euler(0, right.transform.rotation.y+right_rotation, 0));
     }
@@ -57,6 +59,10 @@ public class OpenDoubleDoor :  IInteractableObject
                 //     left.transform.rotation = open.Item1 ;
                 //     right.transform.rotation = open.Item2 ;
                 // }
+                if(opened)
+                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                else
+                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
                 opened = !opened;   
                 isMoving = true;  
         }

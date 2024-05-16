@@ -18,25 +18,32 @@ public class DialogsManager : MonoBehaviour
     private string _interactionMessage;
 
     public void Awake(){
-        Messenger<string, string>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
-        Messenger<string, string>.AddListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
+        Messenger<string, GameEvent.InteractWithMessage>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
+        Messenger.AddListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.AddListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.AddListener(GameEvent.OPEN_DIALOG, CreateDialog);
         Messenger<string>.AddListener(GameEvent.CLOSE_DIALOG, CloseDialog);
     }
     public void OnDestroy(){
-        Messenger<string, string>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
-        Messenger<string, string>.RemoveListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
+        Messenger<string, GameEvent.InteractWithMessage>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
+        Messenger.RemoveListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_ENTERED_NPC_RANGE.ToString(), ActivateTalkToText);
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.RemoveListener(GameEvent.CLOSE_DIALOG, CloseDialog);
         Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG, CreateDialog);
     }
-    void ActivateTalkToText(string entityName, string _interactionMessage){
+    void ActivateTalkToText(string entityName,  GameEvent.InteractWithMessage interactionType){
         if(talkToTextVisible){
-            DeactivateTalkToText("", "");
+            DeactivateTalkToText();
         }
-        _interactionMessage = DialogsKeeper.INTERACT_LABEL_TEXT;
+        string command = "E";
+        string _interactionMessage ="";
+        if(interactionType == GameEvent.InteractWithMessage.COLLECT_ITEM){
+            command = "C";
+            _interactionMessage +="["+command+"] "+DialogsKeeper.INTERACTION_LABEL[interactionType]+" "+entityName;
+        }else
+            _interactionMessage = "["+command+"] "+DialogsKeeper.INTERACTION_LABEL[interactionType];
+        
         talkToEntityName = entityName;
         talkToText = Instantiate(interactionPopupPrefab, canvas.transform) as GameObject;
         talkToText.GetComponentInChildren<Text>().text = _interactionMessage;
@@ -46,7 +53,7 @@ public class DialogsManager : MonoBehaviour
         uiElementRectTransform.localScale = Vector3.one;
         talkToTextVisible = true;
     }
-    void DeactivateTalkToText(string entityName, string _interactionMessage){
+    void DeactivateTalkToText(){
         if(talkToTextVisible){
             Destroy(talkToText);
         }

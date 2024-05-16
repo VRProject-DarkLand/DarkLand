@@ -15,26 +15,18 @@ public class GameEvent : MonoBehaviour{
     public const string OPEN_DIALOG = "OPEN_DIALOG";
     public const string IS_HIDING = "HIDING";
     public static bool isInDialog = false;
-    public static bool isHiding = false;
+    public static bool isHiding = false ;
+    public static HashSet<int> chasingSet = new();
 
     public enum InteractWithMessage{
         TALK_TO_NPC,
+        HIDE,
+        UNHIDE,
         OPEN_DOOR,
+        CLOSE_DOOR,
+        COLLECT_ITEM,
+        INTERACT,
+        UNLOCK,
     };
 
-    public static Tuple<GameObject, float> selectedInteractable = new Tuple<GameObject, float>(null, 0);
-    public static void SetInteractableGameObject(Tuple<GameObject, float> interactable, bool isCollectable){
-        if(!isCollectable){
-            if(interactable.Item2 > selectedInteractable.Item2 || selectedInteractable.Item1 == null){
-                selectedInteractable = interactable;
-            }
-        }
-    }
-    public static void DeselectInteractableGameObject(GameObject interactable, bool isCollectable){
-        if(!isCollectable){
-            if(interactable == selectedInteractable.Item1){
-                selectedInteractable = new Tuple<GameObject, float>(null, 0);
-            }
-        }
-    }
 }

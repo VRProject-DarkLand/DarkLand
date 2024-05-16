@@ -8,37 +8,36 @@ public class InteractableManager : MonoBehaviour{
     public static Tuple<InteractableTrigger, float> selectedInteractable = new Tuple<InteractableTrigger, float>(null, 0);
     
     private static bool interactableChanged = false;
-    public static void SetInteractableGameObject(Tuple<InteractableTrigger, float> interactable, bool isCollectable){
-        if(!isCollectable){
-            if(interactable.Item1 != selectedInteractable.Item1){
-                if(interactable.Item2 > selectedInteractable.Item2 || selectedInteractable.Item1 == null){
-                    selectedInteractable = interactable;
-                    interactableChanged = true;
-                }
+    
+    public static void SetInteractableGameObject(Tuple<InteractableTrigger, float> interactable){
+        if(interactable.Item1 != selectedInteractable.Item1){
+            if(interactable.Item2 > selectedInteractable.Item2 || selectedInteractable.Item1 == null){
+                selectedInteractable = interactable;
+                interactableChanged = true;
             }
         }
     }
 
-    public static void DeselectInteractableGameObject(InteractableTrigger interactable, bool isCollectable){
+    public static void DeselectInteractableGameObject(InteractableTrigger interactable){
         if(selectedInteractable.Item1 != null){
-            if(!isCollectable){
-                if(interactable == selectedInteractable.Item1){
+            if(interactable == selectedInteractable.Item1){
                     interactableChanged = true;
-                    Messenger<string, string>.Broadcast(GameEvent.INTERACTION_DISABLED_MESSAGE, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
+                    Messenger.Broadcast(GameEvent.INTERACTION_DISABLED_MESSAGE);
                     selectedInteractable = new Tuple<InteractableTrigger, float>(null, 0);
-                }
             }
         }
     }
-    public static void InteractWithSelectedItem(){
+    public static void InteractWithSelectedItem(bool collectable){
         if(selectedInteractable.Item1 != null){
-            selectedInteractable.Item1.SendMessage("Interact");
+            if( collectable == selectedInteractable.Item1.isCollectable)
+                selectedInteractable.Item1.SendMessage("Interact");
         }
     }
+
     void LateUpdate(){
         if(selectedInteractable.Item1 != null && interactableChanged){
             //Debug.Log("Late update");
-            Messenger<string, string>.Broadcast(GameEvent.INTERACTION_ENABLED_MESSAGE, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage.ToString());
+            Messenger<string, GameEvent.InteractWithMessage>.Broadcast(GameEvent.INTERACTION_ENABLED_MESSAGE, selectedInteractable.Item1.name, selectedInteractable.Item1.InteractionMessage);
         }
         interactableChanged = false;
     }

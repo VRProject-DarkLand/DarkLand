@@ -14,9 +14,11 @@ public class HidingInteractable : IInteractableObject{
 
     void Start(){
         isHiding = false;
+        interactableTrigger = GetComponent<InteractableTrigger>();
+        interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.HIDE);
         player = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         timeCount = 0;
-        speed = 0.5f;
+        speed = 0.85f;
         exitPos = gameObject.transform.position+gameObject.transform.forward;
         quad.SetActive(false);
         offQuadPosition = quad.transform.localPosition;
@@ -98,6 +100,10 @@ public class HidingInteractable : IInteractableObject{
         if(isMoving)
             return;
         isMoving = true;
+        if(isHiding)
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.HIDE);
+        else 
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNHIDE);
         GameEvent.isHiding=!isHiding;
         StartCoroutine(AnimateHiding());
         

@@ -11,18 +11,23 @@ public class OpenDoor : IInteractableObject{
     private bool isMoving;
     private float speed;
     private float timeCount;
-    private bool canInteract;
+    [SerializeField] private bool requireKey = false;
     [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
+    [SerializeField] private string key = "Key";
     // Start is called before the first frame update
     void Start(){
         if(door != null){
-            canInteract = false;
             isMoving = false;
             opened = false;
             close  = door.transform.rotation;
             open = close*Quaternion.Euler(0, door.transform.rotation.y+rotation, 0);
         }
+        interactableTrigger = GetComponent<InteractableTrigger>();
+        if(!requireKey)
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+        else
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK);
         timeCount = 0;
         speed = 1f;
     }
@@ -45,6 +50,12 @@ public class OpenDoor : IInteractableObject{
     //     }
     // }
 
+    /* *
+    * <summary><\summary> 
+    * <param name=""><\param>
+    * <return><\return>
+    *
+    */
     private IEnumerator AnimateDoor(){
         Quaternion begin = open;
         Quaternion end = close;
@@ -65,7 +76,22 @@ public class OpenDoor : IInteractableObject{
 
     public void ChangeState(){
         if(door != null){
+            if(requireKey){
+                if(Managers.Inventory.GetItemCount(key) == 0)
+                    return;
+                else{ 
+                    requireKey = false;
+                    Managers.Inventory.ConsumeItem(key);
+                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                    return;
+                }
+            }
+            
             //door.transform.rotation = opened ? close : open; 
+            if(opened)
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+            else 
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
             opened = !opened;   
             isMoving = true;     
         }

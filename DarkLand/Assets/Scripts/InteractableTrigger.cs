@@ -5,14 +5,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class InteractableTrigger : MonoBehaviour{
-    [SerializeField] public GameEvent.InteractWithMessage InteractionMessage {get; private set;}
+    [SerializeField] public GameEvent.InteractWithMessage InteractionMessage {get; private set;} = GameEvent.InteractWithMessage.INTERACT;
     [SerializeField] protected bool ignoreLookingScore = false;
     protected bool enteredInRange = false;
     protected Transform playerTransform;
 
     private bool looking = false;
 
-    private bool isCollectable = false;
+    public bool isCollectable  {get; internal set;} = false;
 
     // public void OnTriggerEnter(Collider other){
     //     enteredInRange = true;
@@ -27,20 +27,19 @@ public class InteractableTrigger : MonoBehaviour{
 
     void Start() {
         //OpenDoor openDoor;
-        isCollectable =false;// TryGetComponent<OpenDoor> (out openDoor);
     }
     void Update(){
         if(enteredInRange){
             float lookingScore = LookingCondition(playerTransform, gameObject.transform);
             if(lookingScore > 0){
-                InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float>(this, lookingScore), isCollectable);
+                InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float>(this, lookingScore));
                 if(!looking){
                     looking = true;
                 }
             }else{
                 if(looking){
                     looking = false;
-                    InteractableManager.DeselectInteractableGameObject(this, isCollectable);
+                    InteractableManager.DeselectInteractableGameObject(this);
                 }
             }
         }     
@@ -58,10 +57,19 @@ public class InteractableTrigger : MonoBehaviour{
             if(looking){
                 looking = false;
                 //Messenger<string, string>.Broadcast(_toSendExitMessage.ToString(), gameObject.name, InteractionMessage.ToString());
-                InteractableManager.DeselectInteractableGameObject(this, isCollectable);
+                InteractableManager.DeselectInteractableGameObject(this);
                 //gameObject.SendMessage("CannotInteract");
             }
         }
+    }
+
+    public void SetInteractionMessage(GameEvent.InteractWithMessage message){
+        InteractionMessage = message;
+        InteractableManager.DeselectInteractableGameObject(this);
+    }
+
+    void OnDestroy(){
+         InteractableManager.DeselectInteractableGameObject(this);
     }
 
     public float LookingCondition(Transform source, Transform target){

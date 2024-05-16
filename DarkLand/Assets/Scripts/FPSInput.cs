@@ -105,9 +105,9 @@ public class FPSInput : MonoBehaviour{
             dirX =  Input.GetAxis("Horizontal");
             dirZ =  Input.GetAxis("Vertical");
         }
-        if(Input.GetKeyDown(KeyCode.C)){
+        if(Input.GetKeyDown(KeyCode.LeftControl)){
             actions.Add(Actions.Crouch);
-        }else if(Input.GetKeyUp(KeyCode.C)){
+        }else if(Input.GetKeyUp(KeyCode.LeftControl)){
             actions.RemoveAll(x => x == Actions.Crouch);
         }
         
@@ -118,7 +118,10 @@ public class FPSInput : MonoBehaviour{
         }
 
         if(Input.GetKeyDown(KeyCode.E) && onGround){
-            InteractableManager.InteractWithSelectedItem();
+            InteractableManager.InteractWithSelectedItem(false);
+        }
+        if(Input.GetKeyDown(KeyCode.C) && onGround){
+            InteractableManager.InteractWithSelectedItem(true);
         }
     } 
 

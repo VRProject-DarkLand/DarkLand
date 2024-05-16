@@ -37,13 +37,13 @@ public class ScaryGirlAI : MonoBehaviour
 
     public void StartRunning(){
         chasing = true;
+        GameEvent.chasingSet.Add(GetInstanceID());
         StartCoroutine(FollowMe());
     }
 
     private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
         while(true){
-            Debug.Log("YEAH");
             Vector3 startRaycast = gameObject.transform.position+new Vector3(0,1.5f,0);
             RaycastHit hit ;
             Vector3 direction = target.transform.position-startRaycast;
@@ -64,6 +64,7 @@ public class ScaryGirlAI : MonoBehaviour
                 Debug.DrawRay(startRaycast, direction, Color.yellow);
                 if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
                     chasing = true;
+                    GameEvent.chasingSet.Add(GetInstanceID());
                     Debug.Log("FIG");
                     navMeshAgent.speed=2*defaultSpeed;    
                     navMeshAgent.SetDestination(target.transform.position);
@@ -79,6 +80,7 @@ public class ScaryGirlAI : MonoBehaviour
                 chasing = false;
             }
             if(!chasing){
+                GameEvent.chasingSet.Remove(GetInstanceID());
                     //maybe sample position for random point in navmesh
                 navMeshAgent.speed=defaultSpeed;
                 if(Vector3.Distance(navMeshAgent.destination,transform.position)<3f){
