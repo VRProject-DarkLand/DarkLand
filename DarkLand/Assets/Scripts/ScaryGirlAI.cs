@@ -12,7 +12,7 @@ public class ScaryGirlAI : MonoBehaviour
     private Vector3 spawnPosition;
     private NavMeshAgent navMeshAgent;
     private float defaultSpeed;
-    private bool inSight;
+    private bool inSight = false;
     [SerializeField] private  bool chasing = false;
     [SerializeField] private float maxDistance = 30f;
     private Animator animator;
@@ -37,6 +37,7 @@ public class ScaryGirlAI : MonoBehaviour
 
     public void StartRunning(){
         chasing = true;
+        inSight = true;
         GameEvent.chasingSet.Add(GetInstanceID());
         StartCoroutine(FollowMe());
     }
@@ -49,41 +50,50 @@ public class ScaryGirlAI : MonoBehaviour
             Vector3 direction = target.transform.position-startRaycast;
             //Debug.Log(Vector3.Distance(target.transform.position,transform.position));
             float distance = direction.magnitude;
-            if(GameEvent.isHiding ){
-                chasing = false;
-            }
-            if ( chasing && distance<15f){
-                navMeshAgent.speed=2*defaultSpeed;
-                navMeshAgent.SetDestination(target.transform.position);
-                if (navMeshAgent.isOnOffMeshLink){
-                    navMeshAgent.speed = 2.5f;
-                }
-                yield return null;
-            }
-            else if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance )){
-                Debug.DrawRay(startRaycast, direction, Color.yellow);
-                if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
-                    chasing = true;
-                    GameEvent.chasingSet.Add(GetInstanceID());
-                    Debug.Log("FIG");
-                    navMeshAgent.speed=2*defaultSpeed;    
-                    navMeshAgent.SetDestination(target.transform.position);
-                    if (navMeshAgent.isOnOffMeshLink){
-                        navMeshAgent.speed = 2.5f;
-                    }
-                    
-                    yield return  new WaitForSeconds(0.5f);
-                }else {
+            if(GameEvent.isHiding){
+                if(!inSight)
                     chasing = false;
+                else{ 
+                    navMeshAgent.SetDestination(target.transform.position);
+                    yield return null;
                 }
             }else{
-                chasing = false;
+                if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance )){
+                    Debug.DrawRay(startRaycast, direction, Color.yellow);
+                    if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
+                        inSight = true;
+                        chasing = true;
+                        GameEvent.chasingSet.Add(GetInstanceID());
+                        navMeshAgent.speed=2*defaultSpeed;    
+                        navMeshAgent.SetDestination(target.transform.position);
+                        if (navMeshAgent.isOnOffMeshLink){
+                            navMeshAgent.speed = 2.5f;
+                        }
+                        
+                        yield return  new WaitForSeconds(0.2f);
+                    }else {
+                        inSight = false;
+                        if ( chasing && distance<10f){
+                            navMeshAgent.speed=2*defaultSpeed;
+                            navMeshAgent.SetDestination(target.transform.position);
+                            if (navMeshAgent.isOnOffMeshLink){
+                                navMeshAgent.speed = 2.5f;
+                            }
+                            yield return null;
+                        }else 
+                            chasing = false;
+                    }
+                }else{
+                    chasing = false;
+                }
             }
+          
+           
             if(!chasing){
                 GameEvent.chasingSet.Remove(GetInstanceID());
                     //maybe sample position for random point in navmesh
                 navMeshAgent.speed=defaultSpeed;
-                if(Vector3.Distance(navMeshAgent.destination,transform.position)<3f){
+                if(Vector3.Distance(navMeshAgent.destination,transform.position)<2.5f){
                     Vector3 randomDirection = Random.insideUnitSphere * 25f;
                     randomDirection += transform.position;
                     NavMeshHit hit1;
