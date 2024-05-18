@@ -24,11 +24,12 @@ public class LightsManager : MonoBehaviour
                     break;
             }
         }
-        for(int i= 0;i<allLights.Count;++i){
-           allLights[i].intensity*=20;
-        }
+        // for(int i= 0;i<allLights.Count;++i){
+        //    allLights[i].intensity*=2;
+        //    allLights[i].range *=2;
+        // }
         Messenger<bool>.AddListener(GameEvent.OPERATE_ON_LIGHTS, OperateOnLights);
-        OperateOnLights(false);
+        //OperateOnLights(true);
         StartCoroutine(BlinkManager());
     }
     IEnumerator Blink(GameObject selectedLight){

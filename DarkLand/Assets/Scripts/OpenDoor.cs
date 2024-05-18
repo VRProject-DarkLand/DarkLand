@@ -11,9 +11,9 @@ public class OpenDoor : IInteractableObject{
     private bool isMoving;
     private float speed;
     private float timeCount;
-    [SerializeField] private bool requireKey = false;
     [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
+    [SerializeField] private bool requireKey = false;
     [SerializeField] private string key = "Key";
     // Start is called before the first frame update
     void Start(){

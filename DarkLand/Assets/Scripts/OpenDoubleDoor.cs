@@ -18,6 +18,9 @@ public class OpenDoubleDoor :  IInteractableObject
     [SerializeField] private float right_rotation;
     [SerializeField] private GameObject left;
     [SerializeField] private GameObject right;
+    
+    [SerializeField] private bool requireKey = false;
+    [SerializeField] private string key = "Key";
     // Start is called before the first frame updatevoid Start()
     void Start(){
         opened = false;
@@ -26,7 +29,11 @@ public class OpenDoubleDoor :  IInteractableObject
         speed = 1f;
         timeCount = 0f; 
         interactableTrigger = GetComponent<InteractableTrigger>();
-        interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+         interactableTrigger = GetComponent<InteractableTrigger>();
+        if(!requireKey)
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+        else
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK);
         close  = Tuple.Create(left.transform.rotation, right.transform.rotation);
         open = Tuple.Create(close.Item1*Quaternion.Euler(0, left.transform.rotation.y+left_rotation, 0), close.Item2*Quaternion.Euler(0, right.transform.rotation.y+right_rotation, 0));
     }
@@ -52,6 +59,16 @@ public class OpenDoubleDoor :  IInteractableObject
 
     public void ChangeState(){
         if(left != null && right != null){
+              if(requireKey){
+                if(Managers.Inventory.GetItemCount(key) == 0)
+                    return;
+                else{ 
+                    requireKey = false;
+                    Managers.Inventory.ConsumeItem(key);
+                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                    return;
+                }
+              }
                 // if(opened){
                 //     left.transform.rotation = close.Item1 ;
                 //     right.transform.rotation = close.Item2 ;
