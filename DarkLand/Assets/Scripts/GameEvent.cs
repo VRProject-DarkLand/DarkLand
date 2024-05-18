@@ -13,6 +13,7 @@ public class GameEvent : MonoBehaviour{
     public const string INTERACTION_ENABLED_MESSAGE = "CAN_INTERACT";
     public const string INTERACTION_DISABLED_MESSAGE = "CANNOT_INTERACT";
     public const string OPEN_DIALOG = "OPEN_DIALOG";
+    public const string OPERATE_ON_LIGHTS = "OPERATE_LIGHTS";
     public const string IS_HIDING = "HIDING";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
@@ -27,6 +28,8 @@ public class GameEvent : MonoBehaviour{
         COLLECT_ITEM,
         INTERACT,
         UNLOCK,
+        TURN_ON,
+        TURN_OFF,
     };
 
 }
