@@ -24,10 +24,12 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         _currentObject = _selectable[0];
         _currentIndex = 0;
        status = ManagerStatus.Started;
+       Messenger<bool>.AddListener(GameEvent.IS_HIDING, SetActivationState);
     }
 
     //add element to selectable in the first free position
     public bool AddSelectable(GameObject obj){
+        obj.transform.SetParent(null);
         GameObject usableObject = Instantiate(obj, _usableParent.transform); 
         if(obj == null)
             return false;
@@ -84,6 +86,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         _currentObject.Use();
     }
 
+    private void SetActivationState(bool isHiding){
+            _currentObject.gameObject.SetActive(isHiding);
+    }
     void Start(){
         
     }
@@ -91,5 +96,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     void Update()
     {
         
+    }
+    void OnDestroy(){
+       Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, SetActivationState);
+
     }
 }

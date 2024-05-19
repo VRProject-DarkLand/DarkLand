@@ -17,9 +17,9 @@ public class PostProcessController : MonoBehaviour
     private float DOF_SCARED_LENGTH = 60f;
 
     private float GRADING_DEFAULT_SAT = 10;
-    private float GRADING_DEFAULT_CONTRAST=35;
+    private float GRADING_DEFAULT_CONTRAST=25;
     private float GRADING_SCARED_SAT=-85;
-    private float GRADING_SCARED_CONTRAST=65;
+    private float GRADING_SCARED_CONTRAST=55;
 
     private float speed = 3f;
     private PostProcessVolume volume;

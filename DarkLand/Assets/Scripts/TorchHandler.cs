@@ -10,8 +10,6 @@ public class TorchHandler : MonoBehaviour
     void Start()
     {
         _camera = GetComponent<Camera>();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         torch.GetComponent<Light>().enabled = false;
     }
 

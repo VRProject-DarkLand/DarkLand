@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class HidingInteractable : IInteractableObject{
@@ -48,6 +49,7 @@ public class HidingInteractable : IInteractableObject{
         }
         //endRot = Quaternion.Euler(beginRot.x, endRot.y, beginRot.z);
         if(!isHiding){
+            Messenger<bool>.Broadcast(GameEvent.IS_HIDING, isHiding, MessengerMode.DONT_REQUIRE_LISTENER);
             isMoving = true;
             while(isMoving){
                 RotateAndMovePlayer(begin, end, beginRot, endRot);
@@ -72,6 +74,7 @@ public class HidingInteractable : IInteractableObject{
                 RotateAndMovePlayer(begin, end, beginRot, endRot);
                 yield return null;
             }
+            Messenger<bool>.Broadcast(GameEvent.IS_HIDING, isHiding, MessengerMode.DONT_REQUIRE_LISTENER);
             
         }
         isHiding = !isHiding;
@@ -105,6 +108,7 @@ public class HidingInteractable : IInteractableObject{
         else 
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNHIDE);
         GameEvent.isHiding=!isHiding;
+        
         StartCoroutine(AnimateHiding());
         
     }   

@@ -4,7 +4,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor.VersionControl;
 using UnityEngine;
-using UnityEngine.UIElements;
 [RequireComponent(typeof (CharacterController))]
 [AddComponentMenu("Control Script/FPS Input")]
 public class FPSInput : MonoBehaviour{    
@@ -36,6 +35,9 @@ public class FPSInput : MonoBehaviour{
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Walk};
@@ -129,7 +131,7 @@ public class FPSInput : MonoBehaviour{
         bool hitGround = false;
         RaycastHit hit;
         if(deltaY <= 0 && Physics.Raycast(transform.position ,Vector3.down, out hit)){
-            float check = (_charController.height + _charController.radius)/1.3f;
+            float check = (_charController.height + _charController.radius)/1f;
             hitGround = hit.distance <= check;
         }
         return hitGround;

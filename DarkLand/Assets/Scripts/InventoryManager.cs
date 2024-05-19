@@ -30,10 +30,14 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     public void AddItem(GameObject obj){
         obj.GetComponent<Collectable>().enabled = false;
+        obj.GetComponent<Collider>().enabled = false;
+        obj.GetComponent<InteractableTrigger>().enabled = false;
         if(obj == null)
             return;
         string name = obj.name;
-        Managers.UsableInventory.AddSelectable(obj);
+        IUsableObject usable;
+        if(obj.TryGetComponent<IUsableObject>(out usable))
+            Managers.UsableInventory.AddSelectable(obj);
         if(!_items.ContainsKey(name))
             _items.Add(name, 1);
         else 
