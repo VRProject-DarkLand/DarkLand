@@ -42,8 +42,8 @@ public class FPSInput : MonoBehaviour{
         gameObject.tag = Settings.PLAYER_TAG;
         //Messenger<bool>.AddListener(GameEvent.IS_HIDING, Hide);
         hide = false;
-        standingCamera = new Vector3(0f, 0.5f, 0f);
-        crouchCamera = new Vector3(0f, 0.2f, 0f);
+        standingCamera = _camera.transform.localPosition;
+        crouchCamera = standingCamera+new Vector3(0f, -0.3f, 0f);
     }
 
 
