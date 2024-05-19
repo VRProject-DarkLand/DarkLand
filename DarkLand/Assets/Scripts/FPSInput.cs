@@ -140,7 +140,10 @@ public class FPSInput : MonoBehaviour{
     {
         onGround = detectOnGround();
         readActionFromInput();
-        
+        if(Input.GetMouseButtonDown(0)){
+            Managers.UsableInventory.Use();
+        }
+
         Actions action = actions.Last();
         if(GameEvent.isInDialog || GameEvent.isHiding){
             dirX = 0;

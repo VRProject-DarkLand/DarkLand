@@ -16,10 +16,10 @@ public class LightsLeverInteractable : IInteractableObject
     }
 
     public override void Interact(){
-        if(!manager.on)
-            gameObject.GetComponent<Animator>().SetFloat("SPEED", 1f);
-        if(manager.on)
-            gameObject.GetComponent<Animator>().SetFloat("SPEED", -1f);
+        // if(!manager.on)
+        //     gameObject.GetComponent<Animator>().SetFloat("Speed", 1f);
+        // if(manager.on)
+        //     gameObject.GetComponent<Animator>().SetFloat("Speed", -1f);
         gameObject.GetComponent<Animator>().SetBool("On", manager.on);
         Messenger<bool>.Broadcast(GameEvent.OPERATE_ON_LIGHTS, !manager.on);
         if(manager.on)

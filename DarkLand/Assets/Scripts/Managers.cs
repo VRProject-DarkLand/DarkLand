@@ -8,6 +8,7 @@ public class Managers : MonoBehaviour
 {
     public static PlayerManager Player {get; private set;}
     public static InventoryManager Inventory {get; private set;}
+    public static UsableObjectManager UsableInventory {get; private set;}
     // Start is called before the first frame update
     private List<IGameManager> _startSequence;
     void Start()
@@ -18,9 +19,13 @@ public class Managers : MonoBehaviour
     void Awake(){
         Player = GetComponent<PlayerManager>();
         Inventory = GetComponent<InventoryManager>();
+        UsableInventory = GetComponent<UsableObjectManager>(); 
+        
         _startSequence = new List<IGameManager>();
         _startSequence.Add(Player);
         _startSequence.Add(Inventory);
+        _startSequence.Add(UsableInventory);
+        
         StartCoroutine(StartupManagers());
     }
 

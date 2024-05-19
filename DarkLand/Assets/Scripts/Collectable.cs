@@ -16,7 +16,7 @@ public class Collectable : IInteractableObject
         interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.COLLECT_ITEM);
     }
     public override void Interact(){
-        inventory?.AddItem(gameObject.name);
+        inventory?.AddItem(gameObject);
         Destroy(gameObject);
     }
 
