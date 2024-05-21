@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,6 +30,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     //add element to selectable in the first free position
     public bool AddSelectable(GameObject obj){
+        obj.SetActive(false);
         obj.transform.SetParent(null, true);
         GameObject usableObject = Instantiate(obj, _usableParent.transform, true); 
         usableObject.name = obj.name;
@@ -63,31 +65,40 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     }
 
     public void SelectionForward(){
+        Debug.Log("Forw");
         if(_currentIndex < _selectable.Count -1){
             _currentObject.Deselect();
             ++_currentIndex;
             _currentObject = _selectable[_currentIndex];
         }else{
             _currentObject = _selectable[0];
+            _currentIndex = 0;
         }
+        Debug.Log("Item n: "+_currentIndex);
         _currentObject.Select();
     }
 
     public void SelectionBackward(){
+        Debug.Log("Back");
         if(_currentIndex > 0){
             _currentObject.Deselect();
             --_currentIndex;
             _currentObject = _selectable[_currentIndex];
         }else{
             _currentObject = _selectable[_selectable.Count - 1];
+            _currentIndex = _selectable.Count - 1;
         }
+        Debug.Log("Item n: "+_currentIndex);
         _currentObject.Select();
     }
 
     public void Use(){
         _currentObject.Use();
-        if(Managers.Inventory.GetItemCount(_currentObject.gameObject.name)==0){
-            RemoveSelectable(_currentObject.gameObject);
+        if( !_currentObject.IsDummy() && Managers.Inventory.GetItemCount(_currentObject.gameObject.name)==0){
+            GameObject go = _currentObject.gameObject;
+            RemoveSelectable(go);
+            Destroy(go);
+            
         }else {
            // _currentObject.gameObject.SetActive(false);
         }
@@ -96,6 +107,10 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
             tot+=" "+_selectable[i].gameObject.name;
          }
         Debug.Log(tot);
+    }
+
+    public void SecondaryUse(){
+        _currentObject.SecondaryUse();
     }
 
     private void SetActivationState(bool isHiding){

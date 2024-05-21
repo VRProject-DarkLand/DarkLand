@@ -4,7 +4,13 @@ using UnityEngine;
 
 public abstract class IUsableObject: MonoBehaviour{
     public abstract void Use();
+    
+    public virtual void SecondaryUse(){
+        
+    }
     public abstract void Select();
-    public abstract void Deselect();
+    public virtual void Deselect(){
+        gameObject.SetActive(false);
+    }
     public abstract bool IsDummy();
 }

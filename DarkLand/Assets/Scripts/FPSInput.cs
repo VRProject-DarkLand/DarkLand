@@ -21,6 +21,7 @@ public class FPSInput : MonoBehaviour{
     private float deltaZ = 0;
     private float dirX; 
     private float dirZ; 
+    private float prevScroll = 0;
     public bool onGround = false;
     private bool crouch = false;
     private bool hide;
@@ -125,6 +126,13 @@ public class FPSInput : MonoBehaviour{
         if(Input.GetKeyDown(KeyCode.C) && onGround){
             InteractableManager.InteractWithSelectedItem(true);
         }
+        float scroll = Input.mouseScrollDelta.y;
+        if ( scroll > 0){ // do shit here for scroll up
+            Managers.UsableInventory.SelectionForward();
+        } else if (scroll < 0 ){ // do shit here for scroll down 
+            Managers.UsableInventory.SelectionBackward();
+        }
+        prevScroll = scroll;
     } 
 
     private bool detectOnGround(){
@@ -144,6 +152,10 @@ public class FPSInput : MonoBehaviour{
         readActionFromInput();
         if(Input.GetMouseButtonDown(0)){
             Managers.UsableInventory.Use();
+        }
+
+        if(Input.GetMouseButtonDown(1)){
+            Managers.UsableInventory.SecondaryUse();
         }
 
         Actions action = actions.Last();

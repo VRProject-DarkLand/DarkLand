@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-//[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody))]
 public class ThrowableObject : IUsableObject
 {
     //TrajectoryPredictor trajectoryPredictor;
@@ -16,14 +16,7 @@ public class ThrowableObject : IUsableObject
     //Transform StartPosition;
 
     void Start(){
-        objectToThrow = GetComponent<Rigidbody>();
-    }
-
-    public override void Deselect(){
-        //torchHandler.
-        //turn off and deselect
-
-        Destroy(gameObject);
+        objectToThrow = gameObject.GetComponent<Rigidbody>();
     }
 
     public override bool IsDummy(){
@@ -32,7 +25,6 @@ public class ThrowableObject : IUsableObject
 
     public override void Select(){
         gameObject.SetActive(true);
-        var parent = gameObject.transform.parent;
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
         gameObject.transform.localPosition = new Vector3(0.3f, -0.35f, 0.66f);
         //gameObject.transform.position = 
@@ -57,7 +49,12 @@ public class ThrowableObject : IUsableObject
         //Managers.UsableInventory.RemoveSelectable(gameObject);
         
     }
-    
+
+    public override void SecondaryUse()
+    {
+        
+    }
+
     // void Update()
     // {
     //     Predict();
