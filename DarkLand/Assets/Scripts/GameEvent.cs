@@ -14,6 +14,7 @@ public class GameEvent : MonoBehaviour{
     public const string INTERACTION_DISABLED_MESSAGE = "CANNOT_INTERACT";
     public const string OPEN_DIALOG = "OPEN_DIALOG";
     public const string OPERATE_ON_LIGHTS = "OPERATE_LIGHTS";
+    public const string PREDICT_TRAJECTORY = "PREDICT_TRAJECTORY";
     public const string IS_HIDING = "HIDING";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
