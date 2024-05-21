@@ -31,17 +31,24 @@ public class InventoryManager : MonoBehaviour, IGameManager
     public void AddItem(GameObject obj){
         obj.GetComponent<Collectable>().enabled = false;
         obj.GetComponent<Collider>().enabled = false;
+        Rigidbody rb ;
+
+        if(obj.TryGetComponent<Rigidbody>(out rb))
+            rb.isKinematic = true;
         obj.GetComponent<InteractableTrigger>().enabled = false;
         if(obj == null)
             return;
         string name = obj.name;
-        IUsableObject usable;
-        if(obj.TryGetComponent<IUsableObject>(out usable))
-            Managers.UsableInventory.AddSelectable(obj);
-        if(!_items.ContainsKey(name))
+        
+        if(!_items.ContainsKey(name)){
             _items.Add(name, 1);
+            IUsableObject usable;
+            if(obj.TryGetComponent<IUsableObject>(out usable))
+            Managers.UsableInventory.AddSelectable(obj);
+        }
         else 
             _items[name]+=1;
+        
         DisplayItems();
     }
 

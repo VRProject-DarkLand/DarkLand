@@ -29,8 +29,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     //add element to selectable in the first free position
     public bool AddSelectable(GameObject obj){
-        obj.transform.SetParent(null);
-        GameObject usableObject = Instantiate(obj, _usableParent.transform); 
+        obj.transform.SetParent(null, true);
+        GameObject usableObject = Instantiate(obj, _usableParent.transform, true); 
+        usableObject.name = obj.name;
         if(obj == null)
             return false;
         for(int i = 0; i < _maxSize; ++i){
@@ -47,13 +48,14 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         return false;
     }
     //remove element from selectable if present (replace with dummy)
-    public bool RemoveSelectable(IUsableObject obj){
+    public bool RemoveSelectable(GameObject obj){
         for(int i = 0; i < _selectable.Count; ++i){
             if(_selectable[i].gameObject == obj){
                 if(_currentIndex == i){
                     _currentObject.Deselect();
                 }
                 _selectable[i] = _usableDummy;
+                _currentObject = _usableDummy;
                 return true;
             }
         }
@@ -84,6 +86,16 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     public void Use(){
         _currentObject.Use();
+        if(Managers.Inventory.GetItemCount(_currentObject.gameObject.name)==0){
+            RemoveSelectable(_currentObject.gameObject);
+        }else {
+           // _currentObject.gameObject.SetActive(false);
+        }
+         string tot = "Usable objects: ";
+         for(int i = 0; i < _selectable.Count; ++i){
+            tot+=" "+_selectable[i].gameObject.name;
+         }
+        Debug.Log(tot);
     }
 
     private void SetActivationState(bool isHiding){
