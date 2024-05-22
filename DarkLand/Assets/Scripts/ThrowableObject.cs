@@ -19,7 +19,7 @@ public class ThrowableObject : IUsableObject
     Rigidbody objectToThrow;
     [SerializeField, Range(0.0f, 50.0f)]
     float force = 10;
-
+    private bool _isAiming = false;
     //[SerializeField]
     //Transform StartPosition;
 
@@ -64,7 +64,10 @@ public class ThrowableObject : IUsableObject
         //Managers.UsableInventory.RemoveSelectable(gameObject);
         
     }
-
+    public override void Deselect(){
+        UndoSecondaryUse();
+        base.Deselect();
+    }
     public override void SecondaryUse()
     {
         ThrowableInfo info = new ThrowableInfo();
@@ -73,8 +76,16 @@ public class ThrowableObject : IUsableObject
         info.initialPosition = gameObject.transform.position;
         info.direction = gameObject.transform.parent.forward;
         Messenger<ThrowableInfo>.Broadcast(GameEvent.PREDICT_TRAJECTORY, info);
+        _isAiming = true;
     }
 
+    public override void UndoSecondaryUse()
+    {
+        if(_isAiming){
+            Messenger.Broadcast(GameEvent.CANCEL_TRAJECTORY);
+        }
+        _isAiming = false;
+    }
     // void Update()
     // {
     //     Predict();

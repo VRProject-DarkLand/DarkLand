@@ -61,4 +61,19 @@ public class MouseLook : MonoBehaviour
             transform.localEulerAngles = new Vector3(_rotationX,rotationY,0);
         }
     }
+    void OnGUI(){
+        if(GameEvent.isUsingGun){
+            // Set the style for the GUI label (for the "+")
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            style.fontSize = 30; // Set the font size
+            style.alignment = TextAnchor.MiddleCenter; // Set the alignment to center
+
+            // Get the center of the screen
+            float centerX = Screen.width / 2;
+            float centerY = Screen.height / 2;
+
+            // Draw the "+" symbol at the center of the screen
+            GUI.Label(new Rect(centerX - 15, centerY - 15, 30, 30), "+", style);
+        }
+    }
 }

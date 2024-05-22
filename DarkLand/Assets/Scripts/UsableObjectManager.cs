@@ -42,6 +42,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
                 if(_currentIndex == i){
                     _currentObject = _selectable[_currentIndex];
                     _currentObject.Select();
+                    Debug.Log("Pistol position" + _currentObject.transform.localPosition +" Rotation " + _currentObject.transform.localEulerAngles);
                 }
                 
                 return true;
@@ -71,6 +72,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
             ++_currentIndex;
             _currentObject = _selectable[_currentIndex];
         }else{
+            _currentObject.Deselect();
             _currentObject = _selectable[0];
             _currentIndex = 0;
         }
@@ -85,6 +87,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
             --_currentIndex;
             _currentObject = _selectable[_currentIndex];
         }else{
+            _currentObject.Deselect();
             _currentObject = _selectable[_selectable.Count - 1];
             _currentIndex = _selectable.Count - 1;
         }
@@ -111,6 +114,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     public void SecondaryUse(){
         _currentObject.SecondaryUse();
+    }
+        public void UndoSecondaryUse(){
+        _currentObject.UndoSecondaryUse();
     }
 
     private void SetActivationState(bool isHiding){

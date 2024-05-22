@@ -157,7 +157,9 @@ public class FPSInput : MonoBehaviour{
         if(Input.GetMouseButton(1)){
             Managers.UsableInventory.SecondaryUse();
         }
-
+        if(Input.GetMouseButtonUp(1)){
+            Managers.UsableInventory.UndoSecondaryUse();
+        }
         Actions action = actions.Last();
         if(GameEvent.isInDialog || GameEvent.isHiding){
             dirX = 0;

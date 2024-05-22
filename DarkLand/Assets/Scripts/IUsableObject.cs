@@ -8,6 +8,9 @@ public abstract class IUsableObject: MonoBehaviour{
     public virtual void SecondaryUse(){
         
     }
+    public virtual void UndoSecondaryUse(){
+        
+    }
     public abstract void Select();
     public virtual void Deselect(){
         gameObject.SetActive(false);
