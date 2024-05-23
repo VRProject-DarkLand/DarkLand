@@ -595,7 +595,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
@@ -971,7 +971,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1594199120368151063, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
       propertyPath: requireKey
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1988746460052716920, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1069,6 +1069,10 @@ PrefabInstance:
       propertyPath: StartPosition
       value: 
       objectReference: {fileID: 900567307}
+    - target: {fileID: 2535360477709455554, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2646453346657034528, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
       propertyPath: m_LocalPosition.y
       value: 4.29
@@ -1829,6 +1833,10 @@ PrefabInstance:
       propertyPath: manager
       value: 
       objectReference: {fileID: 1515835914}
+    - target: {fileID: 8194159910719579368, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: 14c3baa4584b4c14b82c91c7b2362dfd, type: 2}
     - target: {fileID: 8507308503916550666, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
       propertyPath: m_Range
       value: 12
@@ -3960,6 +3968,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1550300248}
   surface: {fileID: 0}
+  attackThreshold: 2
   chasing: 0
   maxDistance: 30
 --- !u!1 &1163881382 stripped
@@ -4226,7 +4235,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7081617618649748360, guid: 8dec8866a9bc15d4cb002576da9a36f2, type: 3}
       propertyPath: m_Name
-      value: flashlightfbx
+      value: Flashlight
       objectReference: {fileID: 0}
     - target: {fileID: 7569747337320614194, guid: 8dec8866a9bc15d4cb002576da9a36f2, type: 3}
       propertyPath: m_LocalScale.x

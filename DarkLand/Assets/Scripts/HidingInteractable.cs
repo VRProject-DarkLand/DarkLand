@@ -100,7 +100,14 @@ public class HidingInteractable : IInteractableObject{
         }
     }
 
+    public override bool CanInteract()
+    {
+        return  GameEvent.chasingSet.Count == 0; 
+    }
+
     public override void Interact(){
+        if(!CanInteract())
+            return;
         if(isMoving)
             return;
         isMoving = true;
