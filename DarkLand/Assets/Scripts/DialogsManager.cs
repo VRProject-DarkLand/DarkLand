@@ -11,7 +11,7 @@ public class DialogsManager : MonoBehaviour
     //prefabs for dialog and talk to label
     [SerializeField] private GameObject interactionPopupPrefab;
     [SerializeField] private GameObject dialogPrefab;
-
+    private Color blockedInteractionColor = new Color32(170,0,0,255);
     //talk to object
     private GameObject talkToText = null;
     private bool talkToTextVisible = false;
@@ -49,7 +49,7 @@ public class DialogsManager : MonoBehaviour
         if(possibleAction){
             talkToText.GetComponentInChildren<Text>().color = Color.white;
         }else{
-            talkToText.GetComponentInChildren<Text>().color = Color.red;
+            talkToText.GetComponentInChildren<Text>().color = blockedInteractionColor;
         }
         talkToText.GetComponentInChildren<Text>().text = _interactionMessage;
         //Debug.Log("Created talk to TEXT with name " + entityName);
