@@ -68,6 +68,7 @@ public class HidingInteractable : IInteractableObject{
                 SlideQuad(startQuad, endQuad);
                 yield return null;
             }
+            quad.SetActive(false);
 
             isMoving = true;
             while(isMoving){
