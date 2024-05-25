@@ -22,8 +22,6 @@ public class WaypointMover : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
         transform.position = currentWaypoint.position;
-        navMeshAgent.acceleration = 30;
-        navMeshAgent.stoppingDistance = 0.5f;
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
        animator.SetBool("Idle", true);
     }
@@ -41,6 +39,8 @@ public class WaypointMover : MonoBehaviour
                 else
                 {
                     navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
+                    navMeshAgent.acceleration = 30;
+                    navMeshAgent.stoppingDistance = 0.5f;
                     navMeshAgent.radius = 1;
                     navMeshAgent.height = 1;
                     navMeshAgent.speed = 3f;
@@ -70,7 +70,7 @@ public class WaypointMover : MonoBehaviour
         animator.SetBool("Attack", true);
         navMeshAgent.speed = 0;
         isAttacking = true;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.75f);
         RaycastHit hit;
         if(Physics.SphereCast(transform.position, 1.2f ,transform.forward , out hit, attackThreshold, 63 )){
             if(hit.collider.gameObject == target)

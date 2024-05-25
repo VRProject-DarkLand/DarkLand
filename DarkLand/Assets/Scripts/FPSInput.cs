@@ -125,13 +125,22 @@ public class FPSInput : MonoBehaviour{
         }else if(Input.GetKeyUp(KeyCode.LeftShift)){
             actions.RemoveAll(x => x == Actions.Run);
         }
+        if(onGround){
+            if(Input.GetKeyDown(KeyCode.E)){
+                InteractableManager.InteractWithSelectedItem(false);
+            }
+            if(Input.GetKeyDown(KeyCode.C)){
+                InteractableManager.InteractWithSelectedItem(true);
+            } 
+            if(Input.GetKeyDown(KeyCode.F)){
+                if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && Managers.Player.maxHealth > _health)
+                {
+                    Managers.Inventory.ConsumeItem(Settings.HEALTH);
+                    IncreaseHealth();
+                }    
+            }   
+        }
 
-        if(Input.GetKeyDown(KeyCode.E) && onGround){
-            InteractableManager.InteractWithSelectedItem(false);
-        }
-        if(Input.GetKeyDown(KeyCode.C) && onGround){
-            InteractableManager.InteractWithSelectedItem(true);
-        }
         float scroll = Input.mouseScrollDelta.y;
         if ( scroll > 0){ // do shit here for scroll up
             Managers.UsableInventory.SelectionForward();
@@ -155,6 +164,10 @@ public class FPSInput : MonoBehaviour{
         Messenger.Broadcast(GameEvent.PLAYER_DEAD, MessengerMode.DONT_REQUIRE_LISTENER);
     }
 
+    private void IncreaseHealth(){
+        _health = Managers.Player.maxHealth;
+        Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, false);
+    }
     public void Hurt(float damage){
         _health -= damage;
         Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, true);
