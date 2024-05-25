@@ -17,6 +17,8 @@ public class GameEvent : MonoBehaviour{
     public const string PREDICT_TRAJECTORY = "PREDICT_TRAJECTORY";
     public const string CANCEL_TRAJECTORY = "CANCEL_TRAJECTORY";
     public const string IS_HIDING = "HIDING";
+
+    public const string PLAYER_DEAD = "PLAYER_DEAD";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
     public static bool isUsingGun = false;

@@ -32,13 +32,18 @@ public class FPSInput : MonoBehaviour{
     private Quaternion _jumpRotation;
     private Vector3 standingCamera;
     private Vector3 crouchCamera;
-    public float temp;
+    
+    private float _health;
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
+        _health = Managers.Player.maxHealth;
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Walk};
@@ -48,6 +53,7 @@ public class FPSInput : MonoBehaviour{
         standingCamera = _camera.transform.localPosition;
         crouchCamera = standingCamera+new Vector3(0f, -0.3f, 0f);
     }
+
 
 
     private enum Actions{
@@ -145,6 +151,20 @@ public class FPSInput : MonoBehaviour{
         return hitGround;
     }
 
+    private void Die(){
+        Messenger.Broadcast(GameEvent.PLAYER_DEAD, MessengerMode.DONT_REQUIRE_LISTENER);
+    }
+
+    public void Hurt(float damage){
+        _health -= damage;
+        //sound?
+        if(_health <= 0){
+            Die();
+        }
+    }
+
+    
+
     // Update is called once per frame
     void Update()
     {
@@ -209,7 +229,6 @@ public class FPSInput : MonoBehaviour{
         }
         if(!onGround){
             if(_charController.isGrounded){
-                temp =  Vector3.Dot(velocity, _contact.normal);
                 if(Vector3.Dot(velocity, _contact.normal) < 0){
                     velocity = _contact.normal * speed;
                 }

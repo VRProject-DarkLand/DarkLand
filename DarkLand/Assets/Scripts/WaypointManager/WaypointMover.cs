@@ -15,12 +15,15 @@ public class WaypointMover : MonoBehaviour
     private bool alive = false;
 
     private bool isAttacking = false;
+    [SerializeField] private float attackDamage = 20;
     private Transform currentWaypoint = null;
     // Start is called before the first frame update
     void Start(){
         animator = GetComponentInChildren<Animator>();
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
         transform.position = currentWaypoint.position;
+        navMeshAgent.acceleration = 30;
+        navMeshAgent.stoppingDistance = 0.5f;
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
        animator.SetBool("Idle", true);
     }
@@ -65,15 +68,18 @@ public class WaypointMover : MonoBehaviour
 
     private IEnumerator Attack(){
         animator.SetBool("Attack", true);
+        navMeshAgent.speed = 0;
         isAttacking = true;
         yield return new WaitForSeconds(0.5f);
         RaycastHit hit;
-        if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
+        if(Physics.SphereCast(transform.position, 1.2f ,transform.forward , out hit, attackThreshold, 63 )){
             if(hit.collider.gameObject == target)
             {
                 Debug.Log("Ti scasciai "+Time.frameCount );
+                hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
+        navMeshAgent.speed = moveSpeed;
         yield return new WaitForSeconds(3f);
         animator.SetBool("Attack", false);
 

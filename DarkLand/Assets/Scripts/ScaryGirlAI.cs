@@ -18,6 +18,8 @@ public class ScaryGirlAI : MonoBehaviour
     [SerializeField] private  bool chasing = false;
     [SerializeField] private float maxDistance = 30f;
     private Animator animator;
+    [SerializeField] private float attackDamage = 60f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +35,6 @@ public class ScaryGirlAI : MonoBehaviour
     }
 
     public void Scream(){
-        Debug.Log("Chi gridata");
         GetComponent<AudioSource>().Play();
     }
 
@@ -131,6 +132,7 @@ public class ScaryGirlAI : MonoBehaviour
             if(hit.collider.gameObject == target)
             {
                 Debug.Log("Ti scasciai "+Time.frameCount );
+                hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
         yield return new WaitForSeconds(0.6f);
