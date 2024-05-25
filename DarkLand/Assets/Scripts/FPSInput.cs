@@ -157,6 +157,7 @@ public class FPSInput : MonoBehaviour{
 
     public void Hurt(float damage){
         _health -= damage;
+        Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, true);
         //sound?
         if(_health <= 0){
             Die();
