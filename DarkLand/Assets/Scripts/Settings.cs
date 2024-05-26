@@ -6,4 +6,6 @@ public class Settings
 {
     public const string TORCH_TAG = "Torch";
     public const string PLAYER_TAG = "Player";
+
+    public const string HEALTH = "Adrenaline";
 }

@@ -7,4 +7,5 @@ using UnityEngine;
 public abstract class IInteractableObject: MonoBehaviour{
     protected InteractableTrigger interactableTrigger;
     public abstract void Interact();
+    public virtual bool CanInteract(){return true;}
 }

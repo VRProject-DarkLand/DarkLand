@@ -57,17 +57,28 @@ public class OpenDoubleDoor :  IInteractableObject
         }
     }
 
+    public override bool CanInteract()
+    {
+         if(left != null && right != null){
+            if(requireKey){
+                if(Managers.Inventory.GetItemCount(key) == 0)
+                    return false;
+            }
+        }
+        return true;
+
+    }
+
+
     public void ChangeState(){
         if(left != null && right != null){
-              if(requireKey){
-                if(Managers.Inventory.GetItemCount(key) == 0)
-                    return;
-                else{ 
+              if(CanInteract()){
+                 if(requireKey){
                     requireKey = false;
                     Managers.Inventory.ConsumeItem(key);
                     interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
                     return;
-                }
+                 }
               }
                 // if(opened){
                 //     left.transform.rotation = close.Item1 ;

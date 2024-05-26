@@ -74,19 +74,27 @@ public class OpenDoor : IInteractableObject{
         }
     }
 
-    public void ChangeState(){
+    public override bool CanInteract()
+    {
         if(door != null){
             if(requireKey){
                 if(Managers.Inventory.GetItemCount(key) == 0)
-                    return;
-                else{ 
+                    return false;
+            }
+        }
+        return true;
+
+    }
+
+    public void ChangeState(){
+            if(CanInteract()){
+                if(requireKey){
                     requireKey = false;
                     Managers.Inventory.ConsumeItem(key);
                     interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
                     return;
                 }
-            }
-            
+            }   
             //door.transform.rotation = opened ? close : open; 
             if(opened)
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
@@ -94,7 +102,6 @@ public class OpenDoor : IInteractableObject{
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
             opened = !opened;   
             isMoving = true;     
-        }
     }
 
     public override void Interact(){

@@ -12,10 +12,14 @@ public class ScaryGirlAI : MonoBehaviour
     private Vector3 spawnPosition;
     private NavMeshAgent navMeshAgent;
     private float defaultSpeed;
+    [SerializeField] private float attackThreshold = 2.5f;
     private bool inSight = false;
+     bool isAttacking = false;
     [SerializeField] private  bool chasing = false;
     [SerializeField] private float maxDistance = 30f;
     private Animator animator;
+    [SerializeField] private float attackDamage = 60f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +35,6 @@ public class ScaryGirlAI : MonoBehaviour
     }
 
     public void Scream(){
-        Debug.Log("Chi gridata");
         GetComponent<AudioSource>().Play();
     }
 
@@ -54,6 +57,9 @@ public class ScaryGirlAI : MonoBehaviour
                 if(!inSight)
                     chasing = false;
                 else{ 
+                    if(distance  < attackThreshold && !isAttacking){
+                        StartCoroutine(Attack());
+                    }
                     navMeshAgent.SetDestination(target.transform.position);
                     yield return null;
                 }
@@ -63,6 +69,9 @@ public class ScaryGirlAI : MonoBehaviour
                     if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
                         inSight = true;
                         chasing = true;
+                        if(distance  < attackThreshold && !isAttacking){
+                            StartCoroutine(Attack());
+                        }
                         GameEvent.chasingSet.Add(GetInstanceID());
                         navMeshAgent.speed=2*defaultSpeed;    
                         navMeshAgent.SetDestination(target.transform.position);
@@ -88,7 +97,6 @@ public class ScaryGirlAI : MonoBehaviour
                 }
             }
           
-           
             if(!chasing){
                 GameEvent.chasingSet.Remove(GetInstanceID());
                     //maybe sample position for random point in navmesh
@@ -108,8 +116,31 @@ public class ScaryGirlAI : MonoBehaviour
                     yield return new WaitForSeconds(3f);
                 else 
                     yield return new WaitForSeconds(6f);
+            }else{
+               
             }
         }   
+    }
+
+    private IEnumerator Attack(){
+       
+        animator.SetBool("Attack", true);
+        isAttacking = true;
+        yield return new WaitForSeconds(0.2f);
+        RaycastHit hit;
+        if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
+            if(hit.collider.gameObject == target)
+            {
+                Debug.Log("Ti scasciai "+Time.frameCount );
+                hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
+            }
+        }
+        yield return new WaitForSeconds(0.6f);
+        animator.SetBool("Attack", false);
+        yield return new WaitForSeconds(0.5f);
+        
+
+        isAttacking = false;
     }
     // Update is called once per frame
     void Update()

@@ -18,7 +18,7 @@ public class ThrowableObject : IUsableObject
     //TrajectoryPredictor trajectoryPredictor;
     Rigidbody objectToThrow;
     [SerializeField, Range(0.0f, 50.0f)]
-    float force = 10;
+    float force = 300;
     private bool _isAiming = false;
     //[SerializeField]
     //Transform StartPosition;
