@@ -30,9 +30,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     //add element to selectable in the first free position
     public bool AddSelectable(GameObject obj){
-        obj.SetActive(false);
         obj.transform.SetParent(null, true);
         GameObject usableObject = Instantiate(obj, _usableParent.transform, true); 
+        //obj.SetActive(false);
         usableObject.name = obj.name;
         if(obj == null)
             return false;
@@ -41,8 +41,12 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
                 _selectable[i] = usableObject.GetComponent<IUsableObject>();
                 if(_currentIndex == i){
                     _currentObject = _selectable[_currentIndex];
+                    _currentObject.Position();
                     _currentObject.Select();
-                    Debug.Log("Pistol position" + _currentObject.transform.localPosition +" Rotation " + _currentObject.transform.localEulerAngles);
+                    //Debug.Log("Pistol position" + _currentObject.transform.GetChild(0).localPosition +" Rotation " + _currentObject.transform.GetChild(0).localEulerAngles);
+                }else{
+                    _selectable[i].Position();
+                    _selectable[i].Deselect();
                 }
                 
                 return true;
