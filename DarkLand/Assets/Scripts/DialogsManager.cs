@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,18 +13,22 @@ public class DialogsManager : MonoBehaviour
     [SerializeField] private GameObject interactionPopupPrefab;
     [SerializeField] private GameObject dialogPrefab;
     private Color blockedInteractionColor = new Color32(170,0,0,255);
+    [SerializeField] private Color defaultInteractionColor = Color.black;
     //talk to object
     private GameObject talkToText = null;
     private bool talkToTextVisible = false;
     private string _interactionMessage;
 
-    public void Awake(){
+    void Awake(){
         Messenger<string, GameEvent.InteractWithMessage, bool>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
         Messenger.AddListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.AddListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.AddListener(GameEvent.OPEN_DIALOG, CreateDialog);
         Messenger<string>.AddListener(GameEvent.CLOSE_DIALOG, CloseDialog);
+       
     }
+
+
     public void OnDestroy(){
         Messenger<string, GameEvent.InteractWithMessage, bool>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
         Messenger.RemoveListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
@@ -47,7 +52,7 @@ public class DialogsManager : MonoBehaviour
         talkToEntityName = entityName;
         talkToText = Instantiate(interactionPopupPrefab, canvas.transform) as GameObject;
         if(possibleAction){
-            talkToText.GetComponentInChildren<Text>().color = Color.white;
+            talkToText.GetComponentInChildren<Text>().color = defaultInteractionColor;
         }else{
             talkToText.GetComponentInChildren<Text>().color = blockedInteractionColor;
         }
