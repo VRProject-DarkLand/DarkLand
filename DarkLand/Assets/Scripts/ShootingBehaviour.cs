@@ -7,14 +7,17 @@ public class ShootingBehaviour : MonoBehaviour
         Auto = 0,
         Single = 1
     }
-    [SerializeField] private Camera _camera;
+    private Camera _camera;
     [SerializeField] private float _rechargeTime;
     [SerializeField] private float _gunRange;
     [SerializeField] private float _bulletsSpread;
 
     [SerializeField] private ShootingMode shootingMode = ShootingMode.Single;
     private Animator _animator;
- 
+    
+    private void Start(){
+        _camera = Camera.main;
+    }
     public void Shoot(){
         if(_animator == null){
             _animator = gameObject.GetComponent<Animator>();

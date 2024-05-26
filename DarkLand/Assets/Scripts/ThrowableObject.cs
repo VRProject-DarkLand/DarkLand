@@ -36,9 +36,15 @@ public class ThrowableObject : IUsableObject
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
         foreach(var c in GetComponents<Collider> ())
             c.enabled = false;
-        gameObject.transform.localPosition = new Vector3(0.3f, -0.35f, 0.66f);
+        Position();
         //gameObject.transform.position = 
         //set torch visible
+    }
+
+    public override void Position()
+    {
+        gameObject.transform.localPosition = new Vector3(0.3f, -0.35f, 0.66f);
+        gameObject.transform.localEulerAngles = Vector3.zero;
     }
 
     public override void Use(){

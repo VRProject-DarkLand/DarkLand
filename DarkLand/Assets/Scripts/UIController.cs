@@ -10,23 +10,34 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider _fearBar;
     [SerializeField] private Image _selectedUsable;
     [SerializeField] private Image damageImage;
+    [SerializeField] private GameObject UsableSlots;
+    [SerializeField] private GameObject UsableSlotContainer; 
+    private List<UsableSpot> spots = new List<UsableSpot>();
+    private int currentIndex = 0;
+
     private int animatingDamageTimeElapsed = 0;
+    
     // Start is called before the first frame update
     void Start()
     {
+        Messenger<string, int>.AddListener(GameEvent.USABLE_ADDED, AddUsableElement);
+        Messenger<string, int>.AddListener(GameEvent.USED_USABLE, UsedElement);
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
+        Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
+        for(int i = 0;i<Managers.UsableInventory._maxSize;++i){
+            GameObject slot = Instantiate(UsableSlotContainer);
+            slot.transform.SetParent(UsableSlots.transform, false);
+            spots.Add(slot.GetComponent<UsableSpot>());
+        }
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(UsableSlots.GetComponent<RectTransform>());
         damageImage.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void AddUsableElement(string name, int pos){
+        Sprite sprite = Resources.Load<Sprite>("InventoryIcons/"+name);
+        spots[pos].SetItem(sprite);
     }
 
-    public void SelectedItem(){
-
-    }
 
     public void OnHealthChanged(float health, bool damaged){
         _healthBar.value = _healthBar.maxValue * health/Managers.Player.maxHealth;
@@ -55,12 +66,28 @@ public class UIController : MonoBehaviour
         }
         damageImage.enabled = false;
     }
+    
+    private void UsedElement(string name, int pos){
+        if(Managers.Inventory.GetItemCount(name) <= 0){
+            spots[pos].SetItem(null);
+        }
+    }
 
     public void OnFearChanged(){
 
     }
 
-    void OnDestroy(){
-         Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
+    private void OnSelectableChanged(int index){
+        spots[currentIndex].Deselect();
+        currentIndex  = index;
+        spots[currentIndex].Select();
     }
+
+    void OnDestroy(){
+        Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
+        Messenger<string, int>.RemoveListener(GameEvent.USABLE_ADDED, AddUsableElement);
+        Messenger<string, int>.RemoveListener(GameEvent.USED_USABLE, UsedElement);
+        Messenger<int>.RemoveListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
+    }
+
 }

@@ -10,7 +10,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     private int _currentIndex;
     private List<IUsableObject> _selectable;
     private IUsableObject _usableDummy;
-    [SerializeField] private int _maxSize = 6;
+    public int _maxSize {get; private set;} = 6;
 
     [SerializeField] private GameObject _usableParent;
     public ManagerStatus status {get; private set;}
@@ -43,12 +43,13 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
                     _currentObject = _selectable[_currentIndex];
                     _currentObject.Position();
                     _currentObject.Select();
+                    Messenger<int>.Broadcast(GameEvent.CHANGED_SELECTABLE, i, MessengerMode.DONT_REQUIRE_LISTENER);
                     //Debug.Log("Pistol position" + _currentObject.transform.GetChild(0).localPosition +" Rotation " + _currentObject.transform.GetChild(0).localEulerAngles);
                 }else{
                     _selectable[i].Position();
                     _selectable[i].Deselect();
                 }
-                
+                Messenger<string, int>.Broadcast(GameEvent.USABLE_ADDED, usableObject.name, i, MessengerMode.DONT_REQUIRE_LISTENER);
                 return true;
             }
         }
@@ -81,6 +82,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
             _currentIndex = 0;
         }
         Debug.Log("Item n: "+_currentIndex);
+        Messenger<int>.Broadcast(GameEvent.CHANGED_SELECTABLE, _currentIndex, MessengerMode.DONT_REQUIRE_LISTENER);
         _currentObject.Select();
     }
 
@@ -96,14 +98,19 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
             _currentIndex = _selectable.Count - 1;
         }
         Debug.Log("Item n: "+_currentIndex);
+        Messenger<int>.Broadcast(GameEvent.CHANGED_SELECTABLE, _currentIndex, MessengerMode.DONT_REQUIRE_LISTENER);
         _currentObject.Select();
     }
 
     public void Use(){
         _currentObject.Use();
-        if( !_currentObject.IsDummy() && Managers.Inventory.GetItemCount(_currentObject.gameObject.name)==0){
+        if (_currentObject.IsDummy())
+            return;
+        Messenger<string, int>.Broadcast(GameEvent.USED_USABLE, _currentObject.gameObject.name,  _currentIndex, MessengerMode.DONT_REQUIRE_LISTENER);
+        if( Managers.Inventory.GetItemCount(_currentObject.gameObject.name)==0){
             GameObject go = _currentObject.gameObject;
             RemoveSelectable(go);
+            Debug.Log("WHATTA");
             Destroy(go);
             
         }else {
