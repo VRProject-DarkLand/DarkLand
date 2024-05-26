@@ -27,11 +27,12 @@ public class FPSInput : MonoBehaviour{
     private bool hide;
     private CharacterController _charController;
     private Camera _camera;
+    [SerializeField] private GameObject head;
     private List<Actions> actions;
     private ControllerColliderHit _contact; 
     private Quaternion _jumpRotation;
-    private Vector3 standingCamera;
-    private Vector3 crouchCamera;
+    private Vector3 standingHead;
+    private Vector3 crouchHead;
     
     private float _health;
 
@@ -50,8 +51,8 @@ public class FPSInput : MonoBehaviour{
         gameObject.tag = Settings.PLAYER_TAG;
         //Messenger<bool>.AddListener(GameEvent.IS_HIDING, Hide);
         hide = false;
-        standingCamera = _camera.transform.localPosition;
-        crouchCamera = standingCamera+new Vector3(0f, -0.3f, 0f);
+        standingHead = head.transform.localPosition;
+        crouchHead = standingHead+new Vector3(0f, -0.3f, 0f);
     }
 
 
@@ -65,7 +66,7 @@ public class FPSInput : MonoBehaviour{
 
     private void setCamera(Vector3 position){
         if(!GameEvent.isHiding){
-            _camera.transform.localPosition = position;
+            head.transform.localPosition = position;
         }
     }
 
@@ -73,7 +74,7 @@ public class FPSInput : MonoBehaviour{
     private void Crouch(){
         if(onGround){
               crouch = true;
-              setCamera(crouchCamera);
+              setCamera(crouchHead);
               speed = FPSInput.CROUCH_SPEED;
         } 
     }
@@ -87,14 +88,14 @@ public class FPSInput : MonoBehaviour{
     }
     private void Walk(){
         crouch = false;
-        setCamera(standingCamera);
+        setCamera(standingHead);
         speed = FPSInput.WALK_SPEED;
     }
 
     private void Run(){
         if(onGround){
             speed = FPSInput.RUN_SPEED;  
-            setCamera(standingCamera);
+            setCamera(standingHead);
             crouch = false;
         }
     }
