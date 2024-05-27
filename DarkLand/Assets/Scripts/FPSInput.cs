@@ -34,7 +34,7 @@ public class FPSInput : MonoBehaviour{
     private Quaternion _jumpRotation;
     private Vector3 standingHead;
     private Vector3 crouchHead;
-    
+    private bool blocked = false;
     private float _health;
 
 
@@ -102,7 +102,8 @@ public class FPSInput : MonoBehaviour{
     }
 
     private void MovePlayer(Vector3 movement) {
-        
+        if (blocked)
+            return;
 
         _charController.Move(movement);
         // if ((!onGround) && (flags & CollisionFlags.Below) != 0){
@@ -132,7 +133,7 @@ public class FPSInput : MonoBehaviour{
                 Managers.Pause.Pause();
         }
 
-        if(onGround){
+        if(onGround && ! blocked){
             if(Input.GetKeyDown(KeyCode.E)){
                 InteractableManager.InteractWithSelectedItem(false);
             }
@@ -279,6 +280,17 @@ public class FPSInput : MonoBehaviour{
 
     void OnDestroy(){
         //Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, Hide);
+    }
+
+    public bool IsHiding()
+    {
+        return GameEvent.isHiding;
+    }
+
+    public bool toggleDetectedByLittleGirl(bool state) { 
+            bool prev = blocked;
+            blocked = state;
+            return prev;
     }
 
 }
