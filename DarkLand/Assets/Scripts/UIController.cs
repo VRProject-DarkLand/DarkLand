@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private Slider _healthBar;
     [SerializeField] private Slider _fearBar;
-    [SerializeField] private Image _selectedUsable;
     [SerializeField] private Image damageImage;
-    [SerializeField] private GameObject UsableSlots;
-    [SerializeField] private GameObject UsableSlotContainer; 
+    [SerializeField] private GameObject usableSlots;
+    [SerializeField] private GameObject usableSlotContainer; 
+    [SerializeField] private GameObject ConfirmationPopup;
+
+    [SerializeField] private GameObject pauseMenu;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
 
@@ -22,15 +26,19 @@ public class UIController : MonoBehaviour
     {
         Messenger<string, int>.AddListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.AddListener(GameEvent.USED_USABLE, UsedElement);
+        Messenger<bool>.AddListener(GameEvent.PAUSED, Paused);
+
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
         for(int i = 0;i<Managers.UsableInventory._maxSize;++i){
-            GameObject slot = Instantiate(UsableSlotContainer);
-            slot.transform.SetParent(UsableSlots.transform, false);
+            GameObject slot = Instantiate(usableSlotContainer);
+            slot.transform.SetParent(usableSlots.transform, false);
             spots.Add(slot.GetComponent<UsableSpot>());
         }
         //LayoutRebuilder.ForceRebuildLayoutImmediate(UsableSlots.GetComponent<RectTransform>());
         damageImage.enabled = false;
+        ConfirmationPopup.SetActive(false);
+        Paused(false);
     }
 
     private void AddUsableElement(string name, int pos){
@@ -83,11 +91,32 @@ public class UIController : MonoBehaviour
         spots[currentIndex].Select();
     }
 
+    public void Paused(bool paused){
+        
+        Cursor.lockState = paused? CursorLockMode.Confined : CursorLockMode.Locked;
+        Cursor.visible = paused;
+        pauseMenu.SetActive(paused);
+    }
+
+    public void OnQuit(){
+        ConfirmationPopup.SetActive(true);
+    }
+
+    public void OnQuitConfirm(bool choice){
+        if(choice){
+            Managers.Pause.OnClickResume();
+            SceneManager.LoadScene(Settings.MAIN_MENU);
+        }else{
+            ConfirmationPopup.SetActive(false);
+        }
+    }
+
     void OnDestroy(){
         Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<string, int>.RemoveListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.RemoveListener(GameEvent.USED_USABLE, UsedElement);
         Messenger<int>.RemoveListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
+        Messenger<bool>.RemoveListener(GameEvent.PAUSED, Paused);
     }
 
 }

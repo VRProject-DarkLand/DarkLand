@@ -20,6 +20,7 @@ public class GameEvent : MonoBehaviour{
     public const string CHANGED_HEALTH = "HEALTH_CHANGED";
     public const string PLAYER_DEAD = "PLAYER_DEAD";
 
+    public const string PAUSED = "PAUSED";
     public const string USED_USABLE = "USED_USABLE";
     public const string CHANGED_SELECTABLE = "CHANGED_SELECTABLE";
     public const string USABLE_ADDED = "USABLE_ADDED";

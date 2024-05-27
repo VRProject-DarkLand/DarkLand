@@ -9,6 +9,8 @@ public class Managers : MonoBehaviour
     public static PlayerManager Player {get; private set;}
     public static InventoryManager Inventory {get; private set;}
     public static UsableObjectManager UsableInventory {get; private set;}
+    public static PauseManager Pause {get; private set;}
+
     // Start is called before the first frame update
     private List<IGameManager> _startSequence;
     void Start()
@@ -20,11 +22,13 @@ public class Managers : MonoBehaviour
         Player = GetComponent<PlayerManager>();
         Inventory = GetComponent<InventoryManager>();
         UsableInventory = GetComponent<UsableObjectManager>(); 
+        Pause = GetComponent<PauseManager>();
         
         _startSequence = new List<IGameManager>();
         _startSequence.Add(Player);
         _startSequence.Add(Inventory);
         _startSequence.Add(UsableInventory);
+        _startSequence.Add(Pause);
         
         StartCoroutine(StartupManagers());
     }

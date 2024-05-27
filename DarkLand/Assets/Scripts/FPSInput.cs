@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Build.Content;
 using UnityEditor.VersionControl;
 using UnityEngine;
 [RequireComponent(typeof (CharacterController))]
@@ -126,6 +127,11 @@ public class FPSInput : MonoBehaviour{
         }else if(Input.GetKeyUp(KeyCode.LeftShift)){
             actions.RemoveAll(x => x == Actions.Run);
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape)){
+                Managers.Pause.Pause();
+        }
+
         if(onGround){
             if(Input.GetKeyDown(KeyCode.E)){
                 InteractableManager.InteractWithSelectedItem(false);
@@ -183,6 +189,12 @@ public class FPSInput : MonoBehaviour{
     // Update is called once per frame
     void Update()
     {
+        if(Managers.Pause.paused){
+            if(Input.GetKeyDown(KeyCode.Escape)){
+                Managers.Pause.OnEscResume();
+            }
+            return;
+        }
         onGround = detectOnGround();
         readActionFromInput();
         if(Input.GetMouseButtonDown(0)){

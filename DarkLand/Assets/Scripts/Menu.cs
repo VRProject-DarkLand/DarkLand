@@ -6,7 +6,7 @@ public class Menu : MonoBehaviour
 {
     public void OnPlayButton()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(Settings.ASYLUM_SCENE);
     }
 
     public void OnQuitButton()
