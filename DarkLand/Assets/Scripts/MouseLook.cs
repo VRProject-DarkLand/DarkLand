@@ -30,7 +30,7 @@ public class MouseLook : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameEvent.isInDialog )
+        if(GameEvent.isInDialog || Managers.Pause.paused )
             return;
         
         if(axes == RotationAxes.MouseX){
@@ -59,6 +59,21 @@ public class MouseLook : MonoBehaviour
             float rotationY = transform.localEulerAngles.y + delta;
             
             transform.localEulerAngles = new Vector3(_rotationX,rotationY,0);
+        }
+    }
+    void OnGUI(){
+        if(GameEvent.isUsingGun){
+            // Set the style for the GUI label (for the "+")
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            style.fontSize = 30; // Set the font size
+            style.alignment = TextAnchor.MiddleCenter; // Set the alignment to center
+
+            // Get the center of the screen
+            float centerX = Screen.width / 2;
+            float centerY = Screen.height / 2;
+
+            // Draw the "+" symbol at the center of the screen
+            GUI.Label(new Rect(centerX - 15, centerY - 15, 30, 30), "+", style);
         }
     }
 }

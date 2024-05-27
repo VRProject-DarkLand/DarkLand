@@ -68,6 +68,7 @@ public class HidingInteractable : IInteractableObject{
                 SlideQuad(startQuad, endQuad);
                 yield return null;
             }
+            quad.SetActive(false);
 
             isMoving = true;
             while(isMoving){
@@ -99,7 +100,14 @@ public class HidingInteractable : IInteractableObject{
         }
     }
 
+    public override bool CanInteract()
+    {
+        return  GameEvent.chasingSet.Count == 0; 
+    }
+
     public override void Interact(){
+        if(!CanInteract())
+            return;
         if(isMoving)
             return;
         isMoving = true;

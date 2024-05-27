@@ -8,6 +8,7 @@ public class Collectable : IInteractableObject
 {
     // Start is called before the first frame update
     private InventoryManager inventory;
+    [SerializeField] private int maxUsages = 1; 
     void Start()
     {
         inventory = Managers.Inventory;
@@ -16,7 +17,7 @@ public class Collectable : IInteractableObject
         interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.COLLECT_ITEM);
     }
     public override void Interact(){
-        inventory?.AddItem(gameObject);
+        inventory?.AddItem(gameObject, maxUsages);
         Destroy(gameObject);
     }
 

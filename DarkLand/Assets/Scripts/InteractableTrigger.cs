@@ -29,10 +29,15 @@ public class InteractableTrigger : MonoBehaviour{
         //OpenDoor openDoor;
     }
     void Update(){
+        IInteractableObject obj = GetComponent<IInteractableObject>();
         if(enteredInRange){
             float lookingScore = LookingCondition(playerTransform, gameObject.transform);
             if(lookingScore > 0){
-                InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float>(this, lookingScore));
+                bool can_do = true;
+                if(obj != null){
+                    can_do = obj.CanInteract();
+                }
+                InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float, bool>(this, lookingScore, can_do));
                 if(!looking){
                     looking = true;
                 }

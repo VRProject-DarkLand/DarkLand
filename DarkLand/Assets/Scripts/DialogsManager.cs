@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,28 +12,32 @@ public class DialogsManager : MonoBehaviour
     //prefabs for dialog and talk to label
     [SerializeField] private GameObject interactionPopupPrefab;
     [SerializeField] private GameObject dialogPrefab;
-
+    private Color blockedInteractionColor = new Color32(170,0,0,255);
+    [SerializeField] private Color defaultInteractionColor = Color.black;
     //talk to object
     private GameObject talkToText = null;
     private bool talkToTextVisible = false;
     private string _interactionMessage;
 
-    public void Awake(){
-        Messenger<string, GameEvent.InteractWithMessage>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
+    void Awake(){
+        Messenger<string, GameEvent.InteractWithMessage, bool>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
         Messenger.AddListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.AddListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.AddListener(GameEvent.OPEN_DIALOG, CreateDialog);
         Messenger<string>.AddListener(GameEvent.CLOSE_DIALOG, CloseDialog);
+       
     }
+
+
     public void OnDestroy(){
-        Messenger<string, GameEvent.InteractWithMessage>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
+        Messenger<string, GameEvent.InteractWithMessage, bool>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
         Messenger.RemoveListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_ENTERED_NPC_RANGE.ToString(), ActivateTalkToText);
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.RemoveListener(GameEvent.CLOSE_DIALOG, CloseDialog);
         Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG, CreateDialog);
     }
-    void ActivateTalkToText(string entityName,  GameEvent.InteractWithMessage interactionType){
+    void ActivateTalkToText(string entityName,  GameEvent.InteractWithMessage interactionType, bool possibleAction){
         if(talkToTextVisible){
             DeactivateTalkToText();
         }
@@ -40,12 +45,17 @@ public class DialogsManager : MonoBehaviour
         string _interactionMessage ="";
         if(interactionType == GameEvent.InteractWithMessage.COLLECT_ITEM){
             command = "C";
-            _interactionMessage +="["+command+"] "+DialogsKeeper.INTERACTION_LABEL[interactionType]+" "+entityName;
+            _interactionMessage +="["+command+"]  "+DialogsKeeper.INTERACTION_LABEL[interactionType]+" "+entityName;
         }else
-            _interactionMessage = "["+command+"] "+DialogsKeeper.INTERACTION_LABEL[interactionType];
+            _interactionMessage = "["+command+"]  "+DialogsKeeper.INTERACTION_LABEL[interactionType];
         
         talkToEntityName = entityName;
         talkToText = Instantiate(interactionPopupPrefab, canvas.transform) as GameObject;
+        if(possibleAction){
+            talkToText.GetComponentInChildren<Text>().color = defaultInteractionColor;
+        }else{
+            talkToText.GetComponentInChildren<Text>().color = blockedInteractionColor;
+        }
         talkToText.GetComponentInChildren<Text>().text = _interactionMessage;
         //Debug.Log("Created talk to TEXT with name " + entityName);
         RectTransform uiElementRectTransform = talkToText.GetComponent<RectTransform>();

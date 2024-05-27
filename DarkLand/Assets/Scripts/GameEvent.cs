@@ -15,9 +15,18 @@ public class GameEvent : MonoBehaviour{
     public const string OPEN_DIALOG = "OPEN_DIALOG";
     public const string OPERATE_ON_LIGHTS = "OPERATE_LIGHTS";
     public const string PREDICT_TRAJECTORY = "PREDICT_TRAJECTORY";
+    public const string CANCEL_TRAJECTORY = "CANCEL_TRAJECTORY";
     public const string IS_HIDING = "HIDING";
+    public const string CHANGED_HEALTH = "HEALTH_CHANGED";
+    public const string PLAYER_DEAD = "PLAYER_DEAD";
+
+    public const string PAUSED = "PAUSED";
+    public const string USED_USABLE = "USED_USABLE";
+    public const string CHANGED_SELECTABLE = "CHANGED_SELECTABLE";
+    public const string USABLE_ADDED = "USABLE_ADDED";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
+    public static bool isUsingGun = false;
     public static HashSet<int> chasingSet = new();
 
     public enum InteractWithMessage{

@@ -28,7 +28,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
         Debug.Log(itemDisplay);
     }
 
-    public void AddItem(GameObject obj){
+    public void AddItem(GameObject obj, int usages){
         obj.GetComponent<Collectable>().enabled = false;
         obj.GetComponent<Collider>().enabled = false;
         Rigidbody rb ;
@@ -41,13 +41,16 @@ public class InventoryManager : MonoBehaviour, IGameManager
         string name = obj.name;
         
         if(!_items.ContainsKey(name)){
-            _items.Add(name, 1);
+            _items.Add(name, usages);
+
             IUsableObject usable;
-            if(obj.TryGetComponent<IUsableObject>(out usable))
-            Managers.UsableInventory.AddSelectable(obj);
+            if(obj.TryGetComponent<IUsableObject>(out usable)){
+                Managers.UsableInventory.AddSelectable(obj);
+            }
+
         }
         else 
-            _items[name]+=1;
+            _items[name]+=usages;
         
         DisplayItems();
     }

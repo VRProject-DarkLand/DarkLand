@@ -24,17 +24,20 @@ public class Trajectory : MonoBehaviour
     void Start()
     {
         Messenger<ThrowableInfo>.AddListener(GameEvent.PREDICT_TRAJECTORY, Predict);
+        Messenger.AddListener(GameEvent.CANCEL_TRAJECTORY, UndoPredict);
         trajectoryLine = GetComponent<LineRenderer>();
         SetTrajectoryVisible(true);
     }
 
     void OnDestroy(){
         Messenger<ThrowableInfo>.RemoveListener(GameEvent.PREDICT_TRAJECTORY, Predict);
+        Messenger.RemoveListener(GameEvent.CANCEL_TRAJECTORY, UndoPredict);
     }
 
 
     public void Predict(ThrowableInfo projectile)
     {
+        SetTrajectoryVisible(true);
         Vector3 velocity =  projectile.direction * (projectile.initialSpeed / projectile.mass);
         Vector3 position = projectile.initialPosition;
         Vector3 nextPosition;
@@ -103,5 +106,8 @@ public class Trajectory : MonoBehaviour
             hitMarker.gameObject.SetActive(visible);
     }
 
+    public void UndoPredict(){
+        SetTrajectoryVisible(false);
+    }
     // Update is called once per frame
 }

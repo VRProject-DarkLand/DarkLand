@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Build.Content;
 using UnityEditor.VersionControl;
 using UnityEngine;
 [RequireComponent(typeof (CharacterController))]
@@ -27,27 +28,34 @@ public class FPSInput : MonoBehaviour{
     private bool hide;
     private CharacterController _charController;
     private Camera _camera;
+    [SerializeField] private GameObject head;
     private List<Actions> actions;
     private ControllerColliderHit _contact; 
     private Quaternion _jumpRotation;
-    private Vector3 standingCamera;
-    private Vector3 crouchCamera;
-    public float temp;
+    private Vector3 standingHead;
+    private Vector3 crouchHead;
+    
+    private float _health;
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
+        _health = Managers.Player.maxHealth;
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Walk};
         gameObject.tag = Settings.PLAYER_TAG;
         //Messenger<bool>.AddListener(GameEvent.IS_HIDING, Hide);
         hide = false;
-        standingCamera = _camera.transform.localPosition;
-        crouchCamera = standingCamera+new Vector3(0f, -0.3f, 0f);
+        standingHead = head.transform.localPosition;
+        crouchHead = standingHead+new Vector3(0f, -0.3f, 0f);
     }
+
 
 
     private enum Actions{
@@ -59,7 +67,7 @@ public class FPSInput : MonoBehaviour{
 
     private void setCamera(Vector3 position){
         if(!GameEvent.isHiding){
-            _camera.transform.localPosition = position;
+            head.transform.localPosition = position;
         }
     }
 
@@ -67,7 +75,7 @@ public class FPSInput : MonoBehaviour{
     private void Crouch(){
         if(onGround){
               crouch = true;
-              setCamera(crouchCamera);
+              setCamera(crouchHead);
               speed = FPSInput.CROUCH_SPEED;
         } 
     }
@@ -81,14 +89,14 @@ public class FPSInput : MonoBehaviour{
     }
     private void Walk(){
         crouch = false;
-        setCamera(standingCamera);
+        setCamera(standingHead);
         speed = FPSInput.WALK_SPEED;
     }
 
     private void Run(){
         if(onGround){
             speed = FPSInput.RUN_SPEED;  
-            setCamera(standingCamera);
+            setCamera(standingHead);
             crouch = false;
         }
     }
@@ -120,12 +128,26 @@ public class FPSInput : MonoBehaviour{
             actions.RemoveAll(x => x == Actions.Run);
         }
 
-        if(Input.GetKeyDown(KeyCode.E) && onGround){
-            InteractableManager.InteractWithSelectedItem(false);
+        if(Input.GetKeyDown(KeyCode.Escape)){
+                Managers.Pause.Pause();
         }
-        if(Input.GetKeyDown(KeyCode.C) && onGround){
-            InteractableManager.InteractWithSelectedItem(true);
+
+        if(onGround){
+            if(Input.GetKeyDown(KeyCode.E)){
+                InteractableManager.InteractWithSelectedItem(false);
+            }
+            if(Input.GetKeyDown(KeyCode.C)){
+                InteractableManager.InteractWithSelectedItem(true);
+            } 
+            if(Input.GetKeyDown(KeyCode.F)){
+                if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && Managers.Player.maxHealth > _health)
+                {
+                    Managers.Inventory.ConsumeItem(Settings.HEALTH);
+                    IncreaseHealth();
+                }    
+            }   
         }
+
         float scroll = Input.mouseScrollDelta.y;
         if ( scroll > 0){ // do shit here for scroll up
             Managers.UsableInventory.SelectionForward();
@@ -145,9 +167,34 @@ public class FPSInput : MonoBehaviour{
         return hitGround;
     }
 
+    private void Die(){
+        Messenger.Broadcast(GameEvent.PLAYER_DEAD, MessengerMode.DONT_REQUIRE_LISTENER);
+    }
+
+    private void IncreaseHealth(){
+        _health = Managers.Player.maxHealth;
+        Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, false);
+    }
+    public void Hurt(float damage){
+        _health -= damage;
+        Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, true);
+        //sound?
+        if(_health <= 0){
+            Die();
+        }
+    }
+
+    
+
     // Update is called once per frame
     void Update()
     {
+        if(Managers.Pause.paused){
+            if(Input.GetKeyDown(KeyCode.Escape)){
+                Managers.Pause.OnEscResume();
+            }
+            return;
+        }
         onGround = detectOnGround();
         readActionFromInput();
         if(Input.GetMouseButtonDown(0)){
@@ -157,7 +204,9 @@ public class FPSInput : MonoBehaviour{
         if(Input.GetMouseButton(1)){
             Managers.UsableInventory.SecondaryUse();
         }
-
+        if(Input.GetMouseButtonUp(1)){
+            Managers.UsableInventory.UndoSecondaryUse();
+        }
         Actions action = actions.Last();
         if(GameEvent.isInDialog || GameEvent.isHiding){
             dirX = 0;
@@ -207,7 +256,6 @@ public class FPSInput : MonoBehaviour{
         }
         if(!onGround){
             if(_charController.isGrounded){
-                temp =  Vector3.Dot(velocity, _contact.normal);
                 if(Vector3.Dot(velocity, _contact.normal) < 0){
                     velocity = _contact.normal * speed;
                 }
