@@ -25,22 +25,32 @@ public class ThrowableObject : IUsableObject
 
     void Start(){
         objectToThrow = gameObject.GetComponent<Rigidbody>();
+        objectToThrow.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        
     }
 
+    public override void Collected()
+    {
+        base.Collected();
+        objectToThrow.isKinematic = true;
+    }
     public override bool IsDummy(){
         return false;
     }
 
     public override void Select(){
         gameObject.SetActive(true);
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
-        foreach(var c in GetComponents<Collider> ())
-            c.enabled = false;
+        
+        foreach(var c in GetComponents<Collider> ()){
+            if(c.isTrigger)
+                c.enabled = false;
+        }
         Position();
         //gameObject.transform.position = 
         //set torch visible
     }
 
+    
     public override void Position()
     {
         gameObject.transform.localPosition = new Vector3(0.3f, -0.35f, 0.66f);
@@ -66,7 +76,6 @@ public class ThrowableObject : IUsableObject
         
         copy.transform.SetParent(null, true);
         Managers.Inventory.ConsumeItem(gameObject.name);
-        Debug.Log("Lu schicciai "+gameObject.name); 
         //Managers.UsableInventory.RemoveSelectable(gameObject);
         
     }

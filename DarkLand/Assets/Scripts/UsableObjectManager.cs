@@ -112,7 +112,6 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         if( Managers.Inventory.GetItemCount(_currentObject.gameObject.name)==0){
             GameObject go = _currentObject.gameObject;
             RemoveSelectable(go);
-            Debug.Log("WHATTA");
             Destroy(go);
             
         }else {

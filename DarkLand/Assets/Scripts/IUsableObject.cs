@@ -12,6 +12,10 @@ public abstract class IUsableObject: MonoBehaviour{
     public virtual void SecondaryUse(){
         
     }
+
+    public virtual void Collected(){
+        
+    }
     public virtual void UndoSecondaryUse(){
         
     }
