@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UsableGun : IUsableObject{
     private ShootingBehaviour _shootingBehaviour = null;
-    [SerializeField] private float _pickupTime = 3.0f;
+    [SerializeField] private float _pickupTime = 1.2f;
     private bool _readyToFire = false;
 
     private Renderer _gunRenderer;

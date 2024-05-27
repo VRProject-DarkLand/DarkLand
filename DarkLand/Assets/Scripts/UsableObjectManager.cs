@@ -71,7 +71,8 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     }
 
     public void SelectionForward(){
-        Debug.Log("Forw");
+        if(GameEvent.isHiding)
+            return;
         if(_currentIndex < _selectable.Count -1){
             _currentObject.Deselect();
             ++_currentIndex;
@@ -87,7 +88,8 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     }
 
     public void SelectionBackward(){
-        Debug.Log("Back");
+        if(GameEvent.isHiding)
+            return;
         if(_currentIndex > 0){
             _currentObject.Deselect();
             --_currentIndex;
@@ -131,7 +133,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     }
 
     private void SetActivationState(bool isHiding){
-            _currentObject.gameObject.SetActive(isHiding);
+        if(!isHiding)
+            _currentObject.Deselect();
+        else _currentObject.Select();
     }
     void Start(){
         
