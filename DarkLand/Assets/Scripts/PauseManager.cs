@@ -20,6 +20,7 @@ public class PauseManager : MonoBehaviour, IGameManager
 
     public void OnClickResume(){
         paused = false;
+        AudioListener.pause = false;
         Time.timeScale = 1;
     }
 
@@ -31,6 +32,7 @@ public class PauseManager : MonoBehaviour, IGameManager
     public void Pause(){
         paused = true;
         Time.timeScale = 0;
+        AudioListener.pause = true;
         Messenger<bool>.Broadcast(GameEvent.PAUSED, paused);
     }
 
