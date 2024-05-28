@@ -14,7 +14,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject usableSlots;
     [SerializeField] private GameObject usableSlotContainer; 
     [SerializeField] private GameObject ConfirmationPopup;
-
+    [SerializeField] private GameObject deathMenu;
     [SerializeField] private GameObject pauseMenu;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
@@ -27,7 +27,7 @@ public class UIController : MonoBehaviour
         Messenger<string, int>.AddListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.AddListener(GameEvent.USED_USABLE, UsedElement);
         Messenger<bool>.AddListener(GameEvent.PAUSED, Paused);
-
+        Messenger.AddListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
         for(int i = 0;i<Managers.UsableInventory._maxSize;++i){
@@ -111,7 +111,14 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void OnPlayerDead(){
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+        deathMenu.SetActive(true);
+    }
+
     void OnDestroy(){
+        Messenger.RemoveListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<string, int>.RemoveListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.RemoveListener(GameEvent.USED_USABLE, UsedElement);

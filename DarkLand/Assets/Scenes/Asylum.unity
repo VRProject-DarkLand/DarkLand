@@ -453,8 +453,8 @@ RectTransform:
   - {fileID: 1518801448}
   - {fileID: 675236063}
   - {fileID: 363242764}
-  - {fileID: 1479432547}
   - {fileID: 1729768818}
+  - {fileID: 1479432547}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1933,7 +1933,7 @@ MonoBehaviour:
   m_fontSizeMin: 0
   m_fontSizeMax: 0
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -3066,7 +3066,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 918422462}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1515835916}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: OnRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &918422462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3208,6 +3220,7 @@ MonoBehaviour:
   usableSlots: {fileID: 2056044626}
   usableSlotContainer: {fileID: 3633713856825923615, guid: c3973cb4bdcbd3146865b672bcf67172, type: 3}
   ConfirmationPopup: {fileID: 1479432546}
+  deathMenu: {fileID: 1729768817}
   pauseMenu: {fileID: 363242763}
 --- !u!4 &943633066
 Transform:
@@ -3941,7 +3954,7 @@ MonoBehaviour:
   m_fontSizeMin: 0
   m_fontSizeMax: 0
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -4997,6 +5010,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4017c9378299ffa4ab5edc1f7165a7e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentScene:
+    m_Handle: 0
 --- !u!1 &1518801447
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,7 +36,7 @@ public class FPSInput : MonoBehaviour{
     private Vector3 crouchHead;
     private bool blocked = false;
     private float _health;
-
+    private bool alive;
 
 
 
@@ -52,6 +52,7 @@ public class FPSInput : MonoBehaviour{
         gameObject.tag = Settings.PLAYER_TAG;
         //Messenger<bool>.AddListener(GameEvent.IS_HIDING, Hide);
         hide = false;
+        alive = !Managers.Player.dead;
         standingHead = head.transform.localPosition;
         crouchHead = standingHead+new Vector3(0f, -0.3f, 0f);
     }
@@ -169,6 +170,7 @@ public class FPSInput : MonoBehaviour{
     }
 
     private void Die(){
+        alive = false;
         Messenger.Broadcast(GameEvent.PLAYER_DEAD, MessengerMode.DONT_REQUIRE_LISTENER);
     }
 
@@ -190,7 +192,7 @@ public class FPSInput : MonoBehaviour{
     // Update is called once per frame
     void Update()
     {
-        if(Managers.Pause.paused){
+        if(Managers.Pause.paused && alive){
             if(Input.GetKeyDown(KeyCode.Escape)){
                 Managers.Pause.OnEscResume();
             }

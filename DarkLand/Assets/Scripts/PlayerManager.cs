@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
     public int maxHealth {get; private set;}
     public int healthPackValue {get; private set;}
     public ManagerStatus status {get;private set;}
-
+    public bool dead {get; private set;}
     public float fearLevel {get; private set;}
     // Start is called before the first frame update
     void Start()
@@ -21,11 +21,12 @@ public class PlayerManager : MonoBehaviour, IGameManager
         maxHealth = 100;
         healthPackValue = 2;
         fearLevel = 0f;
+        dead = false;
         status = ManagerStatus.Started;
     }
 
     private void Die(){
-        Debug.Log("WE ROMINA");
+        dead = true;
     }
 
     void OnDestroy(){
