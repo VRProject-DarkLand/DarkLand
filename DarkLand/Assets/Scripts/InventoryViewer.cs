@@ -22,12 +22,15 @@ public class InventoryViewer : MonoBehaviour
     }
 
     public void Show(){
-        foreach(InventoryItem item in Managers.Inventory.GetItems()){
+        var items = Managers.Inventory.GetItems();
+        foreach(InventoryItem item in items) {
             GameObject slot = Instantiate(inventorySlot);
             slot.transform.SetParent(gridPanel.transform, false);
             slot.transform.GetChild(0).GetComponent<Image>().sprite = InventorySpriteLoader.GetImage(item.Name);
             AddEvent(slot, EventTriggerType.PointerClick, e => SelectItem(item) );
         }
+        if(items.Count > 0)
+            SelectItem(items[0]);
 
     }
 
@@ -37,7 +40,6 @@ public class InventoryViewer : MonoBehaviour
         if (!trigger) { Debug.LogWarning("No EventTrigger component found!"); return; }
         var eventTrigger = new EventTrigger.Entry { eventID = type };
         eventTrigger.callback.AddListener(action);
-        Debug.Log("WE ROMIONA");
         trigger.triggers.Add(eventTrigger);
     }
 
