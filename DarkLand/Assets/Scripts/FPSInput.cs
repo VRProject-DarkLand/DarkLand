@@ -135,7 +135,7 @@ public class FPSInput : MonoBehaviour{
         }
 
         if(Input.GetKeyDown(KeyCode.Tab)){
-                Managers.Inventory.ShowInventory();
+                Managers.Inventory.ChangeInventoryVisibility();
         } 
         
 

@@ -9,7 +9,6 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     public ManagerStatus status {get;private set;}
     private  Dictionary<string, int> _items; 
-
     public void Startup(){
         Debug.Log("Inventory manager starting...");
         status = ManagerStatus.Started;
@@ -60,8 +59,8 @@ public class InventoryManager : MonoBehaviour, IGameManager
         return list;
     }
 
-    public void ShowInventory(){
-        Messenger.Broadcast(GameEvent.SHOW_INVENTORY);
+    public void ChangeInventoryVisibility(){
+        Messenger<bool>.Broadcast(GameEvent.SHOW_INVENTORY, GameEvent.isInventoryOpen);
     }
 
     public int GetItemCount(string name){

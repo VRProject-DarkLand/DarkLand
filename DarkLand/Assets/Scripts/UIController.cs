@@ -19,7 +19,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private InventoryViewer inventory;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
-
+    private CursorLockMode currentCursorLock;
     private int animatingDamageTimeElapsed = 0;
     
     // Start is called before the first frame update
@@ -28,7 +28,7 @@ public class UIController : MonoBehaviour
         Messenger<string, int>.AddListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.AddListener(GameEvent.USED_USABLE, UsedElement);
         Messenger<bool>.AddListener(GameEvent.PAUSED, Paused);
-        Messenger.AddListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
+        Messenger<bool>.AddListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
         Messenger.AddListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
@@ -41,6 +41,7 @@ public class UIController : MonoBehaviour
         damageImage.enabled = false;
         inventory.gameObject.SetActive(false);
         ConfirmationPopup.SetActive(false);
+        currentCursorLock = CursorLockMode.Locked;
         Paused(false);
     }
 
@@ -96,26 +97,34 @@ public class UIController : MonoBehaviour
 
     public void Paused(bool paused){
         
-        Cursor.lockState = paused? CursorLockMode.Confined : CursorLockMode.Locked;
-        Cursor.visible = paused;
+        Cursor.lockState = paused? CursorLockMode.Confined : currentCursorLock;
+        if(currentCursorLock != CursorLockMode.Locked)
+            Cursor.visible = true;
+        else 
+            Cursor.visible = paused;
         pauseMenu.SetActive(paused);
     }
 
     public void OnQuit(){
         ConfirmationPopup.SetActive(true);
     }
-    public void OnInventoryChange(){
-        if(inventory.gameObject.activeSelf){
+    public void OnInventoryChange(bool isInventoryOpen){
+        if(isInventoryOpen){
             inventory.Clean();
-                    Cursor.lockState = CursorLockMode.Locked;
+            GameEvent.isInventoryOpen = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            currentCursorLock = Cursor.lockState;
             Cursor.visible = false;
-        }
-        inventory.gameObject.SetActive(!inventory.gameObject.activeSelf);
-        if(inventory.gameObject.activeSelf){
+            inventory.gameObject.SetActive(false);
+        }else{
+            inventory.gameObject.SetActive(true); 
             inventory.Show();
+            GameEvent.isInventoryOpen = true;
             Cursor.lockState = CursorLockMode.Confined;
+            currentCursorLock = Cursor.lockState;
             Cursor.visible = true;
         }
+       
     }
     public void OnQuitConfirm(bool choice){
         if(choice){
@@ -134,7 +143,7 @@ public class UIController : MonoBehaviour
     }
 
     void OnDestroy(){
-        Messenger.RemoveListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
+        Messenger<bool>.RemoveListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
         Messenger.RemoveListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<string, int>.RemoveListener(GameEvent.USABLE_ADDED, AddUsableElement);

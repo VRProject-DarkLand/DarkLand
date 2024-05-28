@@ -26,6 +26,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         _currentIndex = 0;
        status = ManagerStatus.Started;
        Messenger<bool>.AddListener(GameEvent.IS_HIDING, SetActivationState);
+       Messenger<bool>.AddListener(GameEvent.SHOW_INVENTORY, SetActivationState);
     }
 
     //add element to selectable in the first free position
@@ -70,8 +71,8 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         return false;
     }
 
-    public void SelectionForward(){
-        if(GameEvent.isHiding)
+    public void SelectionBackward(){
+        if(GameEvent.isHiding || GameEvent.isInventoryOpen)
             return;
         if(_currentIndex < _selectable.Count -1){
             _currentObject.Deselect();
@@ -87,8 +88,8 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         _currentObject.Select();
     }
 
-    public void SelectionBackward(){
-        if(GameEvent.isHiding)
+    public void SelectionForward(){
+        if(GameEvent.isHiding ||  GameEvent.isInventoryOpen)
             return;
         if(_currentIndex > 0){
             _currentObject.Deselect();
@@ -145,7 +146,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         
     }
     void OnDestroy(){
-       Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, SetActivationState);
-
+        Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, SetActivationState);
+        Messenger<bool>.RemoveListener(GameEvent.SHOW_INVENTORY, SetActivationState);
     }
 }
