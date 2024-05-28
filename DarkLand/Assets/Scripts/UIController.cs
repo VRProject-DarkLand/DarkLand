@@ -107,10 +107,14 @@ public class UIController : MonoBehaviour
     public void OnInventoryChange(){
         if(inventory.gameObject.activeSelf){
             inventory.Clean();
+                    Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         inventory.gameObject.SetActive(!inventory.gameObject.activeSelf);
         if(inventory.gameObject.activeSelf){
             inventory.Show();
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
     }
     public void OnQuitConfirm(bool choice){

@@ -30,7 +30,7 @@ public class MouseLook : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameEvent.isInDialog || Managers.Pause.paused )
+        if(GameEvent.isInDialog || Managers.Pause.paused)
             return;
         
         if(axes == RotationAxes.MouseX){

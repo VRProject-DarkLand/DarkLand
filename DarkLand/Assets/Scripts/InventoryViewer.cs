@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryViewer : MonoBehaviour
 {
@@ -15,10 +16,12 @@ public class InventoryViewer : MonoBehaviour
 
     public void Show(){
         foreach(string item in Managers.Inventory.GetItemList()){
+            for(int i = 0; i < 10;++i){
             GameObject slot = Instantiate(inventorySlot);
             slot.transform.SetParent(gridPanel.transform, false);
             Sprite sprite = Resources.Load<Sprite>("InventoryIcons/"+item);
-            slot.GetComponent<UsableSpot>().SetItem(sprite);
+            slot.transform.GetChild(0).GetComponent<Image>().sprite = sprite;
+        }
         }
     }
 
