@@ -16,6 +16,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject ConfirmationPopup;
     [SerializeField] private GameObject deathMenu;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private InventoryViewer inventory;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
 
@@ -27,6 +28,7 @@ public class UIController : MonoBehaviour
         Messenger<string, int>.AddListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.AddListener(GameEvent.USED_USABLE, UsedElement);
         Messenger<bool>.AddListener(GameEvent.PAUSED, Paused);
+        Messenger.AddListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
         Messenger.AddListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
@@ -37,6 +39,7 @@ public class UIController : MonoBehaviour
         }
         //LayoutRebuilder.ForceRebuildLayoutImmediate(UsableSlots.GetComponent<RectTransform>());
         damageImage.enabled = false;
+        inventory.gameObject.SetActive(false);
         ConfirmationPopup.SetActive(false);
         Paused(false);
     }
@@ -101,7 +104,15 @@ public class UIController : MonoBehaviour
     public void OnQuit(){
         ConfirmationPopup.SetActive(true);
     }
-
+    public void OnInventoryChange(){
+        if(inventory.gameObject.activeSelf){
+            inventory.Clean();
+        }
+        inventory.gameObject.SetActive(!inventory.gameObject.activeSelf);
+        if(inventory.gameObject.activeSelf){
+            inventory.Show();
+        }
+    }
     public void OnQuitConfirm(bool choice){
         if(choice){
             Managers.Pause.OnClickResume();
@@ -111,6 +122,7 @@ public class UIController : MonoBehaviour
         }
     }
 
+
     public void OnPlayerDead(){
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
@@ -118,6 +130,7 @@ public class UIController : MonoBehaviour
     }
 
     void OnDestroy(){
+        Messenger.RemoveListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
         Messenger.RemoveListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<string, int>.RemoveListener(GameEvent.USABLE_ADDED, AddUsableElement);

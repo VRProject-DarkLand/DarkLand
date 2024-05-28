@@ -60,6 +60,10 @@ public class InventoryManager : MonoBehaviour, IGameManager
         return list;
     }
 
+    public void ShowInventory(){
+        Messenger.Broadcast(GameEvent.SHOW_INVENTORY);
+    }
+
     public int GetItemCount(string name){
         if(_items.ContainsKey(name))
             return _items[name];

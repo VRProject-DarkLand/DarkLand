@@ -134,6 +134,11 @@ public class FPSInput : MonoBehaviour{
                 Managers.Pause.Pause();
         }
 
+        if(Input.GetKeyDown(KeyCode.Tab)){
+                Managers.Inventory.ShowInventory();
+        } 
+        
+
         if(onGround && ! blocked){
             if(Input.GetKeyDown(KeyCode.E)){
                 InteractableManager.InteractWithSelectedItem(false);
@@ -141,6 +146,7 @@ public class FPSInput : MonoBehaviour{
             if(Input.GetKeyDown(KeyCode.C)){
                 InteractableManager.InteractWithSelectedItem(true);
             } 
+            
             if(Input.GetKeyDown(KeyCode.F)){
                 if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && Managers.Player.maxHealth > _health)
                 {
