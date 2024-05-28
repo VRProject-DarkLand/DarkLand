@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour, IGameManager
@@ -8,11 +10,11 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
 
     public ManagerStatus status {get;private set;}
-    private  Dictionary<string, int> _items; 
+    private  Dictionary<string, InventoryItem> _items; 
     public void Startup(){
         Debug.Log("Inventory manager starting...");
         status = ManagerStatus.Started;
-        _items = new Dictionary<string, int>();
+        _items = new Dictionary<string, InventoryItem>();
     }
     void Start()
     {
@@ -20,11 +22,6 @@ public class InventoryManager : MonoBehaviour, IGameManager
     }
 
     private void DisplayItems(){
-        string itemDisplay = "List of Items ";
-        foreach(var item in _items){
-            itemDisplay += item.Key +": "+item.Value+" ";
-        }
-        Debug.Log(itemDisplay);
     }
 
     public void AddItem(GameObject obj, int usages){
@@ -40,7 +37,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
         string name = obj.name;
         
         if(!_items.ContainsKey(name)){
-            _items.Add(name, usages);
+            _items.Add(name, new InventoryItem(name, "", usages));
 
             IUsableObject usable;
             if(obj.TryGetComponent<IUsableObject>(out usable)){
@@ -49,7 +46,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
         }
         else 
-            _items[name]+=usages;
+            _items[name].Increase(usages);
         
         DisplayItems();
     }
@@ -65,14 +62,18 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     public int GetItemCount(string name){
         if(_items.ContainsKey(name))
-            return _items[name];
+            return _items[name].Count;
         return 0;
+    }
+
+    public List<InventoryItem> GetItems(){
+        return _items.Values.ToList<InventoryItem>();
     }
 
     public void ConsumeItem(string name){
         if(_items.ContainsKey(name)){
-            _items[name] -= 1;
-            if(_items[name] == 0){
+            _items[name].Decrease();
+            if(_items[name].Count == 0){
                 _items.Remove(name);    
             }
         }
@@ -87,4 +88,25 @@ public class InventoryManager : MonoBehaviour, IGameManager
     {
         
     }
+}
+
+public class InventoryItem{
+    public string Name {get; private set;}
+    public string Description {get; private set;}
+    public int Count {get; private set;}
+
+    public InventoryItem(string name, string description, int count ){
+        Name = name;
+        Description = description;
+        Count = count; 
+    }
+
+    public void Decrease(){
+        Count-=1;
+    }
+    public void Increase(int times){
+        Count+=times;
+    }
+
+    
 }
