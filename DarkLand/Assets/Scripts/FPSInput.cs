@@ -7,7 +7,7 @@ using UnityEditor.VersionControl;
 using UnityEngine;
 [RequireComponent(typeof (CharacterController))]
 [AddComponentMenu("Control Script/FPS Input")]
-public class FPSInput : MonoBehaviour{    
+public class FPSInput : MonoBehaviour, IDataPersistenceSave{    
     private const float WALK_SPEED = 3.0f;
     private const float CROUCH_SPEED = 2.0f;
     private const float RUN_SPEED = 5.5f;
@@ -22,7 +22,6 @@ public class FPSInput : MonoBehaviour{
     private float deltaZ = 0;
     private float dirX; 
     private float dirZ; 
-    private float prevScroll = 0;
     public bool onGround = false;
     private bool crouch = false;
     private bool hide;
@@ -35,7 +34,7 @@ public class FPSInput : MonoBehaviour{
     private Vector3 standingHead;
     private Vector3 crouchHead;
     private bool blocked = false;
-    private float _health;
+    private int _health;
     private bool alive;
 
 
@@ -45,7 +44,7 @@ public class FPSInput : MonoBehaviour{
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        _health = Managers.Player.maxHealth;
+        _health = Managers.Player.health;
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Walk};
@@ -162,7 +161,6 @@ public class FPSInput : MonoBehaviour{
         } else if (scroll < 0 ){ // do shit here for scroll down 
             Managers.UsableInventory.SelectionBackward();
         }
-        prevScroll = scroll;
     } 
 
     private bool detectOnGround(){
@@ -184,7 +182,7 @@ public class FPSInput : MonoBehaviour{
         _health = Managers.Player.maxHealth;
         Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, false);
     }
-    public void Hurt(float damage){
+    public void Hurt(int damage){
         _health -= damage;
         Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, true);
         //sound?
@@ -290,6 +288,7 @@ public class FPSInput : MonoBehaviour{
         //Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, Hide);
     }
 
+
     public bool IsHiding()
     {
         return GameEvent.isHiding;
@@ -301,4 +300,8 @@ public class FPSInput : MonoBehaviour{
             return prev;
     }
 
+    public void SaveData(ref GameData data)
+    {
+        data.playerHealth =  _health;
+    }
 }

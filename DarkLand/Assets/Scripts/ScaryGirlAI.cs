@@ -18,7 +18,7 @@ public class ScaryGirlAI : MonoBehaviour
     [SerializeField] private  bool chasing = false;
     [SerializeField] private float maxDistance = 30f;
     private Animator animator;
-    [SerializeField] private float attackDamage = 60f;
+    [SerializeField] private int attackDamage = 60;
 
     // Start is called before the first frame update
     void Start()

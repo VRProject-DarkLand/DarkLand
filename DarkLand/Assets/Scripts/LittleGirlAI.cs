@@ -19,7 +19,7 @@ public class LittleGirlAI : MonoBehaviour
     [SerializeField] private AudioClip foundYouClip;
     public delegate void AudioCallback();
     private bool moving = false;
-    private float damage = 110f;
+    private int damage = 110;
     [SerializeField] private GameObject hidingPoints;
     private int numberOfHidingPoints;
     private void StopCounting()

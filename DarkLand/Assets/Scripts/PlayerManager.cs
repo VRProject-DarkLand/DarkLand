@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour, IGameManager
 {
     public int maxHealth {get; private set;}
+    public int health {get; private set;}
     public int healthPackValue {get; private set;}
     public ManagerStatus status {get;private set;}
     public bool dead {get; private set;}
@@ -23,8 +24,19 @@ public class PlayerManager : MonoBehaviour, IGameManager
         fearLevel = 0f;
         dead = false;
         status = ManagerStatus.Started;
+        if(Settings.gameData != null){
+            LoadGameData();
+        }else{
+            SetNewGameData();
+        }
     }
-
+    private void LoadGameData(){
+        health = Settings.gameData.playerHealth;
+    }
+    private void SetNewGameData(){
+        health = maxHealth;
+    }
+    
     private void Die(){
         dead = true;
     }

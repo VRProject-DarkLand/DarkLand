@@ -43,13 +43,18 @@ public class UIController : MonoBehaviour
         ConfirmationPopup.SetActive(false);
         currentCursorLock = CursorLockMode.Locked;
         Paused(false);
+        UpdateUIOnSaveLoad();
+    }
+
+    private void UpdateUIOnSaveLoad(){
+        OnHealthChanged(Managers.Player.health, false);
+        OnFearChanged();
     }
 
     private void AddUsableElement(string name, int pos){
         Sprite sprite = InventorySpriteLoader.GetImage(name);
         spots[pos].SetItem(sprite);
     }
-
 
     public void OnHealthChanged(float health, bool damaged){
         _healthBar.value = _healthBar.maxValue * health/Managers.Player.maxHealth;

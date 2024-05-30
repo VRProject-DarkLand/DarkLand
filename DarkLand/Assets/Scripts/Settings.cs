@@ -9,6 +9,7 @@ public class Settings
 
     public const string ASYLUM_SCENE = "Scenes/Asylum";
     public const string MAIN_MENU = "Scenes/MainMenu";
-
+    public static GameData gameData;
+    public static string SAVE_DIR = Application.persistentDataPath;
     public const string HEALTH = "Adrenaline";
 }
