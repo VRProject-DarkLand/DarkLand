@@ -10,6 +10,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     private int _currentIndex;
     private List<IUsableObject> _selectable;
     private IUsableObject _usableDummy;
+    private bool _active = false;
     public int _maxSize {get; private set;} = 6;
 
     [SerializeField] private GameObject _usableParent;
@@ -24,6 +25,8 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         }
         _currentObject = _selectable[0];
         _currentIndex = 0;
+        //to be checked at load
+        _active = false;
        status = ManagerStatus.Started;
        Messenger<bool>.AddListener(GameEvent.IS_HIDING, SetActivationState);
        Messenger<bool>.AddListener(GameEvent.SHOW_INVENTORY, SetActivationState);
@@ -106,6 +109,8 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     }
 
     public void Use(){
+        if(!_active)
+            return;
         _currentObject.Use();
         if (_currentObject.IsDummy())
             return;
@@ -133,9 +138,14 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     }
 
     private void SetActivationState(bool isHiding){
-        if(!isHiding)
+        if(!isHiding){
             _currentObject.Deselect();
-        else _currentObject.Select();
+            _active = false;
+        }
+        else{
+            _active = true;
+            _currentObject.Select();
+        }
     }
     void Start(){
         

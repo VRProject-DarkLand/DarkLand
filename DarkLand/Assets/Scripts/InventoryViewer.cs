@@ -60,7 +60,7 @@ public class InventoryViewer : MonoBehaviour
         selectedItem.enabled = true;
         selectedItem.sprite = InventorySpriteLoader.GetImage(item.Name);
         selectedName.text = item.Name+ " x"+item.Count;
-        this.description.text = item.Description;
+        this.description.text = InventoryDescriptionLoader.GetDescription(item.Name);
     }
 
     // Update is called once per frame

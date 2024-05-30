@@ -37,7 +37,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
         string name = obj.name;
         
         if(!_items.ContainsKey(name)){
-            _items.Add(name, new InventoryItem(name, "", usages));
+            _items.Add(name, new InventoryItem(name, usages));
 
             IUsableObject usable;
             if(obj.TryGetComponent<IUsableObject>(out usable)){
@@ -92,12 +92,10 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
 public class InventoryItem{
     public string Name {get; private set;}
-    public string Description {get; private set;}
     public int Count {get; private set;}
 
-    public InventoryItem(string name, string description, int count ){
+    public InventoryItem(string name, int count ){
         Name = name;
-        Description = description;
         Count = count; 
     }
 

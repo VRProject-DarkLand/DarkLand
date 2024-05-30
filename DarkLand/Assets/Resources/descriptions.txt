@@ -1,0 +1,4 @@
+{
+{"Flashlight":"Asereje ahah eheh",
+"pistol":"zumba dio cana"}
+}
