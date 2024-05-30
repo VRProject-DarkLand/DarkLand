@@ -10,6 +10,7 @@ public class Managers : MonoBehaviour
     public static InventoryManager Inventory {get; private set;}
     public static UsableObjectManager UsableInventory {get; private set;}
     public static PauseManager Pause {get; private set;}
+    public static PersistenceManager Persistence {get; private set;}
 
     // Start is called before the first frame update
     private List<IGameManager> _startSequence;
@@ -19,11 +20,14 @@ public class Managers : MonoBehaviour
     }
 
     void Awake(){
+        //Settings.LoadData;
+        //LoadManager.Load();
         Player = GetComponent<PlayerManager>();
         Inventory = GetComponent<InventoryManager>();
         UsableInventory = GetComponent<UsableObjectManager>(); 
         Pause = GetComponent<PauseManager>();
-        
+        Persistence = GetComponent<PersistenceManager>();
+
         _startSequence = new List<IGameManager>();
         _startSequence.Add(Player);
         _startSequence.Add(Inventory);
@@ -54,8 +58,11 @@ public class Managers : MonoBehaviour
             yield return null;
         }
         Debug.Log("All managers started up");
+        
     }
+    public static void LoadGameData(){
 
+    }
     // Update is called once per frame
     void Update()
     {

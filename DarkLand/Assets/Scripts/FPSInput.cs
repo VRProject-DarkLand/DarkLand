@@ -135,6 +135,9 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
 
         if(Input.GetKeyDown(KeyCode.Tab)){
                 Managers.Inventory.ChangeInventoryVisibility();
+        }
+        if(Input.GetKeyDown(KeyCode.O)){
+            Managers.Persistence.SaveGame();
         } 
         
 

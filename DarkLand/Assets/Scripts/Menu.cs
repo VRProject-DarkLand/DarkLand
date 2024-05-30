@@ -6,6 +6,7 @@ public class Menu : MonoBehaviour
 {
     public void OnPlayButton()
     {
+        Loader.Load("saves5.json");
         SceneManager.LoadScene(Settings.ASYLUM_SCENE);
     }
 

@@ -19,7 +19,8 @@ public class ScaryGirlAI : MonoBehaviour
     [SerializeField] private float maxDistance = 30f;
     private Animator animator;
     [SerializeField] private int attackDamage = 60;
-
+    private bool hitByTeddy = false;
+    private bool dead = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,11 +46,20 @@ public class ScaryGirlAI : MonoBehaviour
         StartCoroutine(FollowMe());
     }
 
-    private IEnumerator FollowMe(){
+private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
-        while(true){
+        while(!dead){
+            if (hitByTeddy)
+            {
+                navMeshAgent.SetDestination(transform.position);
+                animator.SetBool("HitByTeddy", true);
+                yield return new WaitForSeconds(6f);
+                hitByTeddy = false;
+                animator.SetBool("HitByTeddy", false);
+                if (dead) break;
+            }
             Vector3 startRaycast = gameObject.transform.position+new Vector3(0,1.5f,0);
-            RaycastHit hit ;
+            RaycastHit hit;
             Vector3 direction = target.transform.position-startRaycast;
             //Debug.Log(Vector3.Distance(target.transform.position,transform.position));
             float distance = direction.magnitude;
@@ -79,7 +89,7 @@ public class ScaryGirlAI : MonoBehaviour
                             navMeshAgent.speed = 2.5f;
                         }
                         
-                        yield return  new WaitForSeconds(0.2f);
+                        yield return new WaitForSeconds(0.2f);
                     }else {
                         inSight = false;
                         if ( chasing && distance<10f){
@@ -99,7 +109,7 @@ public class ScaryGirlAI : MonoBehaviour
           
             if(!chasing){
                 GameEvent.chasingSet.Remove(GetInstanceID());
-                    //maybe sample position for random point in navmesh
+                //maybe sample position for random point in navmesh
                 navMeshAgent.speed=defaultSpeed;
                 if(Vector3.Distance(navMeshAgent.destination,transform.position)<2.5f){
                     Vector3 randomDirection = Random.insideUnitSphere * 25f;
@@ -119,7 +129,8 @@ public class ScaryGirlAI : MonoBehaviour
             }else{
                
             }
-        }   
+        }
+        yield return null;
     }
 
     private IEnumerator Attack(){
@@ -141,6 +152,18 @@ public class ScaryGirlAI : MonoBehaviour
         
 
         isAttacking = false;
+    }
+     public void HitByTeddyBear()
+    {
+        hitByTeddy = true;
+        Debug.Log("Hit by teddy");
+    }
+
+    public void Die()
+    {
+        animator.SetBool("Dead", true);
+        dead = true;
+        
     }
     // Update is called once per frame
     void Update()

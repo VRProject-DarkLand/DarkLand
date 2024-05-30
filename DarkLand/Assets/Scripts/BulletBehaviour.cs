@@ -5,32 +5,51 @@ using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour{
     
-    private float _velocity;
+    private float _velocity = 0f;
     private Vector3 _direction;
-    private Vector3 _hitPoint;
-    private float _hitDistance;
-    private float distance = 0.0f;
-    // Update is called once per frame
+    private float _bulletRange;
+    private float _distance = 0.0f;
+    // void  Start(){
+    //     //StartCoroutine(printTravelTimeAfterOneSec());
+    // }
     void Update(){
-        Vector3 delta = Vector3.ClampMagnitude(_velocity * Time.deltaTime * _direction, _velocity);
-        distance += Vector3.Magnitude(delta);
-        transform.position = transform.position +  delta;
-        if(distance > _hitDistance){
-            //check with a raycast if the bullet would hit right now and , if so, hit
+        //compute the distance(actually the jump) that the projectile will do in this frame
+        //without appying it
+        Vector3 delta = _velocity * Time.deltaTime * _direction;
+        float deltaMagnitude = Vector3.Magnitude(delta);
+        //Debug.Log("Distance in one frame " + deltaMagnitude);
+        
+        // make a new raycast at every frame. In this way it is possible to
+        // check if the bullet, during this frame, has hit something that: either is the
+        // precalculated target from the shooting behaviour of the gun, or
+        // some movable object that came into the trajectory while the bullet has been travelling
+        RaycastHit currentHit;
+        //the raycast length has to be the bullet range shortened by the distance that it has already traversed
+        Physics.Raycast(transform.position, _direction, out currentHit, _bulletRange - _distance);
+        //hitting in this frame
+        if(currentHit.transform != null && currentHit.distance < deltaMagnitude){
+            Debug.Log("Bullet hit");
+            //TODO call damage
+            Destroy(gameObject);
         }
-        if(distance > 100f){
+
+        //never hitting, but going out of gun scope
+        if(_distance > _bulletRange){
             Debug.Log("Bullet lost - destroy");
             Destroy(gameObject);
         }
+        // make the bullet travel by updating both distance from 
+        // start point and position
+        _distance += deltaMagnitude;
+        transform.position = transform.position + delta;
     }
-    public void SetVelocityDirectionAndHitPoint(float velocity, Vector3 direction, Vector3 hitPoint) {
+    // public IEnumerator printTravelTimeAfterOneSec(){
+    //     yield return new WaitForSeconds(0.3f);
+    //     Debug.Log("Travelled distance: " + _distance);
+    // }
+    public void SetVelocityRangeDirectionAndHitPoint(float velocity, float bulletRange, Vector3 direction) {
         _velocity = velocity;
+        _bulletRange = bulletRange;
         _direction = direction;
-        _hitPoint = hitPoint;
-        _hitDistance = Vector3.Distance(gameObject.transform.position, _hitPoint);
-    }
-    void OnTriggerEnter(){
-        Debug.Log("Bullet hit - destroy");
-        Destroy(gameObject);
     }
 }
