@@ -29,11 +29,11 @@ public class InventoryManager : MonoBehaviour, IGameManager
         obj.GetComponent<Collider>().enabled = false;
         Rigidbody rb ;
 
+        if(obj == null)
+            return;
         if(obj.TryGetComponent<Rigidbody>(out rb))
             rb.isKinematic = true;
         obj.GetComponent<InteractableTrigger>().enabled = false;
-        if(obj == null)
-            return;
         string name = obj.name;
         
         if(!_items.ContainsKey(name)){
