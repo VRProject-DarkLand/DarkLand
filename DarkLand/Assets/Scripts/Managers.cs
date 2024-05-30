@@ -33,6 +33,7 @@ public class Managers : MonoBehaviour
         _startSequence.Add(Inventory);
         _startSequence.Add(UsableInventory);
         _startSequence.Add(Pause);
+        _startSequence.Add(Persistence);
         
         StartCoroutine(StartupManagers());
     }
