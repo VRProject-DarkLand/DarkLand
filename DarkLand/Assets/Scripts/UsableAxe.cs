@@ -72,7 +72,7 @@ public class UsableAxe : IUsableObject{
     }
         private IEnumerator Hit(){
         _readyToHit = false;
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.5f);
         _animator.SetBool("hitting", false);
         _readyToHit = true;
     }
