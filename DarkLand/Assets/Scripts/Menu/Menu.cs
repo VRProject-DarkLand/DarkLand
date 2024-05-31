@@ -7,7 +7,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI; // Add me!!
 public class Menu : MonoBehaviour
 {
@@ -108,7 +107,7 @@ public class Menu : MonoBehaviour
             Settings.LastSaving = newGameName.text+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
 
         }
-        SceneManager.LoadScene(Settings.ASYLUM_SCENE);
+        ScenesController.instance.ChangeScene(Settings.ASYLUM_SCENE);
     }
 
     public void OnQuitButton()
