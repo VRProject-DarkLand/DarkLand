@@ -8,11 +8,11 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
     public ManagerStatus status {get;private set;}
 
     private GameData gameData;
-    [SerializeField] private string _fileName;
+    private string _fileName;
     private List<IDataPersistenceSave> _dataPersistenceObjects;
     private FileDataHandler _dataHandler;
     public void Startup(){
-        
+        _fileName = Settings.LastSaving;
     }
 
     public void NewGame(){
