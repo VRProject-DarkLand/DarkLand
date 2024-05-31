@@ -9,7 +9,6 @@ public class ShootingBehaviour : MonoBehaviour
     }
     private Camera _camera;
     [SerializeField] private float _rechargeTime;
-    [SerializeField] private float _gunRange;
     [SerializeField] private float _bulletsSpread = 0.01f;
 
     [SerializeField] private ShootingMode shootingMode = ShootingMode.Single;
@@ -18,6 +17,7 @@ public class ShootingBehaviour : MonoBehaviour
     [SerializeField] private float _bulletRange = 100f;
     private Animator _animator;
     private AudioSource _audioSource;
+    [SerializeField] private GameObject _bulletSource;
     [SerializeField] private AudioClip _shootAudioClip;
     private void Start(){
         _camera = Camera.main;
@@ -32,7 +32,7 @@ public class ShootingBehaviour : MonoBehaviour
             if(shootingMode == ShootingMode.Single){
                 _animator.SetBool("shooting", true);
                 StartCoroutine(ResetShooting());
-                //Debug.Log("Shooting in single mode");
+                Debug.Log("Shooting in single mode");
             }
             else if(shootingMode == ShootingMode.Auto){
                 //Debug.Log("Shooting in auto mode");
@@ -45,7 +45,7 @@ public class ShootingBehaviour : MonoBehaviour
 
             //create bullet from the center of the gun, direct it towards the hit point and then
             //set velocity and direction inside the BulletBehaviour script
-            GameObject projectile = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+            GameObject projectile = Instantiate(bulletPrefab, _bulletSource.transform.position, Quaternion.identity);
             //compute bullet dir as the forward direction of the camera plus some bias that is 
             //a random value between the maximum amount of spread on both x and y local axis
             Vector3 BulletDir =_camera.gameObject.transform.forward;

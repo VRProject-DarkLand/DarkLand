@@ -43,10 +43,13 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         for(int i = 0; i < _maxSize; ++i){
             if(_selectable[i].IsDummy()){
                 _selectable[i] = usableObject.GetComponent<IUsableObject>();
+                foreach(Renderer r in usableObject.GetComponentsInChildren<Renderer>()){
+                    r.gameObject.layer = LayerMask.NameToLayer("Usable");
+                }
                 if(_currentIndex == i){
                     _currentObject = _selectable[_currentIndex];
                     _currentObject.Position();
-                    _currentObject.Select();
+                    SetCurrentSelection(true);
                     Messenger<int>.Broadcast(GameEvent.CHANGED_SELECTABLE, i, MessengerMode.DONT_REQUIRE_LISTENER);
                     //Debug.Log("Pistol position" + _currentObject.transform.GetChild(0).localPosition +" Rotation " + _currentObject.transform.GetChild(0).localEulerAngles);
                 }else{
@@ -54,6 +57,9 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
                     _selectable[i].Deselect();
                 }
                 Messenger<string, int>.Broadcast(GameEvent.USABLE_ADDED, usableObject.name, i, MessengerMode.DONT_REQUIRE_LISTENER);
+                //set layer for usable items s.t. they are displayed from the usable objects camera.
+                //In other words, they are displayed on top of everything
+
                 return true;
             }
         }
@@ -64,10 +70,13 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         for(int i = 0; i < _selectable.Count; ++i){
             if(_selectable[i].gameObject == obj){
                 if(_currentIndex == i){
-                    _currentObject.Deselect();
+                    SetCurrentSelection(false);
                 }
                 _selectable[i] = _usableDummy;
                 _currentObject = _usableDummy;
+                foreach(Renderer r in obj.GetComponentsInChildren<Renderer>()){
+                    r.gameObject.layer = LayerMask.NameToLayer("Default");
+                }
                 return true;
             }
         }
@@ -78,34 +87,34 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
         if(GameEvent.isHiding || GameEvent.isInventoryOpen)
             return;
         if(_currentIndex < _selectable.Count -1){
-            _currentObject.Deselect();
+            SetCurrentSelection(false);
             ++_currentIndex;
             _currentObject = _selectable[_currentIndex];
         }else{
-            _currentObject.Deselect();
+            SetCurrentSelection(false);
             _currentObject = _selectable[0];
             _currentIndex = 0;
         }
-        Debug.Log("Item n: "+_currentIndex);
+        //Debug.Log("Item n: "+_currentIndex);
         Messenger<int>.Broadcast(GameEvent.CHANGED_SELECTABLE, _currentIndex, MessengerMode.DONT_REQUIRE_LISTENER);
-        _currentObject.Select();
+        SetCurrentSelection(true);
     }
 
     public void SelectionForward(){
         if(GameEvent.isHiding ||  GameEvent.isInventoryOpen)
             return;
         if(_currentIndex > 0){
-            _currentObject.Deselect();
+            SetCurrentSelection(false);
             --_currentIndex;
             _currentObject = _selectable[_currentIndex];
         }else{
-            _currentObject.Deselect();
+            SetCurrentSelection(false);
             _currentObject = _selectable[_selectable.Count - 1];
             _currentIndex = _selectable.Count - 1;
         }
-        Debug.Log("Item n: "+_currentIndex);
+        //Debug.Log("Item n: "+_currentIndex);
         Messenger<int>.Broadcast(GameEvent.CHANGED_SELECTABLE, _currentIndex, MessengerMode.DONT_REQUIRE_LISTENER);
-        _currentObject.Select();
+        SetCurrentSelection(true);
     }
 
     public void Use(){
@@ -139,21 +148,21 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     private void SetActivationState(bool isHiding){
         if(!isHiding){
-            _currentObject.Deselect();
-            _active = false;
+            SetCurrentSelection(false);
         }
         else{
-            _active = true;
-            _currentObject.Select();
+            SetCurrentSelection(true);
         }
     }
-    void Start(){
-        
-    }
+    private void SetCurrentSelection(bool toActivate){
+        if(toActivate){
+            _active = true;
+            _currentObject.Select();
 
-    void Update()
-    {
-        
+        }else{
+            _active = false;
+            _currentObject.Deselect();
+        }
     }
     void OnDestroy(){
         Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, SetActivationState);

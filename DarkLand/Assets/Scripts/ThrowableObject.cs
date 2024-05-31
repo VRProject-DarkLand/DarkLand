@@ -60,6 +60,9 @@ public class ThrowableObject : IUsableObject
     public override void Use(){
         
         GameObject copy = Instantiate(gameObject, gameObject.transform.parent);
+        foreach(Renderer r in copy.GetComponentsInChildren<Renderer>()){
+                    r.gameObject.layer = LayerMask.NameToLayer("Default");
+        }
         //copy.transform.localPosition += new Vector3(0, 0.2f,0.5f);
         copy.name = gameObject.name;
         

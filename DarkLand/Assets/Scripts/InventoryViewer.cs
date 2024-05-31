@@ -26,7 +26,7 @@ public class InventoryViewer : MonoBehaviour
         foreach(InventoryItem item in items) {
             GameObject slot = Instantiate(inventorySlot);
             slot.transform.SetParent(gridPanel.transform, false);
-            slot.transform.GetChild(0).GetComponent<Image>().sprite = InventorySpriteLoader.GetImage(item.Name);
+            slot.transform.GetChild(0).GetComponent<Image>().sprite = ResourceLoader.GetImage(item.Name);
             AddEvent(slot, EventTriggerType.PointerClick, e => SelectItem(item) );
         }
         if(items.Count > 0)
@@ -58,9 +58,9 @@ public class InventoryViewer : MonoBehaviour
 
     void SelectItem(InventoryItem item){
         selectedItem.enabled = true;
-        selectedItem.sprite = InventorySpriteLoader.GetImage(item.Name);
+        selectedItem.sprite = ResourceLoader.GetImage(item.Name);
         selectedName.text = item.Name+ " x"+item.Count;
-        this.description.text = InventoryDescriptionLoader.GetDescription(item.Name);
+        this.description.text = ResourceLoader.GetDescription(item.Name);
     }
 
     // Update is called once per frame

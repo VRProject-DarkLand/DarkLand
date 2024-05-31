@@ -54,6 +54,8 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         alive = !Managers.Player.dead;
         standingHead = head.transform.localPosition;
         crouchHead = standingHead+new Vector3(0f, -0.3f, 0f);
+        //if(Settings.loadingFromSave)
+            //setSaveData()
     }
 
 
@@ -306,5 +308,6 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     public void SaveData(ref GameData data)
     {
         data.playerHealth =  _health;
+        data.playerPosition = transform.position;
     }
 }

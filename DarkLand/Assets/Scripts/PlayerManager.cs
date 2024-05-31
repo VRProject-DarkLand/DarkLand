@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
 {
     public int maxHealth {get; private set;}
     public int health {get; private set;}
+    public Vector3 playerPosition {get; private set;}
     public int healthPackValue {get; private set;}
     public ManagerStatus status {get;private set;}
     public bool dead {get; private set;}
@@ -32,6 +33,8 @@ public class PlayerManager : MonoBehaviour, IGameManager
     }
     private void LoadGameData(){
         health = Settings.gameData.playerHealth;
+        Vector3 pPos = Settings.gameData.playerPosition;
+        playerPosition = new Vector3(pPos.x, pPos.y, pPos.z);
     }
     private void SetNewGameData(){
         health = maxHealth;

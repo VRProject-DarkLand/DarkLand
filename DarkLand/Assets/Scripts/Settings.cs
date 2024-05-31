@@ -12,4 +12,6 @@ public class Settings
     public static GameData gameData;
     public static string SAVE_DIR = Application.persistentDataPath;
     public const string HEALTH = "Adrenaline";
+    public const string INVENTORY_SPRITES_FOLDER_NAME = "InventoryIcons";
+    public const string INVENTORY_ITEMS_DESCRIPTIONS_FOLDER_NAME = "InventoryDescriptions";
 }

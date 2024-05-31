@@ -52,7 +52,7 @@ public class UIController : MonoBehaviour
     }
 
     private void AddUsableElement(string name, int pos){
-        Sprite sprite = InventorySpriteLoader.GetImage(name);
+        Sprite sprite = ResourceLoader.GetImage(name);
         spots[pos].SetItem(sprite);
     }
 

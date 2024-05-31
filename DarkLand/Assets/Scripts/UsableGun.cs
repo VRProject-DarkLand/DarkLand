@@ -39,15 +39,19 @@ public class UsableGun : IUsableObject{
         GameEvent.isUsingGun = true;
         _animator.SetBool("selected", true);
         StartCoroutine(PickupTime());
+        Debug.Log("Pistol selected");
     }
 
     //shoot with the gun
     public override void Use(){
+        Debug.Log("Calling use");
         if(_shootingBehaviour == null){
             _shootingBehaviour = GetComponentInChildren<ShootingBehaviour>();
+            Debug.Log("Shooting behaviour is null");
         }
         if(_readyToFire){
             _shootingBehaviour.Shoot();
+            Debug.Log("Calling shoot");
         }
     }
     public override void SecondaryUse(){
