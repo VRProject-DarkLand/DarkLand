@@ -19,6 +19,7 @@ public class Menu : MonoBehaviour
     [SerializeField] GameObject NewGamePanel;
     [SerializeField] TMP_InputField newGameName;
     [SerializeField] GameObject startNewGameButton;
+    [SerializeField] SettingsController settings;
     private List<SaveMenuObject> saveObjects  = new();
     private  int selected = -1; 
     private List<string> savings = new List<string>();
@@ -55,6 +56,8 @@ public class Menu : MonoBehaviour
     public void OnBack(){
         MainMenu.SetActive(true);
         LoadMenu.SetActive(false);
+        settings.HideAll();
+        settings.gameObject.SetActive(false);
         NewGamePanel.SetActive(false);
     }
 
@@ -65,6 +68,11 @@ public class Menu : MonoBehaviour
         Settings.LastSaving = "";
     }
 
+
+    public void OnSettingsClick() {
+            MainMenu.SetActive(false);
+            settings.gameObject.SetActive(true);
+    }
 
 
     private void SelectSave(int save) {
