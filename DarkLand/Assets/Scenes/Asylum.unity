@@ -2261,7 +2261,7 @@ PrefabInstance:
     - target: {fileID: 6431105756410801159, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: inventorySlot
       value: 
-      objectReference: {fileID: 3633713856825923615, guid: 74f307858bf4afa47add73beb1d629f3, type: 3}
+      objectReference: {fileID: 3633713856825923615, guid: 3d62597a3688f10459aa708231133452, type: 3}
     - target: {fileID: 6508056171343626579, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
