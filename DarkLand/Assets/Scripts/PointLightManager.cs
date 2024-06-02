@@ -59,6 +59,8 @@ public class LightsManager : MonoBehaviour
             while(!on){
                 yield return new WaitForSeconds(10);
             }
+            if(allLights.Count <=1)
+                yield break;
             // Create a list to store the point lights and their distances
             List<KeyValuePair<Light, float>> lightDistances = new List<KeyValuePair<Light, float>>();
             // Calculate distances and store them along with the lights

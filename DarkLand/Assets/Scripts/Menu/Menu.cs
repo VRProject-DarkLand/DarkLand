@@ -28,6 +28,7 @@ public class Menu : MonoBehaviour
         foreach(string f in Directory.GetFiles(Settings.SAVE_DIR)){
             savings.Add(Path.GetFileName(f));
         }
+
     }
     public void OnLoadGame(){
         Settings.LastSaving = "";

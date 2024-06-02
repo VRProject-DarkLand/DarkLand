@@ -12,8 +12,12 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private GameObject videoPanel;
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private TMP_Dropdown qualityDrop;
-
+    [SerializeField] private Toggle musicToggle;
+    [SerializeField] private Toggle soundToggle;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider soundSlider;
     private List<GameObject> panels ;
+
     private Resolution[] resolutions; 
 
     // Start is called before the first frame update
@@ -35,6 +39,10 @@ public class SettingsController : MonoBehaviour
                 currentResolution = i;
             }
         }
+        musicToggle.isOn = !Managers.AudioManager.musicOn;
+        soundToggle.isOn = !Managers.AudioManager.soundOn;
+        soundSlider.value = Managers.AudioManager.soundVolume;
+        musicSlider.value = Managers.AudioManager.musicVolume;
         resolutionDropdown.AddOptions(resOpt);
         resolutionDropdown.value = currentResolution;
         resolutionDropdown.RefreshShownValue(); 
