@@ -60,6 +60,8 @@ public class ThrowableObject : IUsableObject
     public override void Use(){
         
         GameObject copy = Instantiate(gameObject, gameObject.transform.parent);
+        
+        Debug.Log("THROW AND SET PARENT");
         foreach(Renderer r in copy.GetComponentsInChildren<Renderer>()){
                     r.gameObject.layer = LayerMask.NameToLayer("Default");
         }
@@ -77,9 +79,10 @@ public class ThrowableObject : IUsableObject
         rb.velocity = gameObject.transform.parent.GetComponentInParent<CharacterController>().velocity;
         rb.AddForce(gameObject.transform.parent.forward * force, ForceMode.Impulse);
         
-        copy.transform.SetParent(null, true);
+        //copy.transform.SetParent(null, true);
         Managers.Inventory.ConsumeItem(gameObject.name);
         //Managers.UsableInventory.RemoveSelectable(gameObject);
+        copy.transform.parent = Managers.Persistence.GetAllCollectablesContainer().transform;
         
     }
     public override void Deselect(){

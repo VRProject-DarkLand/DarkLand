@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class InventoryManager : MonoBehaviour, IGameManager
+public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSave
 {
     // Start is called before the first frame update
 
@@ -24,13 +24,15 @@ public class InventoryManager : MonoBehaviour, IGameManager
     private void DisplayItems(){
     }
 
-    public void AddItem(GameObject obj, int usages){
-        obj.GetComponent<Collectable>().enabled = false;
+    public bool AddItem(GameObject obj, int usages){
+        Collectable collectable = obj.GetComponent<Collectable>();
+        collectable.enabled = false;
         obj.GetComponent<Collider>().enabled = false;
         Rigidbody rb ;
 
-        if(obj == null)
-            return;
+        if(obj == null){
+            return false;
+        }
         if(obj.TryGetComponent<Rigidbody>(out rb))
             rb.isKinematic = true;
         obj.GetComponent<InteractableTrigger>().enabled = false;
@@ -49,6 +51,7 @@ public class InventoryManager : MonoBehaviour, IGameManager
             _items[name].Increase(usages);
         
         DisplayItems();
+        return true;
     }
 
     public List<string> GetItemList(){
@@ -87,6 +90,23 @@ public class InventoryManager : MonoBehaviour, IGameManager
     void Update()
     {
         
+    }
+    public void SetLoadedGameData(){
+        //instantiate object, then collect
+        for(int i = 0; i < Settings.gameData.inventoryItemsNames.Count; ++i){
+            GameObject obj = Managers.Persistence.CreateInventoryItem(Settings.gameData.inventoryItemsNames[i]);
+            AddItem(obj, obj.GetComponent<Collectable>().GetMaxUsages());
+            //Collectable coll = obj.GetComponent<Collectable>();
+            Debug.Log("Destroy inv obj " + obj.name);
+            Destroy(obj);
+        }
+    }
+    public void SaveData(){
+        List<InventoryItem> items = GetItems();
+        foreach(InventoryItem item in items){
+            Settings.gameData.inventoryItemsNames.Add(item.Name);
+            Settings.gameData.inventoryItemsQuantities.Add(item.Count.ToString());
+        }
     }
 }
 

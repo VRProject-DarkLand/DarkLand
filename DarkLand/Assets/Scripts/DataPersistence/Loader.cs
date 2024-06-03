@@ -5,6 +5,7 @@ using UnityEngine;
 public class Loader{
 
     public static void Load(string dataFileName){
-        Settings.gameData = FileDataHandler.Load(dataFileName);
+        FileDataHandler.Load(dataFileName);
+        Settings.LoadedFromSave = true;
     }
 }

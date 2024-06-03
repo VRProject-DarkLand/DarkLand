@@ -26,6 +26,7 @@ public class DialogsKeeper : MonoBehaviour
             {GameEvent.InteractWithMessage.UNLOCK, "Unlock door"},
             {GameEvent.InteractWithMessage.TURN_ON, "Turn on lights"},
             {GameEvent.InteractWithMessage.TURN_OFF, "Turn off lights"},
+            {GameEvent.InteractWithMessage.SAVE_GAME, "Save game"},
 
         };
 

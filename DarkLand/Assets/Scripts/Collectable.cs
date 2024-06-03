@@ -4,11 +4,11 @@ using Unity.VisualScripting.FullSerializer;
 using UnityEditor.VersionControl;
 using UnityEngine;
 
-public class Collectable : IInteractableObject
-{
+public class Collectable : IInteractableObject, IDataPersistenceSave{
     // Start is called before the first frame update
     private InventoryManager inventory;
-    [SerializeField] private int maxUsages = 1; 
+    [SerializeField] private int maxUsages = 1;
+    [SerializeField] public bool Collected = false;
     void Start()
     {
         inventory = Managers.Inventory;
@@ -17,13 +17,21 @@ public class Collectable : IInteractableObject
         interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.COLLECT_ITEM);
     }
     public override void Interact(){
-        inventory?.AddItem(gameObject, maxUsages);
-        Destroy(gameObject);
+        bool InsertResult = inventory ? inventory.AddItem(gameObject, maxUsages) : false;
+        if(InsertResult)
+            Destroy(gameObject);
+            
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public int GetMaxUsages(){
+        return maxUsages;
+    }
+    
+    public void SaveData(){
+        if(!Collected){
+            Settings.gameData.collectableItemsPrefabs.Add(transform.name);
+            Settings.gameData.collectableItemsPosition.Add(transform.position);
+            Settings.gameData.collectableItemsRotation.Add(transform.localEulerAngles);
+            Settings.gameData.collectableItemsScale.Add(transform.localScale);
+        }   
     }
 }

@@ -7,6 +7,7 @@ public class Settings
     public const string TORCH_TAG = "Torch";
     public const string PLAYER_TAG = "Player";
     public static string LastSaving = "";
+    public static bool LoadedFromSave = false;
     public const string ASYLUM_SCENE = "Scenes/Asylum";
     public const string MAIN_MENU = "Scenes/MainMenu";
     public static GameData gameData;

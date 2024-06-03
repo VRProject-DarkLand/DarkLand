@@ -10,7 +10,7 @@ public class UsableGun : IUsableObject{
 
     private Renderer _gunRenderer;
     private Renderer _armsRenderer;
-
+    
     void Awake(){
         Renderer[] renderers = transform.GetComponentsInChildren<Renderer>();
         _gunRenderer = renderers[0];

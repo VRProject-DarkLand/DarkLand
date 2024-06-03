@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UsableObjectManager : MonoBehaviour, IGameManager{
+public class UsableObjectManager : MonoBehaviour, IGameManager, IDataPersistenceSave{
 
     private IUsableObject _currentObject;
     private int _currentIndex;
@@ -34,12 +34,16 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
 
     //add element to selectable in the first free position
     public bool AddSelectable(GameObject obj){
-        obj.transform.SetParent(null, true);
-        GameObject usableObject = Instantiate(obj, _usableParent.transform, true); 
+        //obj.transform.SetParent(null, true);
+       
+        GameObject usableObject = Instantiate(obj, _usableParent.transform, false);
+        Collectable collectable = usableObject.GetComponent<Collectable>();
         //obj.SetActive(false);
         usableObject.name = obj.name;
-        if(obj == null)
+        if(obj == null){
+            collectable.Collected = false;
             return false;
+        }
         for(int i = 0; i < _maxSize; ++i){
             if(_selectable[i].IsDummy()){
                 _selectable[i] = usableObject.GetComponent<IUsableObject>();
@@ -60,9 +64,11 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
                 //set layer for usable items s.t. they are displayed from the usable objects camera.
                 //In other words, they are displayed on top of everything
 
+                collectable.Collected = true;
                 return true;
             }
         }
+        collectable.Collected = false;
         return false;
     }
     //remove element from selectable if present (replace with dummy)
@@ -167,5 +173,17 @@ public class UsableObjectManager : MonoBehaviour, IGameManager{
     void OnDestroy(){
         Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, SetActivationState);
         Messenger<bool>.RemoveListener(GameEvent.SHOW_INVENTORY, SetActivationState);
+    }
+
+    public void SaveData(){
+        //save name of object and position in such a way that on load
+        //the same object will end up in the same position
+        for(int i = 0; i < _maxSize; ++i){
+            if(_selectable[i].IsDummy()){
+               Settings.gameData.usableItemsNames.Add("empty"); 
+            }else{
+                Settings.gameData.usableItemsNames.Add(_selectable[i].name);
+            }
+        }
     }
 }

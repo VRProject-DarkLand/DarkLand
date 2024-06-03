@@ -19,6 +19,7 @@ public class ShootingBehaviour : MonoBehaviour
     private AudioSource _audioSource;
     [SerializeField] private GameObject _bulletSource;
     [SerializeField] private AudioClip _shootAudioClip;
+    [SerializeField] private GameObject bulletHolePrefab;
     private void Start(){
         _camera = Camera.main;
         _audioSource = GetComponent<AudioSource>();
@@ -46,6 +47,7 @@ public class ShootingBehaviour : MonoBehaviour
             //create bullet from the center of the gun, direct it towards the hit point and then
             //set velocity and direction inside the BulletBehaviour script
             GameObject projectile = Instantiate(bulletPrefab, _bulletSource.transform.position, Quaternion.identity);
+            projectile.GetComponent<BulletBehaviour>().SetBulletHolePrefab(bulletHolePrefab);
             //compute bullet dir as the forward direction of the camera plus some bias that is 
             //a random value between the maximum amount of spread on both x and y local axis
             Vector3 BulletDir =_camera.gameObject.transform.forward;

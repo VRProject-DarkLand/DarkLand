@@ -66,7 +66,13 @@ public class Managers : MonoBehaviour
             yield return null;
         }
         Debug.Log("All managers started up");
-        
+        if(Settings.LoadedFromSave){
+            Persistence.SetLoadedData();
+            Player.SetLoadGameData();
+            Inventory.SetLoadedGameData();
+            Debug.Log("Inventory loaded");
+            Messenger.Broadcast(GameEvent.ALL_MANAGERS_LOADED,  MessengerMode.DONT_REQUIRE_LISTENER);
+        } 
     }
     public static void LoadGameData(){
 

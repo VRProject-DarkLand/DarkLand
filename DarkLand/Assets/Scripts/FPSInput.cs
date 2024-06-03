@@ -44,7 +44,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        _health = Managers.Player.health;
+        _health = Managers.Player.maxHealth;
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
         actions = new List<Actions>(){Actions.Walk};
@@ -54,12 +54,14 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         alive = !Managers.Player.dead;
         standingHead = head.transform.localPosition;
         crouchHead = standingHead+new Vector3(0f, -0.3f, 0f);
-        //if(Settings.loadingFromSave)
-            //setSaveData()
     }
 
 
-
+    public void SetSaveData(){
+        _health  = Settings.gameData.playerHealth;
+        transform.position = Settings.gameData.playerPosition;
+        transform.localEulerAngles = Settings.gameData.playerRotation;
+    }
     private enum Actions{
         Walk = 0,
         Crouch = 1,
@@ -139,7 +141,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
                 Managers.Inventory.ChangeInventoryVisibility();
         }
         if(Input.GetKeyDown(KeyCode.O)){
-            Managers.Persistence.SaveGame();
+            StartCoroutine(Managers.Persistence.SaveGame());
         } 
         
 
@@ -305,9 +307,9 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             return prev;
     }
 
-    public void SaveData(ref GameData data)
-    {
-        data.playerHealth =  _health;
-        data.playerPosition = transform.position;
+    public void SaveData(){
+        Settings.gameData.playerHealth =  _health;
+        Settings.gameData.playerPosition = transform.position;
+        Settings.gameData.playerRotation = transform.localEulerAngles;
     }
 }
