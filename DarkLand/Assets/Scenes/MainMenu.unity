@@ -272,7 +272,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 585.5
+      value: 609.5
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -421,7 +421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 585.5
+      value: 609.5
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1614,7 +1614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 585.5
+      value: 609.5
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -3258,7 +3258,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 200
+  m_fontSize: 179
   m_fontSizeBase: 160
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4697,7 +4697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 585.5
+      value: 609.5
       objectReference: {fileID: 0}
     - target: {fileID: 4302851021202766058, guid: cef3e1b3c3491b54abef7b7e218ca188, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4868,6 +4868,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6030320098017997845, guid: d009df6ef6dd3dd45b0fb60e77061aa2, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 463159752}
+    - target: {fileID: 6030320098017997845, guid: d009df6ef6dd3dd45b0fb60e77061aa2, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetResolution
+      objectReference: {fileID: 0}
     - target: {fileID: 6267836538865641223, guid: d009df6ef6dd3dd45b0fb60e77061aa2, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -4876,6 +4884,14 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1972472912}
+    - target: {fileID: 7078583456494473604, guid: d009df6ef6dd3dd45b0fb60e77061aa2, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 463159752}
+    - target: {fileID: 7078583456494473604, guid: d009df6ef6dd3dd45b0fb60e77061aa2, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetQuality
+      objectReference: {fileID: 0}
     - target: {fileID: 7698930328016573491, guid: d009df6ef6dd3dd45b0fb60e77061aa2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
