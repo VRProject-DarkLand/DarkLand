@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class SettingsController : MonoBehaviour
 {
+     [SerializeField] private GameObject settings;
     [SerializeField] private GameObject audioPanel;
     [SerializeField] private GameObject infoPanel;
     [SerializeField] private GameObject videoPanel;
@@ -39,8 +40,8 @@ public class SettingsController : MonoBehaviour
                 currentResolution = i;
             }
         }
-        musicToggle.isOn = !Managers.AudioManager.musicOn;
-        soundToggle.isOn = !Managers.AudioManager.soundOn;
+        musicToggle.isOn = Managers.AudioManager.musicOn;
+        soundToggle.isOn = Managers.AudioManager.AllSoundOn;
         soundSlider.value = Managers.AudioManager.soundVolume;
         musicSlider.value = Managers.AudioManager.musicVolume;
         resolutionDropdown.AddOptions(resOpt);
@@ -61,6 +62,10 @@ public class SettingsController : MonoBehaviour
         foreach(GameObject g in panels){
             g.SetActive(false);
         }
+    }
+
+    public void ActivePanel(bool active){
+        settings.SetActive(active);
     }
 
     public void OnPanelShow(GameObject go){

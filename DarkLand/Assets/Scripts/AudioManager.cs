@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 public class AudioManager : MonoBehaviour, IGameManager {
-    [SerializeField] private AudioSource soundSource;
+    [SerializeField] private AudioSource uiSoundSource;
     [SerializeField] private AudioSource musicSource;
 [SerializeField] private string introBGMusic;
 [SerializeField] private string levelBGMusic;
@@ -13,14 +13,16 @@ public class AudioManager : MonoBehaviour, IGameManager {
         Debug.Log("Audio manager starting...");
         musicSource.ignoreListenerVolume = true;
         musicSource.ignoreListenerPause = true;
+        uiSoundSource.ignoreListenerPause = true;
         soundVolume = 1f;
         musicVolume = 1f;
+        uiSoundSource.mute = AudioListener.pause;
         PlayIntroMusic();
         status = ManagerStatus.Started;
     }
 
     public void PlaySound(AudioClip clip) {
-        soundSource.PlayOneShot(clip);
+        uiSoundSource.PlayOneShot(clip);
     }
 
     public float musicVolume {
@@ -37,7 +39,7 @@ public class AudioManager : MonoBehaviour, IGameManager {
     public bool musicOn {
             get {
                 if (musicSource != null) {
-                    return musicSource.mute;
+                    return !musicSource.mute;
                 }
                 return false;
             }
@@ -49,12 +51,22 @@ public class AudioManager : MonoBehaviour, IGameManager {
     }
 
 
+    public bool AllSoundOn{
+        get{return uiSoundOn && soundOn;}
+        set{uiSoundOn = value; soundOn = value;}
+    }
+
+    public bool uiSoundOn {
+        get {return !uiSoundSource.mute;}
+        set {uiSoundSource.mute = !value;}
+    }
+
     public float soundVolume {
         get {return AudioListener.volume;}
         set {AudioListener.volume = value;}
     }
     public bool soundOn {
-        get {return AudioListener.pause;}
+        get {return !AudioListener.pause;}
         set {AudioListener.pause = !value;}
     }
 
