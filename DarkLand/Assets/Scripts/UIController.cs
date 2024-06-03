@@ -99,11 +99,13 @@ public class UIController : MonoBehaviour
     }
 
     public void OnSettingsClick(){
+        Managers.Pause.settings = true;
         leftMenu?.SetActive(false);
         SettingsOptions.SetActive(true);
     }
 
     public void OnClickBack(){
+        Managers.Pause.settings = false;
         leftMenu?.SetActive(true);
         SettingsOptions.SetActive(false);
     }
@@ -115,6 +117,10 @@ public class UIController : MonoBehaviour
     }
 
     public void Paused(bool paused){
+        if(Managers.Pause.settings){
+            OnClickBack();
+            return;
+        }
         
         Cursor.lockState = paused? CursorLockMode.Confined : currentCursorLock;
         if(currentCursorLock != CursorLockMode.Locked)
@@ -122,6 +128,7 @@ public class UIController : MonoBehaviour
         else 
             Cursor.visible = paused;
         pauseMenu.SetActive(paused);
+        ConfirmationPopup.SetActive(false);
     }
 
     public void OnQuit(){
