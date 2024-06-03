@@ -19,7 +19,9 @@ public class Menu : MonoBehaviour
     [SerializeField] GameObject NewGamePanel;
     [SerializeField] TMP_InputField newGameName;
     [SerializeField] GameObject startNewGameButton;
+    [SerializeField] SettingsController settings;
     private List<SaveMenuObject> saveObjects  = new();
+
     private  int selected = -1; 
     private List<string> savings = new List<string>();
     //{ "Ndria00_12-12-2024_16:59", "Ndria00_12-11-2024_16:59", "Ndria00_12-12-2014_16:59", "RTocco_14-12-2024_16:58"};
@@ -27,8 +29,10 @@ public class Menu : MonoBehaviour
         foreach(string f in Directory.GetFiles(Settings.SAVE_DIR)){
             savings.Add(Path.GetFileName(f));
         }
+    
     }
     public void OnLoadGame(){
+        
         Settings.LastSaving = "";
         MainMenu.SetActive(false);
         LoadMenu.SetActive(true);
@@ -55,6 +59,8 @@ public class Menu : MonoBehaviour
     public void OnBack(){
         MainMenu.SetActive(true);
         LoadMenu.SetActive(false);
+        settings.HideAll();
+        settings.ActivePanel(false);
         NewGamePanel.SetActive(false);
     }
 
@@ -65,6 +71,32 @@ public class Menu : MonoBehaviour
         Settings.LastSaving = "";
     }
 
+    public void OnDeleteFile(){
+        try{
+            if(Settings.LastSaving != ""){
+                
+                #if UNITY_EDITOR
+                UnityEditor.FileUtil.DeleteFileOrDirectory( Path.Combine(Settings.SAVE_DIR, Settings.LastSaving));
+		        UnityEditor.AssetDatabase.Refresh();
+                #else 
+                File.Delete( Path.Combine(Settings.SAVE_DIR, Settings.LastSaving) );
+		        #endif
+                savings.Clear();
+                foreach(string f in Directory.GetFiles(Settings.SAVE_DIR)){
+                    savings.Add(Path.GetFileName(f));
+                }
+            }
+        }
+        catch(Exception ex){
+            Debug.Log("Unable to delete file");
+        }
+        OnLoadGame();
+    }
+
+    public void OnSettingsClick() {
+            MainMenu.SetActive(false);
+             settings.ActivePanel(true);
+    }
 
 
     private void SelectSave(int save) {
@@ -116,41 +148,49 @@ public class Menu : MonoBehaviour
     }
 
     void Update(){
-        if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)){
-            if(Settings.LastSaving != ""){
-                OnPlayButton(false);
-            }
-        }
-        if(Input.GetKeyDown(KeyCode.UpArrow)){
-            if(selected <= 0){
-                    selected = 0;
-            }else{
-                    saveObjects[selected].Deselect();
-                    selected -=1;
-                    //  Canvas.ForceUpdateCanvases();
-
-                    // scrollRect.content.anchoredPosition = new Vector2(scrollRect.content.anchoredPosition.x, ((Vector2)scrollRect.transform.InverseTransformPoint( scrollRect.content.position)
-                    // - (Vector2)scrollRect.transform.InverseTransformPoint( saveObjects[selected].transform.position)).y);
-                    scrollRect.verticalNormalizedPosition = 1f-selected*1f/(1f*(saveObjects.Count-1));       
-                    Canvas.ForceUpdateCanvases();
-            }
-            Settings.LastSaving = saveObjects[selected].fileName;
-            saveObjects[selected].Select();
-            
-        }
-        if(Input.GetKeyDown(KeyCode.DownArrow)){
-                if(selected >= saveObjects.Count-1){
-                    selected = saveObjects.Count-1;
+        if(LoadMenu.activeSelf){
+            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)){
+                if(Settings.LastSaving != ""){
+                    OnPlayButton(false);
                 }
-                else{
-                    if(selected >= 0)
+            }
+
+            else if(Input.GetKeyDown(KeyCode.Delete)){
+                OnDeleteFile();
+            }
+
+            if(Input.GetKeyDown(KeyCode.UpArrow)){
+                if(selected <= 0){
+                        selected = 0;
+                }else{
                         saveObjects[selected].Deselect();
-                    selected +=1;
-                    scrollRect.verticalNormalizedPosition = 1f-selected*1f/(1f*(saveObjects.Count-1));    
-                     Canvas.ForceUpdateCanvases();
+                        selected -=1;
+                        //  Canvas.ForceUpdateCanvases();
+
+                        // scrollRect.content.anchoredPosition = new Vector2(scrollRect.content.anchoredPosition.x, ((Vector2)scrollRect.transform.InverseTransformPoint( scrollRect.content.position)
+                        // - (Vector2)scrollRect.transform.InverseTransformPoint( saveObjects[selected].transform.position)).y);
+                        scrollRect.verticalNormalizedPosition = 1f-selected*1f/(1f*(saveObjects.Count-1));       
+                        Canvas.ForceUpdateCanvases();
                 }
                 Settings.LastSaving = saveObjects[selected].fileName;
                 saveObjects[selected].Select();
+                
+            }
+            if(Input.GetKeyDown(KeyCode.DownArrow)){
+                    if(selected >= saveObjects.Count-1){
+                        selected = saveObjects.Count-1;
+                    }
+                    else{
+                        if(selected >= 0)
+                            saveObjects[selected].Deselect();
+                        selected +=1;
+                        scrollRect.verticalNormalizedPosition = 1f-selected*1f/(1f*(saveObjects.Count-1));    
+                        Canvas.ForceUpdateCanvases();
+                    }
+                    Settings.LastSaving = saveObjects[selected].fileName;
+                    saveObjects[selected].Select();
+            }
+
         }
     }
 }

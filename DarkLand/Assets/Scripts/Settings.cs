@@ -7,6 +7,7 @@ public class Settings
     public const string TORCH_TAG = "Torch";
     public const string PLAYER_TAG = "Player";
     public static string LastSaving = "";
+    public static bool LoadedFromSave = false;
     public const string ASYLUM_SCENE = "Scenes/Asylum";
     public const string MAIN_MENU = "Scenes/MainMenu";
     public static GameData gameData;
@@ -14,4 +15,10 @@ public class Settings
     public const string HEALTH = "Adrenaline";
     public const string INVENTORY_SPRITES_FOLDER_NAME = "InventoryIcons";
     public const string INVENTORY_ITEMS_DESCRIPTIONS_FOLDER_NAME = "InventoryDescriptions";
+    public static class AudioSettings{
+        public static float musicVolume = 0.8f;
+        public static float soundVolume = 1f;
+        public static bool musicOn = true;
+        public static bool soundOn = true;
+    }
 }

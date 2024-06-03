@@ -11,8 +11,13 @@ public class LightsManager : MonoBehaviour
     public bool on {get;private set;} = true;
 
 
-    void Start()
-    {
+    void Start(){
+        Messenger<bool>.AddListener(GameEvent.OPERATE_ON_LIGHTS, OperateOnLights);
+        Messenger.AddListener(GameEvent.ALL_MANAGERS_LOADED, ActivatePointLightManager); 
+    }
+    public void ActivatePointLightManager(){
+
+        Debug.Log("Activating blinking manager");
         on = true;
         // Find the player GameObject (assuming it has a tag "Player")
         player = GameObject.FindGameObjectWithTag("Player");
@@ -21,15 +26,10 @@ public class LightsManager : MonoBehaviour
         for(int i= 0;i<allLights.Count;++i){
             if (allLights[i].gameObject.tag == Settings.TORCH_TAG){
                     allLights.Remove(allLights[i]);
-                    break;
+                    Debug.Log("Removed light from list");
+                    //break;
             }
         }
-        // for(int i= 0;i<allLights.Count;++i){
-        //    allLights[i].intensity*=2;
-        //    allLights[i].range *=2;
-        // }
-        Messenger<bool>.AddListener(GameEvent.OPERATE_ON_LIGHTS, OperateOnLights);
-        //OperateOnLights(true);
         StartCoroutine(BlinkManager());
     }
     IEnumerator Blink(GameObject selectedLight){
@@ -59,11 +59,17 @@ public class LightsManager : MonoBehaviour
             while(!on){
                 yield return new WaitForSeconds(10);
             }
+            if(allLights.Count <=1)
+                yield break;
             // Create a list to store the point lights and their distances
             List<KeyValuePair<Light, float>> lightDistances = new List<KeyValuePair<Light, float>>();
             // Calculate distances and store them along with the lights
             foreach (Light light in allLights)
             {
+                if(light == null){
+                    Debug.Log("Null light");
+                    continue;
+                }
                 if (light.type == LightType.Point)
                 {
                     if(light.transform.position.y > player.transform.position.y-1){
@@ -76,6 +82,7 @@ public class LightsManager : MonoBehaviour
                     }
                 }
             }
+
 
             // Sort the list based on distances
             lightDistances.Sort((x, y) => x.Value.CompareTo(y.Value));
@@ -116,6 +123,7 @@ public class LightsManager : MonoBehaviour
 
     void OnDestroy(){
         Messenger<bool>.RemoveListener(GameEvent.OPERATE_ON_LIGHTS, OperateOnLights);
+        Messenger.RemoveListener(GameEvent.ALL_MANAGERS_LOADED, ActivatePointLightManager); 
     }
     
 

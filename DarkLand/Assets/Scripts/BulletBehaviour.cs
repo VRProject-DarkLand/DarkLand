@@ -9,6 +9,8 @@ public class BulletBehaviour : MonoBehaviour{
     private Vector3 _direction;
     private float _bulletRange;
     private float _distance = 0.0f;
+    private GameObject _bulletHolePrefab;
+    private float _distanceOfBulletHoleFromTarget = 0.01f;
     // void  Start(){
     //     //StartCoroutine(printTravelTimeAfterOneSec());
     // }
@@ -30,6 +32,9 @@ public class BulletBehaviour : MonoBehaviour{
         if(currentHit.transform != null && currentHit.distance < deltaMagnitude){
             Debug.Log("Bullet hit");
             //TODO call damage
+            Vector3 hitPoint = currentHit.point;
+            GameObject hole = Instantiate(_bulletHolePrefab, currentHit.point + Vector3.ClampMagnitude(currentHit.normal, _distanceOfBulletHoleFromTarget), Quaternion.LookRotation(-currentHit.normal));
+            hole.transform.SetParent(currentHit.transform, true);
             Destroy(gameObject);
         }
 
@@ -52,4 +57,8 @@ public class BulletBehaviour : MonoBehaviour{
         _bulletRange = bulletRange;
         _direction = direction;
     }
+    public void SetBulletHolePrefab(GameObject bulletHolePrefab){
+        _bulletHolePrefab = bulletHolePrefab;
+    }
+        
 }

@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
     public int maxHealth {get; private set;}
     public int health {get; private set;}
     public Vector3 playerPosition {get; private set;}
+    public Vector3 playerRotation {get; private set;}
     public int healthPackValue {get; private set;}
     public ManagerStatus status {get;private set;}
     public bool dead {get; private set;}
@@ -25,16 +26,14 @@ public class PlayerManager : MonoBehaviour, IGameManager
         fearLevel = 0f;
         dead = false;
         status = ManagerStatus.Started;
-        if(Settings.gameData != null){
-            LoadGameData();
-        }else{
-            SetNewGameData();
-        }
+
     }
-    private void LoadGameData(){
+    public void SetLoadGameData(){
         health = Settings.gameData.playerHealth;
         Vector3 pPos = Settings.gameData.playerPosition;
         playerPosition = new Vector3(pPos.x, pPos.y, pPos.z);
+        Vector3 pRot = Settings.gameData.playerRotation;
+        playerRotation = new Vector3(pRot.x, pRot.y, pRot.z);
     }
     private void SetNewGameData(){
         health = maxHealth;

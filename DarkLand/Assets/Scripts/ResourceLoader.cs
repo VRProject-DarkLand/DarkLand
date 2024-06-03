@@ -13,7 +13,7 @@ public class ResourceLoader{
     private const string path = "descriptions";
     public static Sprite GetImage(string name){
         if(name.EndsWith("key", System.StringComparison.OrdinalIgnoreCase)){
-            name = "key";
+            name = "Key";
         }
         if(!sprites.ContainsKey(name)){
              sprites.Add(name, Resources.Load<Sprite>(Path.Combine(Settings.INVENTORY_SPRITES_FOLDER_NAME, name)));

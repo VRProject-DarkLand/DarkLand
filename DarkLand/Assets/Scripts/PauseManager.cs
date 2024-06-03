@@ -10,6 +10,8 @@ public class PauseManager : MonoBehaviour, IGameManager
     public bool paused  {get; private set;}
     public Scene currentScene;
 
+    public bool settings; 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +21,7 @@ public class PauseManager : MonoBehaviour, IGameManager
     public void Startup(){
         status = ManagerStatus.Started;
         paused = false;
+        settings = false;
         currentScene = SceneManager.GetActiveScene();
     }
 
@@ -29,7 +32,9 @@ public class PauseManager : MonoBehaviour, IGameManager
     }
 
     public void OnEscResume(){
-        OnClickResume();
+        if(!settings){
+            OnClickResume();
+        }
         Messenger<bool>.Broadcast(GameEvent.PAUSED, paused);
     }
 

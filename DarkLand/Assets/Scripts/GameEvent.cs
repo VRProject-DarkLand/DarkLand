@@ -26,6 +26,8 @@ public class GameEvent : MonoBehaviour{
     public const string SHOW_INVENTORY = "SHOW_INVENTORY";
     public const string USABLE_ADDED = "USABLE_ADDED";
     public const string LOADING_VALUE = "LOADING_VALUE";
+
+    public const string ALL_MANAGERS_LOADED = "ALL_MANAGERS_LOADED";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
     public static bool isInventoryOpen = false ;
@@ -43,6 +45,7 @@ public class GameEvent : MonoBehaviour{
         UNLOCK,
         TURN_ON,
         TURN_OFF,
+        SAVE_GAME,
     };
 
 }
