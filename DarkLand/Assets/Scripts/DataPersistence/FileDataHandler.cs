@@ -46,13 +46,12 @@ public class FileDataHandler{
             //     }
             // }
             
-            FileStream fileStream = new FileStream(fullPath, 
+            StreamWriter streamWriter = new StreamWriter(new FileStream(fullPath, 
                                        FileMode.OpenOrCreate, 
                                        FileAccess.ReadWrite, 
-                                       FileShare.None);
-            fileStream.WriteAsync(Encoding.UTF8.GetBytes(dataString));
-            fileStream.Flush(true);
-            fileStream.Close();
+                                       FileShare.Read));
+            streamWriter.Write(dataString);
+            streamWriter.Close();
 
         }catch(Exception e){
            Debug.LogError("Error while trying to save in " + fullPath + " "+ e); 

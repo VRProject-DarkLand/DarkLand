@@ -17,6 +17,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject deathMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private InventoryViewer inventory;
+
+    [SerializeField] private GameObject SettingsOptions;
+    private GameObject leftMenu;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
     private CursorLockMode currentCursorLock;
@@ -42,6 +45,7 @@ public class UIController : MonoBehaviour
         inventory.gameObject.SetActive(false);
         ConfirmationPopup.SetActive(false);
         currentCursorLock = CursorLockMode.Locked;
+        leftMenu = pauseMenu.transform.Find("LeftPanel")?.gameObject;
         Paused(false);
         UpdateUIOnSaveLoad();
     }
@@ -92,6 +96,16 @@ public class UIController : MonoBehaviour
 
     public void OnFearChanged(){
 
+    }
+
+    public void OnSettingsClick(){
+        leftMenu?.SetActive(false);
+        SettingsOptions.SetActive(true);
+    }
+
+    public void OnClickBack(){
+        leftMenu?.SetActive(true);
+        SettingsOptions.SetActive(false);
     }
 
     private void OnSelectableChanged(int index){

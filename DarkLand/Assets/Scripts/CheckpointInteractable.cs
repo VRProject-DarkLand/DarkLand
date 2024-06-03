@@ -7,8 +7,8 @@ public class CheckpointInteractable : IInteractableObject{
     private bool _canSave = false;
     public override void Interact(){
         if(_canSave){
-            StartCoroutine(Managers.Persistence.SaveGame());
             _canSave = false;
+            StartCoroutine(Managers.Persistence.SaveGame());
             StartCoroutine(WaitForNextSave());
             //interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.SAVE_GAME);
         }else{
@@ -23,7 +23,7 @@ public class CheckpointInteractable : IInteractableObject{
         StartCoroutine(WaitForNextSave());
     }
     private IEnumerator WaitForNextSave(){
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(1f);
         _canSave = true;
     }
 }

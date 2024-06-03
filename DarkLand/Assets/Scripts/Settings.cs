@@ -15,4 +15,10 @@ public class Settings
     public const string HEALTH = "Adrenaline";
     public const string INVENTORY_SPRITES_FOLDER_NAME = "InventoryIcons";
     public const string INVENTORY_ITEMS_DESCRIPTIONS_FOLDER_NAME = "InventoryDescriptions";
+    public static class AudioSettings{
+        public static float musicVolume = 0.8f;
+        public static float soundVolume = 1f;
+        public static bool musicOn = true;
+        public static bool soundOn = true;
+    }
 }

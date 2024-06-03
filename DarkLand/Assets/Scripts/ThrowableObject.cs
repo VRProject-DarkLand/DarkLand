@@ -60,7 +60,6 @@ public class ThrowableObject : IUsableObject
     public override void Use(){
         
         GameObject copy = Instantiate(gameObject, gameObject.transform.parent);
-        
         Debug.Log("THROW AND SET PARENT");
         foreach(Renderer r in copy.GetComponentsInChildren<Renderer>()){
                     r.gameObject.layer = LayerMask.NameToLayer("Default");
@@ -71,7 +70,9 @@ public class ThrowableObject : IUsableObject
         foreach(var c in copy.GetComponents<Collider> ())
             c.enabled = true;
         copy.GetComponent<InteractableTrigger>().enabled = true;
-        copy.GetComponent<Collectable>().enabled = true;
+        Collectable collectable = copy.GetComponent<Collectable>();
+        collectable.enabled = true;
+        collectable.Collected = false;
         //Rigidbody thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
         
         Rigidbody rb = copy.GetComponent<Rigidbody>();

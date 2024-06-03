@@ -14,9 +14,10 @@ public class AudioManager : MonoBehaviour, IGameManager {
         musicSource.ignoreListenerVolume = true;
         musicSource.ignoreListenerPause = true;
         uiSoundSource.ignoreListenerPause = true;
-        soundVolume = 1f;
-        musicVolume = 1f;
-        uiSoundSource.mute = AudioListener.pause;
+        soundVolume = Settings.AudioSettings.soundVolume;
+        musicVolume = Settings.AudioSettings.musicVolume;
+        uiSoundSource.mute = !Settings.AudioSettings.soundOn;
+        musicSource.mute = !Settings.AudioSettings.musicOn;
         PlayIntroMusic();
         status = ManagerStatus.Started;
     }
@@ -32,6 +33,7 @@ public class AudioManager : MonoBehaviour, IGameManager {
         set {
             if (musicSource != null) {
                 musicSource.volume = value;
+                Settings.AudioSettings.musicVolume = value;
             }
         }
     }
@@ -46,6 +48,7 @@ public class AudioManager : MonoBehaviour, IGameManager {
         set {
             if (musicSource != null) {
                 musicSource.mute = !value;
+                Settings.AudioSettings.musicOn = value;
             }
         }
     }
@@ -53,17 +56,17 @@ public class AudioManager : MonoBehaviour, IGameManager {
 
     public bool AllSoundOn{
         get{return uiSoundOn && soundOn;}
-        set{uiSoundOn = value; soundOn = value;}
+        set{uiSoundOn = value; soundOn = value; Settings.AudioSettings.soundOn = value;}
     }
 
-    public bool uiSoundOn {
+    private bool uiSoundOn {
         get {return !uiSoundSource.mute;}
         set {uiSoundSource.mute = !value;}
     }
 
     public float soundVolume {
         get {return AudioListener.volume;}
-        set {AudioListener.volume = value;}
+        set {AudioListener.volume = value; Settings.AudioSettings.soundVolume = value;}
     }
     public bool soundOn {
         get {return !AudioListener.pause;}

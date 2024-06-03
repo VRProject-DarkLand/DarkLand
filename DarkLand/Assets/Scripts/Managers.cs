@@ -72,6 +72,7 @@ public class Managers : MonoBehaviour
             Inventory.SetLoadedGameData();
             Debug.Log("Inventory loaded");
             Messenger.Broadcast(GameEvent.ALL_MANAGERS_LOADED,  MessengerMode.DONT_REQUIRE_LISTENER);
+            Settings.LoadedFromSave = false;
         } 
     }
     public static void LoadGameData(){
