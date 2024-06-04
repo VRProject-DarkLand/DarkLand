@@ -22,7 +22,6 @@ public class UIController : MonoBehaviour
     private GameObject leftMenu;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
-    private CursorLockMode currentCursorLock;
     private int animatingDamageTimeElapsed = 0;
     
     // Start is called before the first frame update
@@ -35,6 +34,7 @@ public class UIController : MonoBehaviour
         Messenger.AddListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
+        Messenger.AddListener(GameEvent.ALL_MANAGERS_LOADED, LoadedManagers);
         for(int i = 0;i<Managers.UsableInventory._maxSize;++i){
             GameObject slot = Instantiate(usableSlotContainer);
             slot.transform.SetParent(usableSlots.transform, false);
@@ -44,9 +44,13 @@ public class UIController : MonoBehaviour
         damageImage.enabled = false;
         inventory.gameObject.SetActive(false);
         ConfirmationPopup.SetActive(false);
-        currentCursorLock = CursorLockMode.Locked;
         leftMenu = pauseMenu.transform.Find("LeftPanel")?.gameObject;
         Paused(false);
+        Managers.PointerManager.ForceLock();
+    }
+
+    private void LoadedManagers(){
+
         UpdateUIOnSaveLoad();
     }
 
@@ -122,11 +126,11 @@ public class UIController : MonoBehaviour
             return;
         }
         
-        Cursor.lockState = paused? CursorLockMode.Confined : currentCursorLock;
-        if(currentCursorLock != CursorLockMode.Locked)
-            Cursor.visible = true;
-        else 
-            Cursor.visible = paused;
+        if(paused) 
+            Managers.PointerManager.UnlockCursor();
+        else
+            Managers.PointerManager.LockCursor();
+
         pauseMenu.SetActive(paused);
         ConfirmationPopup.SetActive(false);
     }
@@ -138,17 +142,13 @@ public class UIController : MonoBehaviour
         if(isInventoryOpen){
             inventory.Clean();
             GameEvent.isInventoryOpen = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            currentCursorLock = Cursor.lockState;
-            Cursor.visible = false;
+            Managers.PointerManager.ForceLock();
             inventory.gameObject.SetActive(false);
         }else{
             inventory.gameObject.SetActive(true); 
             inventory.Show();
             GameEvent.isInventoryOpen = true;
-            Cursor.lockState = CursorLockMode.Confined;
-            currentCursorLock = Cursor.lockState;
-            Cursor.visible = true;
+            Managers.PointerManager.UnlockCursor();
         }
        
     }
@@ -163,8 +163,7 @@ public class UIController : MonoBehaviour
 
 
     public void OnPlayerDead(){
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+        Managers.PointerManager.UnlockCursor();
         deathMenu.SetActive(true);
     }
 
@@ -176,6 +175,7 @@ public class UIController : MonoBehaviour
         Messenger<string, int>.RemoveListener(GameEvent.USED_USABLE, UsedElement);
         Messenger<int>.RemoveListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
         Messenger<bool>.RemoveListener(GameEvent.PAUSED, Paused);
+        Messenger.RemoveListener(GameEvent.ALL_MANAGERS_LOADED, LoadedManagers);
     }
 
 }

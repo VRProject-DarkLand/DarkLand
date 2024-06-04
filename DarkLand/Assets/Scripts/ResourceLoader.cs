@@ -8,9 +8,11 @@ using UnityEngine;
 
 
 public class ResourceLoader{
+    private static Texture2D cursor;
     private static Dictionary<string, Sprite> sprites = new Dictionary<string,Sprite>();
      private static Dictionary<string, string> descriptions = new Dictionary<string, string>();
     private const string path = "descriptions";
+    private static string cursorPath = "Cursor";
     public static Sprite GetImage(string name){
         if(name.EndsWith("key", System.StringComparison.OrdinalIgnoreCase)){
             name = "Key";
@@ -20,6 +22,13 @@ public class ResourceLoader{
         }
         return sprites[name];
 
+    }
+
+    public static Texture2D GetCursor(){
+        if(cursor == null){
+            cursor = Resources.Load<Texture2D>(cursorPath);
+        }
+        return cursor;
     }
 
     public static string GetDescription(string name){

@@ -72,8 +72,7 @@ public class DialogsManager : MonoBehaviour
 
     public void CreateDialog(string entityName){
         GameEvent.isInDialog = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Managers.PointerManager.UnlockCursor();
         GameObject currentDialog = Instantiate(dialogPrefab, canvas.transform);
         DialogHandler dialogHandler = currentDialog.GetComponent<DialogHandler>();
         if(dialogHandler!= null){
@@ -85,8 +84,7 @@ public class DialogsManager : MonoBehaviour
     public void CloseDialog(string entityName){
         GameEvent.isInDialog = false;
         //reactivate talkToDialog  
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;      
+        Managers.PointerManager.LockCursor(); 
         talkToTextVisible = true;
         talkToText.SetActive(true);
     }

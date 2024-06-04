@@ -42,8 +42,6 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         _health = Managers.Player.maxHealth;
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
