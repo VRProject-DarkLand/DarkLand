@@ -11,7 +11,7 @@ public class DialogsKeeper : MonoBehaviour
     static DialogsKeeper(){
         ENTITY_NAME_AND_DIALOG = new Dictionary<string, string>
         {
-            {"NPC_1", "first text"},
+            {"NPC_1", "ASEREJE A A EHE"},
             {"NPC_2", "second text"}
         };
 

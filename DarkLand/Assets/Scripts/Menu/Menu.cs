@@ -90,6 +90,7 @@ public class Menu : MonoBehaviour
         catch(Exception ex){
             Debug.Log("Unable to delete file");
         }
+        selected = -1;
         OnLoadGame();
     }
 
@@ -123,7 +124,7 @@ public class Menu : MonoBehaviour
     }
 
     public void OnValueChanged(string value){
-        if(value.Length == 0){
+        if(value.Trim().Length == 0){
             startNewGameButton.SetActive(false);
         }else 
             startNewGameButton.SetActive(true);
@@ -136,7 +137,7 @@ public class Menu : MonoBehaviour
             Loader.Load(Settings.LastSaving);
             
         }else{
-            Settings.LastSaving = newGameName.text+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
+            Settings.LastSaving = newGameName.text.Trim()+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
 
         }
         ScenesController.instance.ChangeScene(Settings.ASYLUM_SCENE);
