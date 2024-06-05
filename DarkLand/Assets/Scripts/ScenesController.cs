@@ -18,6 +18,7 @@ public class ScenesController : MonoBehaviour
 
     public void ChangeScene(string scene){
         LoadingScreen.SetActive(true);
+        Messenger.Broadcast(GameEvent.CHANGING_SCENE);
         StartCoroutine(LoadingScene(scene));
     }
 

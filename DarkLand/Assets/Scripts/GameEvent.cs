@@ -26,7 +26,7 @@ public class GameEvent : MonoBehaviour{
     public const string SHOW_INVENTORY = "SHOW_INVENTORY";
     public const string USABLE_ADDED = "USABLE_ADDED";
     public const string LOADING_VALUE = "LOADING_VALUE";
-
+    public const string CHANGING_SCENE = "CHANGING_SCENE";
     public const string ALL_MANAGERS_LOADED = "ALL_MANAGERS_LOADED";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
@@ -39,6 +39,7 @@ public class GameEvent : MonoBehaviour{
         HIDE,
         UNHIDE,
         OPEN_DOOR,
+        EXIT_DOOR,
         CLOSE_DOOR,
         COLLECT_ITEM,
         INTERACT,

@@ -142,7 +142,7 @@ public class UIController : MonoBehaviour
         if(isInventoryOpen){
             inventory.Clean();
             GameEvent.isInventoryOpen = false;
-            Managers.PointerManager.ForceLock();
+            Managers.PointerManager.LockCursor();
             inventory.gameObject.SetActive(false);
         }else{
             inventory.gameObject.SetActive(true); 

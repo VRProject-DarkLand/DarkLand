@@ -125,12 +125,20 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         if(prefabName.Contains("key", System.StringComparison.OrdinalIgnoreCase)){
             prefabName = "Key";
         }
+        if(prefabName.Contains("letter", System.StringComparison.OrdinalIgnoreCase)){
+            prefabName = "Letter";
+        }
         return prefabName;
     }
 
     public GameObject CreateInventoryItem(string objectName){
-        string prefabName = GetPrefabName(objectName);
-        GameObject objPrefab = _collectablePrototypes.transform.Find(prefabName).gameObject;
+        GameObject objPrefab = null;
+        Transform t =  _collectablePrototypes.transform.Find(objectName);
+        if(t != null){
+            objPrefab = t.gameObject;
+        }else
+            objPrefab = _collectablePrototypes.transform.Find(GetPrefabName(objectName)).gameObject;
+       
         GameObject obj = Instantiate(objPrefab);
         obj.name = objectName;
         Debug.Log("Created inventory item in scene " + obj.name);
