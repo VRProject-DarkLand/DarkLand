@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class LittleGirlAI : MonoBehaviour
-{
-    [SerializeField] private GameObject target;
+public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
+    [System.Serializable]
+    public class LittleGirlSavingData{
+        public Vector3 position;
+        public Vector3 rotation;
+    }
+    private GameObject target;
     [SerializeField] private float viewAngle;
     [SerializeField] private float viewRange;
     private Transform lastPoint = null;
@@ -56,13 +60,17 @@ public class LittleGirlAI : MonoBehaviour
     }
     // Start is called before the first frame update
     void Start() { 
-    
+        target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         audioSource = GetComponent<AudioSource>();
         targetInput = target.GetComponent<FPSInput>();
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.enabled = true;
         animator = GetComponent<Animator>();
+        animator.enabled = true;
         numberOfHidingPoints = hidingPoints.transform.childCount;
-        TeleportToRandomPoint();
+        if(!Settings.LoadedFromSave){
+            TeleportToRandomPoint();
+        }
 }
 
     private void StartCounting()
@@ -143,5 +151,18 @@ public class LittleGirlAI : MonoBehaviour
                 currentState = States.hiding;
             }
         }
+    }
+
+    public void SaveData(){
+        LittleGirlSavingData data = new LittleGirlSavingData();
+        data.position = transform.position;
+        data.rotation = transform.localEulerAngles;
+        Settings.gameData.littleGirlsData.Add(data); 
+    }
+    public void LoadFromData(LittleGirlSavingData data ){
+        //Debug.Log("Setting parent position to " + data.position);
+        transform.parent.position = data.position;
+        transform.parent.localEulerAngles = data.rotation;
+    
     }
 }

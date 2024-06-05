@@ -8,7 +8,10 @@ public class ScaryGirlTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag(Settings.PLAYER_TAG)){
-            scaryGirl.GetComponent<ScaryGirlAI>().WakeUp();
+            scaryGirl.GetComponentInChildren<ScaryGirlAI>().WakeUp();
         }
+    }
+    public void SetScaryGirl(GameObject girl) {
+        scaryGirl = girl;
     }
 }

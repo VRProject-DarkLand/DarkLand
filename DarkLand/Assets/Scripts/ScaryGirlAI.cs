@@ -4,9 +4,15 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ScaryGirlAI : MonoBehaviour
-{
-    [SerializeField] private GameObject target;
+public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave{
+    [System.Serializable]
+    public class ScaryGirlSavingData {
+        public Vector3 position;
+        public Vector3 rotation;
+        public bool dead;
+        public bool awaken;
+    }
+    private GameObject target;
 
     [SerializeField] private NavMeshSurface surface;
     private Vector3 spawnPosition;
@@ -16,23 +22,39 @@ public class ScaryGirlAI : MonoBehaviour
     private bool inSight = false;
      bool isAttacking = false;
     [SerializeField] private  bool chasing = false;
-    [SerializeField] private float maxDistance = 30f;
+    [SerializeField] private float maxDistance = 10f;
     private Animator animator;
     [SerializeField] private int attackDamage = 60;
     private bool hitByTeddy = false;
     private bool dead = false;
+    //save if the enemy has been awaken s.t. upon spawning
+    //it can be activated without using the trigger
+    private bool awaken = false;
+    
     // Start is called before the first frame update
     void Start()
     {
+        target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.enabled = true;
         defaultSpeed = navMeshAgent.speed;
         animator = GetComponent<Animator>();
+        animator.enabled = true;
         spawnPosition = gameObject.transform.position;
         inSight = false;
+        if(Settings.LoadedFromSave){
+            if(dead)
+                Destroy(this.transform.parent.gameObject);
+            else{
+                if(awaken)
+                    WakeUp();
+            }
+        }
     }
 
     public void WakeUp(){
-        animator.SetBool("Alive", true);   
+        animator.SetBool("Alive", true);
+        awaken = true;
     }
 
     public void Scream(){
@@ -168,5 +190,21 @@ private IEnumerator FollowMe(){
     // Update is called once per frame
     void Update()
     {
+    }
+
+    public void SaveData(){
+        ScaryGirlSavingData data = new ScaryGirlSavingData();
+        data.position = transform.position;
+        data.rotation = transform.localEulerAngles;
+        data.dead = dead;
+        data.awaken = awaken;
+        Settings.gameData.scaryGirlsData.Add(data); 
+    }
+    public void LoadFromData(ScaryGirlSavingData data ){
+        transform.parent.position = data.position;
+        transform.parent.localEulerAngles = data.rotation;
+        dead = data.dead;
+        awaken = data.awaken;
+
     }
 }

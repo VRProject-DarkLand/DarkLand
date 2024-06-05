@@ -6,9 +6,8 @@ using UnityEngine.SceneManagement;
 public class ScenesController : MonoBehaviour
 {
     [SerializeField] private GameObject LoadingScreen;
-
+    public string _currentScene = "";
     [SerializeField] public static ScenesController instance { get; private set;}
-
     void Awake(){
         if(instance == null){
             instance = this;
@@ -20,7 +19,6 @@ public class ScenesController : MonoBehaviour
     public void ChangeScene(string scene){
         LoadingScreen.SetActive(true);
         StartCoroutine(LoadingScene(scene));
-
     }
 
     private IEnumerator LoadingScene(string scene){
@@ -29,6 +27,7 @@ public class ScenesController : MonoBehaviour
             Messenger<float>.Broadcast(GameEvent.LOADING_VALUE, operation.progress);
             yield return null;
         }
+        _currentScene = scene;
     }
 
 }

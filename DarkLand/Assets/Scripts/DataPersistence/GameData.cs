@@ -21,6 +21,11 @@ public class GameData{
     public List<string> inventoryItemsNames;
     public List<string> inventoryItemsQuantities;
 
+    public List<ScaryGirlAI.ScaryGirlSavingData> scaryGirlsData;
+    public List<LittleGirlAI.LittleGirlSavingData> littleGirlsData;
+
+    public List<WaypointMover.SpiderData> spidersData;
+    public bool allLightsStatus;
     public GameData(){
         collectableItemsPrefabs = new List<string>();
         collectableItemsPosition = new List<Vector3>();
@@ -29,6 +34,9 @@ public class GameData{
         usableItemsNames = new List<string>();
         inventoryItemsNames = new List<string>();
         inventoryItemsQuantities = new List<string>();
+        scaryGirlsData = new List<ScaryGirlAI.ScaryGirlSavingData>();
+        littleGirlsData = new List<LittleGirlAI.LittleGirlSavingData>();
+        spidersData = new List<WaypointMover.SpiderData>();
     }
 
 }

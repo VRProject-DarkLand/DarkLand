@@ -103,6 +103,8 @@ public class LightsManager : MonoBehaviour
         } 
           foreach (Light light in allLights)
             {
+                if(light == null)
+                    continue;
                 Material emissiveMaterial = null;
                 Renderer r;
                 if(light.transform.parent.gameObject.TryGetComponent<Renderer>(out r)){

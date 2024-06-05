@@ -3,27 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class WaypointMover : MonoBehaviour
-{
+public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
+    [System.Serializable]
+    public class SpiderData{
+        public int health;
+        public Vector3 position;
+        public Vector3 rotation;
+    }
     [SerializeField] private Waypoints waypoints;
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float distanceThreshold = 0.1f;
     [SerializeField] private float attackThreshold = 2.5f;
     private NavMeshAgent navMeshAgent;
-    [SerializeField] private GameObject target;
+    private GameObject target;
     private Animator animator;
     private bool alive = false;
 
     private bool isAttacking = false;
     [SerializeField] private int attackDamage = 20;
     private Transform currentWaypoint = null;
+    private Vector3 startPosition;
+    private Vector3 startRotation;
+    private int _health = 10;
     // Start is called before the first frame update
     void Start(){
+        target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         animator = GetComponentInChildren<Animator>();
+        animator.enabled = true;
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
         transform.position = currentWaypoint.position;
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
-       animator.SetBool("Idle", true);
+        animator.SetBool("Idle", true);
+        startPosition = transform.parent.position;
+        startRotation = transform.parent.localEulerAngles;
     }
 
     // Update is called once per frame
@@ -85,7 +97,18 @@ public class WaypointMover : MonoBehaviour
 
         isAttacking = false;
     }
+    public void Hurt(int damage){
+        Debug.Log("spider damaged");
+        _health -= damage;
+        if(_health <= 0){
+            Debug.Log("spider died");
+            Die();
+        }
 
+    }
+    public void Die(){
+        Destroy(gameObject);
+    }
     public void WakeUp(){
         alive = true;
     }
@@ -116,5 +139,18 @@ public class WaypointMover : MonoBehaviour
             // Smoothly rotate towards the target rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 0.3f);
         }
+    }
+
+    public void SaveData(){
+        SpiderData data = new SpiderData();
+        data.health = _health;
+        data.position = startPosition;
+        data.rotation = startRotation;
+        Settings.gameData.spidersData.Add(data);
+    }
+    public void LoadFromData(SpiderData data){
+        _health = data.health;
+        transform.parent.position = data.position;
+        transform.parent.localEulerAngles = data.rotation;        
     }
 }
