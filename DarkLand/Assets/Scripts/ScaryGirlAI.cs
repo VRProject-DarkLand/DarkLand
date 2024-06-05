@@ -35,24 +35,17 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave{
     void Start()
     {
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
+        spawnPosition = gameObject.transform.position;
+        inSight = false;
+       
+    }
+
+    public void WakeUp(){
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
         defaultSpeed = navMeshAgent.speed;
         animator = GetComponent<Animator>();
         animator.enabled = true;
-        spawnPosition = gameObject.transform.position;
-        inSight = false;
-        if(Settings.LoadedFromSave){
-            if(dead)
-                Destroy(this.transform.parent.gameObject);
-            else{
-                if(awaken)
-                    WakeUp();
-            }
-        }
-    }
-
-    public void WakeUp(){
         animator.SetBool("Alive", true);
         awaken = true;
     }
@@ -203,8 +196,14 @@ private IEnumerator FollowMe(){
     public void LoadFromData(ScaryGirlSavingData data ){
         transform.parent.position = data.position;
         transform.parent.localEulerAngles = data.rotation;
-        dead = data.dead;
+        dead = data.dead;  
         awaken = data.awaken;
-
+        if(dead)
+            Destroy(this.transform.parent.gameObject);
+        else{
+            if(awaken)
+                WakeUp();
+        }
+    
     }
 }
