@@ -209,27 +209,29 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         }
         onGround = detectOnGround();
         readActionFromInput();
-        if(Input.GetMouseButtonDown(0)){
-            Managers.UsableInventory.Use();
-        }
+        if(!(GameEvent.isInDialog || GameEvent.isHiding)){
+            if(Input.GetMouseButtonDown(0)){
+                Managers.UsableInventory.Use();
+            }
 
-        if(Input.GetMouseButton(1)){
-            Managers.UsableInventory.SecondaryUse();
-        }
-        if(Input.GetMouseButtonUp(1)){
-            Managers.UsableInventory.UndoSecondaryUse();
-        }
-        Actions action = actions.Last();
-        if(GameEvent.isInDialog || GameEvent.isHiding){
+            if(Input.GetMouseButton(1)){
+                Managers.UsableInventory.SecondaryUse();
+            }
+            if(Input.GetMouseButtonUp(1)){
+                Managers.UsableInventory.UndoSecondaryUse();
+            }
+            Actions action = actions.Last();
+            if(action == Actions.Walk){
+                 Walk();
+            }else if(action == Actions.Crouch){
+                Crouch();
+            }else{
+                Run();
+            }
+        }else{
             dirX = 0;
             dirZ = 0;
-        }else if(action == Actions.Walk){
-            Walk();
-        }else if(action == Actions.Crouch){
-            Crouch();
-        }else{
-            Run();
-        }
+        } 
 
         if(onGround){
             if (Input.GetButtonDown("Jump")){
