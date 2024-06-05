@@ -11,4 +11,7 @@ public class SpiderTrigger : MonoBehaviour
             spider.GetComponent<WaypointMover>().WakeUp();
         }
     }
+    public void AddSpider(GameObject spider){
+        this.spider = spider;
+    }
 }

@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DialogHandler : MonoBehaviour
 {
-    [SerializeField] private Text DialogContent;
-    [SerializeField] private Text continueButtonText;
+    [SerializeField] private TextMeshProUGUI DialogContent;
+    [SerializeField] private TextMeshProUGUI continueButtonText;
 
     private string continueButtonString;
     private string dialogContentString;

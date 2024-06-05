@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +13,7 @@ public class PauseManager : MonoBehaviour, IGameManager
     void Start()
     {
         Messenger.AddListener(GameEvent.PLAYER_DEAD,Pause);
+        Messenger.AddListener(GameEvent.CHANGING_SCENE, Pause);
     }
 
     public void Startup(){
@@ -54,10 +52,7 @@ public class PauseManager : MonoBehaviour, IGameManager
 
     void OnDestroy(){
         Messenger.RemoveListener(GameEvent.PLAYER_DEAD,Pause);
+        Messenger.RemoveListener(GameEvent.CHANGING_SCENE, Pause);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

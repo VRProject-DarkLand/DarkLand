@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightsLeverInteractable : IInteractableObject
-{
+public class LightsLeverInteractable : IInteractableObject, IDataPersistenceSave{
     [SerializeField] LightsManager manager;
     // Start is called before the first frame update
     void Start()
@@ -16,11 +15,7 @@ public class LightsLeverInteractable : IInteractableObject
     }
 
     public override void Interact(){
-        // if(!manager.on)
-        //     gameObject.GetComponent<Animator>().SetFloat("Speed", 1f);
-        // if(manager.on)
-        //     gameObject.GetComponent<Animator>().SetFloat("Speed", -1f);
-        gameObject.GetComponent<Animator>().SetBool("On", manager.on);
+        gameObject.GetComponent<Animator>().SetBool("On", !manager.on);
         Messenger<bool>.Broadcast(GameEvent.OPERATE_ON_LIGHTS, !manager.on);
         if(manager.on)
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.TURN_OFF);
@@ -32,5 +27,9 @@ public class LightsLeverInteractable : IInteractableObject
     void Update()
     {
         
+    }
+
+    public void SaveData(){
+        Settings.gameData.allLightsStatus = manager.on;
     }
 }

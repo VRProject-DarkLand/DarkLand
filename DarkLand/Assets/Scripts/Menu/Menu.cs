@@ -10,6 +10,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI; // Add me!!
 public class Menu : MonoBehaviour
 {
+    struct FileSaving{
+        public string name;
+        public DateTime lastWrite;
+    }
+
     [SerializeField] GameObject LoadMenu;
     [SerializeField] GameObject GamesContainer; 
     [SerializeField] GameObject MainMenu; 
@@ -23,14 +28,23 @@ public class Menu : MonoBehaviour
     private List<SaveMenuObject> saveObjects  = new();
 
     private  int selected = -1; 
-    private List<string> savings = new List<string>();
+    private List<FileSaving> savings = new List<FileSaving>();
     //{ "Ndria00_12-12-2024_16:59", "Ndria00_12-11-2024_16:59", "Ndria00_12-12-2014_16:59", "RTocco_14-12-2024_16:58"};
     public void Start(){
-        foreach(string f in Directory.GetFiles(Settings.SAVE_DIR)){
-            savings.Add(Path.GetFileName(f));
-        }
-    
+        ReadSavings();
     }
+
+    private void ReadSavings(){
+        savings.Clear();
+        foreach(string f in Directory.GetFiles(Settings.SAVE_DIR)){
+            FileSaving fileSaving = new FileSaving();
+            fileSaving.name = Path.GetFileName(f);
+            fileSaving.lastWrite = new FileInfo(Path.Combine(Settings.SAVE_DIR,fileSaving.name)).LastWriteTime;
+            savings.Add(fileSaving);
+        }
+        savings = savings.OrderByDescending(d => d.lastWrite).ToList();
+    }
+
     public void OnLoadGame(){
         
         Settings.LastSaving = "";
@@ -45,11 +59,12 @@ public class Menu : MonoBehaviour
         int i = 1;
         if(savings.Count == 0)
             EmptyGames.SetActive(true);
-        foreach(string file in savings){ 
+        foreach(FileSaving file in savings){ 
                 GameObject save = Instantiate(SaveObject, GamesContainer.transform);
                 SaveMenuObject saveMenu =  save.GetComponent<SaveMenuObject>();
                 saveObjects.Add(saveMenu);
-                saveMenu.SetInfo(i.ToString(), file);
+                string time = file.lastWrite.ToString("dd-MM-yyyy HH:mm");
+                saveMenu.SetInfo(i.ToString(), file.name, time);
                 int index = i-1;
                 AddEvent(save, EventTriggerType.PointerClick, e => SelectSave(index) );
                 i++;
@@ -81,15 +96,13 @@ public class Menu : MonoBehaviour
                 #else 
                 File.Delete( Path.Combine(Settings.SAVE_DIR, Settings.LastSaving) );
 		        #endif
-                savings.Clear();
-                foreach(string f in Directory.GetFiles(Settings.SAVE_DIR)){
-                    savings.Add(Path.GetFileName(f));
-                }
+                ReadSavings();
             }
         }
-        catch(Exception ex){
+        catch{
             Debug.Log("Unable to delete file");
         }
+        selected = -1;
         OnLoadGame();
     }
 
@@ -123,7 +136,7 @@ public class Menu : MonoBehaviour
     }
 
     public void OnValueChanged(string value){
-        if(value.Length == 0){
+        if(value.Trim().Length == 0){
             startNewGameButton.SetActive(false);
         }else 
             startNewGameButton.SetActive(true);
@@ -136,7 +149,7 @@ public class Menu : MonoBehaviour
             Loader.Load(Settings.LastSaving);
             
         }else{
-            Settings.LastSaving = newGameName.text+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
+            Settings.LastSaving = newGameName.text.Trim()+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
 
         }
         ScenesController.instance.ChangeScene(Settings.ASYLUM_SCENE);

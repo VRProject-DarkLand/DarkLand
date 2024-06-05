@@ -10,7 +10,6 @@ public class OpenDoubleDoor :  IInteractableObject
     private Tuple<Quaternion,Quaternion> close;
     private bool opened ;    
     private bool isMoving;
-    private bool canInteract;
     private float speed;
     private float timeCount;
     private Transform playerTransform;
@@ -24,7 +23,6 @@ public class OpenDoubleDoor :  IInteractableObject
     // Start is called before the first frame updatevoid Start()
     void Start(){
         opened = false;
-        canInteract = false;
         isMoving = false;
         speed = 1f;
         timeCount = 0f; 
@@ -75,7 +73,7 @@ public class OpenDoubleDoor :  IInteractableObject
               if(CanInteract()){
                  if(requireKey){
                     requireKey = false;
-                    Managers.Inventory.ConsumeItem(key);
+                    //Managers.Inventory.ConsumeItem(key);
                     interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
                     return;
                  }

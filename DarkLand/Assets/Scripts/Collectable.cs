@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class Collectable : IInteractableObject, IDataPersistenceSave{
     private InventoryManager inventory;
     [SerializeField] private int maxUsages = 1;
     [SerializeField] public bool Collected = false;
+    [SerializeField] private string  collectedName = "" ;
     void Start()
     {
         inventory = Managers.Inventory;
@@ -25,7 +27,7 @@ public class Collectable : IInteractableObject, IDataPersistenceSave{
     public int GetMaxUsages(){
         return maxUsages;
     }
-    
+    public string InventoryName{get =>  collectedName != ""? collectedName:gameObject.name;}
     public void SaveData(){
         if(!Collected){
             Settings.gameData.collectableItemsPrefabs.Add(transform.name);

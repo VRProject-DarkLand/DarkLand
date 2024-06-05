@@ -18,12 +18,12 @@ public class SaveMenuObject : MonoBehaviour
         Deselect();
     }
 
-    public void SetInfo(string id, string filename){
+    public void SetInfo(string id, string filename, string time){
         this.fileName = filename;
         string [] elements = fileName.Split('_');
         this.id.text = id;
         this.profile.text =  elements[0];
-        this.time.text =  elements[1] +" "+ elements[2]+":"+ elements[3];
+        this.time.text = time;
     }
 
     public void Select(){

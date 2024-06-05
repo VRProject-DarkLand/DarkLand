@@ -90,7 +90,7 @@ public class OpenDoor : IInteractableObject{
             if(CanInteract()){
                 if(requireKey){
                     requireKey = false;
-                    Managers.Inventory.ConsumeItem(key);
+                    //Managers.Inventory.ConsumeItem(key);
                     interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
                     return;
                 }

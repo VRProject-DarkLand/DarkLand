@@ -39,7 +39,7 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
         string name = obj.name;
         
         if(!_items.ContainsKey(name)){
-            _items.Add(name, new InventoryItem(name, usages));
+            _items.Add(name, new InventoryItem(collectable.InventoryName, usages));
 
             IUsableObject usable;
             if(obj.TryGetComponent<IUsableObject>(out usable)){
@@ -69,8 +69,14 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
         return 0;
     }
 
-    public List<InventoryItem> GetItems(){
-        return _items.Values.ToList<InventoryItem>();
+    public List<string> GetItemsKey(){
+        return _items.Keys.ToList<string>();
+    }
+
+    public InventoryItem GetItem(string name){
+        if(_items.ContainsKey(name))
+            return _items[name];
+        return null;
     }
 
     public void ConsumeItem(string name){
@@ -102,20 +108,20 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
         }
     }
     public void SaveData(){
-        List<InventoryItem> items = GetItems();
-        foreach(InventoryItem item in items){
-            Settings.gameData.inventoryItemsNames.Add(item.Name);
-            Settings.gameData.inventoryItemsQuantities.Add(item.Count.ToString());
+        List<string> items = GetItemsKey();
+        foreach(string item in items){
+            Settings.gameData.inventoryItemsNames.Add(item);
+            Settings.gameData.inventoryItemsQuantities.Add(_items[item].Count.ToString());
         }
     }
 }
 
 public class InventoryItem{
-    public string Name {get; private set;}
+    public string InventoryClassKey {get; private set;}
     public int Count {get; private set;}
 
     public InventoryItem(string name, int count ){
-        Name = name;
+        InventoryClassKey = name;
         Count = count; 
     }
 

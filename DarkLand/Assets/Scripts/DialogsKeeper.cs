@@ -11,7 +11,7 @@ public class DialogsKeeper : MonoBehaviour
     static DialogsKeeper(){
         ENTITY_NAME_AND_DIALOG = new Dictionary<string, string>
         {
-            {"NPC_1", "first text"},
+            {"NPC_1", "ASEREJE A A EHE"},
             {"NPC_2", "second text"}
         };
 
@@ -27,6 +27,7 @@ public class DialogsKeeper : MonoBehaviour
             {GameEvent.InteractWithMessage.TURN_ON, "Turn on lights"},
             {GameEvent.InteractWithMessage.TURN_OFF, "Turn off lights"},
             {GameEvent.InteractWithMessage.SAVE_GAME, "Save game"},
+            {GameEvent.InteractWithMessage.EXIT_DOOR, "Exit"},
 
         };
 

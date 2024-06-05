@@ -11,9 +11,7 @@ public class BulletBehaviour : MonoBehaviour{
     private float _distance = 0.0f;
     private GameObject _bulletHolePrefab;
     private float _distanceOfBulletHoleFromTarget = 0.01f;
-    // void  Start(){
-    //     //StartCoroutine(printTravelTimeAfterOneSec());
-    // }
+    private int _attackDamage = 5;
     void Update(){
         //compute the distance(actually the jump) that the projectile will do in this frame
         //without appying it
@@ -30,8 +28,8 @@ public class BulletBehaviour : MonoBehaviour{
         Physics.Raycast(transform.position, _direction, out currentHit, _bulletRange - _distance);
         //hitting in this frame
         if(currentHit.transform != null && currentHit.distance < deltaMagnitude){
-            Debug.Log("Bullet hit");
-            //TODO call damage
+            //Debug.Log("Bullet hit " + currentHit.transform.name);
+            currentHit.transform.gameObject.SendMessage("Hurt", _attackDamage, SendMessageOptions.DontRequireReceiver);
             Vector3 hitPoint = currentHit.point;
             GameObject hole = Instantiate(_bulletHolePrefab, currentHit.point + Vector3.ClampMagnitude(currentHit.normal, _distanceOfBulletHoleFromTarget), Quaternion.LookRotation(-currentHit.normal));
             hole.transform.SetParent(currentHit.transform, true);
@@ -40,7 +38,7 @@ public class BulletBehaviour : MonoBehaviour{
 
         //never hitting, but going out of gun scope
         if(_distance > _bulletRange){
-            Debug.Log("Bullet lost - destroy");
+            //Debug.Log("Bullet lost - destroy");
             Destroy(gameObject);
         }
         // make the bullet travel by updating both distance from 

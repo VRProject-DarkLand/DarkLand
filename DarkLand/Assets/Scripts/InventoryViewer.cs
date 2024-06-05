@@ -22,15 +22,17 @@ public class InventoryViewer : MonoBehaviour
     }
 
     public void Show(){
-        var items = Managers.Inventory.GetItems();
-        foreach(InventoryItem item in items) {
+        var items = Managers.Inventory.GetItemsKey();
+        foreach(string item in items) {
+            InventoryItem invItem = Managers.Inventory.GetItem(item);
+            if(invItem == null) continue;
             GameObject slot = Instantiate(inventorySlot);
             slot.transform.SetParent(gridPanel.transform, false);
-            slot.transform.GetChild(0).GetComponent<Image>().sprite = ResourceLoader.GetImage(item.Name);
-            AddEvent(slot, EventTriggerType.PointerClick, e => SelectItem(item) );
+            slot.transform.GetChild(0).GetComponent<Image>().sprite = ResourceLoader.GetImage(invItem.InventoryClassKey);
+            AddEvent(slot, EventTriggerType.PointerClick, e => SelectItem(item, invItem) );
         }
         if(items.Count > 0)
-            SelectItem(items[0]);
+            SelectItem(items[0], Managers.Inventory.GetItem(items[0]));
 
     }
 
@@ -56,11 +58,11 @@ public class InventoryViewer : MonoBehaviour
         description.text = "";
     }
 
-    void SelectItem(InventoryItem item){
+    void SelectItem(string name, InventoryItem item){
         selectedItem.enabled = true;
-        selectedItem.sprite = ResourceLoader.GetImage(item.Name);
-        selectedName.text = item.Name+ " x"+item.Count;
-        this.description.text = ResourceLoader.GetDescription(item.Name);
+        selectedItem.sprite = ResourceLoader.GetImage(item.InventoryClassKey);
+        selectedName.text = name + " x"+item.Count;
+        this.description.text = ResourceLoader.GetDescription(name);
     }
 
     // Update is called once per frame

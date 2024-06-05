@@ -15,7 +15,7 @@ public class Managers : MonoBehaviour
     public static AudioManager AudioManager {get; private set;}
     public static PauseManager Pause {get; private set;}
     public static PersistenceManager Persistence {get; private set;}
-
+    public static PointerManager PointerManager {get; private set;}
     // Start is called before the first frame update
     private List<IGameManager> _startSequence;
     void Start()
@@ -32,8 +32,10 @@ public class Managers : MonoBehaviour
         Pause = GetComponent<PauseManager>();
         Persistence = GetComponent<PersistenceManager>();
         AudioManager = GetComponent<AudioManager>();
+        PointerManager = GetComponent<PointerManager>();
         _startSequence = new List<IGameManager>();
         _startSequence.Add(Player);
+        _startSequence.Add(PointerManager);
         _startSequence.Add(AudioManager);
         _startSequence.Add(Inventory);
         _startSequence.Add(UsableInventory);
@@ -71,9 +73,10 @@ public class Managers : MonoBehaviour
             Player.SetLoadGameData();
             Inventory.SetLoadedGameData();
             Debug.Log("Inventory loaded");
-            Messenger.Broadcast(GameEvent.ALL_MANAGERS_LOADED,  MessengerMode.DONT_REQUIRE_LISTENER);
             Settings.LoadedFromSave = false;
         } 
+        Messenger.Broadcast(GameEvent.ALL_MANAGERS_LOADED,  MessengerMode.DONT_REQUIRE_LISTENER);
+        
     }
     public static void LoadGameData(){
 
