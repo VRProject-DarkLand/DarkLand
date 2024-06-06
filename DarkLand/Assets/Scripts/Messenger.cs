@@ -117,7 +117,8 @@ static public class Messenger {
 	static public void Broadcast(string eventType, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
 		var invocationList = MessengerInternal.GetInvocationList<Action>(eventType);
-
+		if(invocationList == null)
+			return;
 		foreach(var callback in invocationList)
 			callback.Invoke();
 	}
