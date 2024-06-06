@@ -1809,6 +1809,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 475530933641746580, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 537456250229934405, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 819267323982050710, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_Name
       value: GameSceneBasics
@@ -1991,7 +1999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4869441420997861621, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 146.7526
       objectReference: {fileID: 0}
     - target: {fileID: 4869441420997861621, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2060,6 +2068,10 @@ PrefabInstance:
     - target: {fileID: 7825133066342994838, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8406333217061228732, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
+      propertyPath: introBGMusic
+      value: Haunted Forest
       objectReference: {fileID: 0}
     - target: {fileID: 8449592881513658633, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: _usableParent
