@@ -23,6 +23,9 @@ public class AudioManager : MonoBehaviour, IGameManager {
     }
 
     public void PlaySound(AudioClip clip) {
+        if(clip == null){
+            return;
+        }
         uiSoundSource.PlayOneShot(clip);
     }
 

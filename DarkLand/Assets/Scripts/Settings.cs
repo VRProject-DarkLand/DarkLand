@@ -14,6 +14,8 @@ public class Settings
     public static GameData gameData;
     public static string SAVE_DIR = Application.persistentDataPath;
     public const string HEALTH = "Adrenaline";
+
+    public const string SOUND_FOLDER_NAME = "Sound";
     public const string INVENTORY_SPRITES_FOLDER_NAME = "InventoryIcons";
     public const string INVENTORY_ITEMS_DESCRIPTIONS_FOLDER_NAME = "InventoryDescriptions";
     public static int RAYCAST_MASK = ~LayerMask.GetMask("IgnoreRaycast");
@@ -22,6 +24,8 @@ public class Settings
         public static float soundVolume = 1f;
         public static bool musicOn = true;
         public static bool soundOn = true;
+        public const string DOOR_OPEN_SOUND = "DoorOpensSound";
+        public const string DOOR_CLOSE_SOUND = "DoorClosesSound";
     }
 }
 

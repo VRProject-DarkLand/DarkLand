@@ -85,10 +85,15 @@ public class OpenDoubleDoor :  IInteractableObject
                 //     left.transform.rotation = open.Item1 ;
                 //     right.transform.rotation = open.Item2 ;
                 // }
-                if(opened)
-                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
-                else
-                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+            if(opened){
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_CLOSE_SOUND);
+                
+            }   else {
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+                interactionSound =  ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
+            }
+            Managers.AudioManager.PlaySound(interactionSound);
                 opened = !opened;   
                 isMoving = true;  
         }

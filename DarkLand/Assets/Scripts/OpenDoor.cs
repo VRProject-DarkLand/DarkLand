@@ -15,6 +15,7 @@ public class OpenDoor : IInteractableObject{
     [SerializeField] private GameObject door;
     [SerializeField] private bool requireKey = false;
     [SerializeField] private string key = "Key";
+
     // Start is called before the first frame update
     void Start(){
         if(door != null){
@@ -30,6 +31,8 @@ public class OpenDoor : IInteractableObject{
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK);
         timeCount = 0;
         speed = 1f;
+        interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
+        
     }
 
     // Update is called once per frame
@@ -96,12 +99,19 @@ public class OpenDoor : IInteractableObject{
                 }
             }   
             //door.transform.rotation = opened ? close : open; 
-            if(opened)
+            if(opened){
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
-            else 
+                interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_CLOSE_SOUND);
+                
+            }   else {
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+                interactionSound =  ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
+            }
+            Managers.AudioManager.PlaySound(interactionSound);
             opened = !opened;   
-            isMoving = true;     
+            isMoving = true;  
+
+               
     }
 
     public override void Interact(){

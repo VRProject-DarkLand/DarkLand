@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor.VersionControl;
@@ -21,8 +22,11 @@ public class Collectable : IInteractableObject, IDataPersistenceSave{
     public override void Interact(){
         bool InsertResult = inventory ? inventory.AddItem(gameObject, maxUsages) : false;
         if(InsertResult)
+        {
+                        
+            Managers.AudioManager.PlaySound(interactionSound);
             Destroy(gameObject);
-            
+        }   
     }
     public int GetMaxUsages(){
         return maxUsages;

@@ -11,6 +11,8 @@ public class ResourceLoader{
     private static Texture2D cursor;
     private static Dictionary<string, Sprite> sprites = new Dictionary<string,Sprite>();
      private static Dictionary<string, string> descriptions = new Dictionary<string, string>();
+
+    private static Dictionary<string, AudioClip> audioClips = new Dictionary<string, AudioClip>();
     private const string path = "descriptions";
     private static string cursorPath = "Cursor";
     public static Sprite GetImage(string name){
@@ -21,6 +23,14 @@ public class ResourceLoader{
         return sprites[name];
 
     }
+
+    public static AudioClip GetSound(string sound){
+            if(!audioClips.ContainsKey(sound)){
+             audioClips.Add(sound, Resources.Load<AudioClip>(Path.Combine(Settings.SOUND_FOLDER_NAME, sound )));
+        }
+        return audioClips[sound];
+    }
+
 
     public static Texture2D GetCursor(){
         if(cursor == null){
