@@ -22,7 +22,7 @@ public class ThrowableObject : IUsableObject
     private bool _isAiming = false;
     //[SerializeField]
     //Transform StartPosition;
-
+    private Camera _camera;
     void Start(){
         objectToThrow = gameObject.GetComponent<Rigidbody>();
         objectToThrow.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -42,12 +42,12 @@ public class ThrowableObject : IUsableObject
         gameObject.SetActive(true);
         
         foreach(var c in GetComponents<Collider> ()){
-            if(c.isTrigger)
-                c.enabled = false;
+            c.enabled = false;
         }
         Position();
         //gameObject.transform.position = 
         //set torch visible
+        _camera = Camera.main;
     }
 
     
@@ -58,9 +58,18 @@ public class ThrowableObject : IUsableObject
     }
 
     public override void Use(){
-        
+        RaycastHit hitTowardsTrowableObj;
+        Vector3 toCheckDirection = transform.position -  _camera.transform.position;
+        float cameraToThrowable = Vector3.Distance(transform.position, _camera.transform.position);
+        Physics.Raycast(_camera.transform.position, toCheckDirection, out hitTowardsTrowableObj, cameraToThrowable, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
+        //do not thow an object if there is something bwtween the player and the object
+        if(hitTowardsTrowableObj.transform != null){
+            Debug.Log("Cannot throw, something is between camera and the object");
+            Debug.Log("Hit " + hitTowardsTrowableObj.transform.name);
+            return;
+        }
         GameObject copy = Instantiate(gameObject, gameObject.transform.parent);
-        Debug.Log("THROW AND SET PARENT");
+        //Debug.Log("THROW AND SET PARENT");
         foreach(Renderer r in copy.GetComponentsInChildren<Renderer>()){
                     r.gameObject.layer = LayerMask.NameToLayer("Default");
         }

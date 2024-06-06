@@ -22,10 +22,4 @@ public class TorchHandler : MonoBehaviour
         if(GameEvent.isHiding)
             torch.GetComponent<Light>().enabled = false;
     }
-    void OnGUI() {
-        int size = 50;
-        float posX = _camera.pixelWidth/2  -size/2;
-        float posY = _camera.pixelHeight/2 -size/2;
-        GUI.Label(new Rect(posX, posY, size, size), "+");
-    }
 }

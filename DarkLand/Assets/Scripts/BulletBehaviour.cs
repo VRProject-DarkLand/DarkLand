@@ -25,9 +25,10 @@ public class BulletBehaviour : MonoBehaviour{
         // some movable object that came into the trajectory while the bullet has been travelling
         RaycastHit currentHit;
         //the raycast length has to be the bullet range shortened by the distance that it has already traversed
-        Physics.Raycast(transform.position, _direction, out currentHit, _bulletRange - _distance);
+        Physics.Raycast(transform.position, _direction, out currentHit, _bulletRange - _distance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
         //hitting in this frame
         if(currentHit.transform != null && currentHit.distance < deltaMagnitude){
+            Messenger.Broadcast(GameEvent.ENEMY_DAMAGED);
             //Debug.Log("Bullet hit " + currentHit.transform.name);
             currentHit.transform.gameObject.SendMessage("Hurt", _attackDamage, SendMessageOptions.DontRequireReceiver);
             Vector3 hitPoint = currentHit.point;

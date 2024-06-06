@@ -29,20 +29,32 @@ public class ShootingBehaviour : MonoBehaviour
             _animator = gameObject.GetComponent<Animator>();
         }
        if(!_animator.GetBool("shooting")){
-            
+            RaycastHit hitTowardsBulletSource;
+            Vector3 toCheckDirection = _bulletSource.transform.position - _camera.transform.position;
+            float cameraToBulletSourceDistance = Vector3.Distance(_bulletSource.transform.position, _camera.transform.position);
+            Physics.Raycast(_camera.transform.position, toCheckDirection, out hitTowardsBulletSource, cameraToBulletSourceDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
+            //do not shoot if the pistol is behind some object
+            //e.g. there is an object between the camera and the bullet source (maybe a wall)
+            if(hitTowardsBulletSource.transform != null){
+                Debug.Log("Cannot shoot, something is between camera and bullet source");
+                return;
+            }
+            //now it is possible to shoot
             if(shootingMode == ShootingMode.Single){
                 _animator.SetBool("shooting", true);
                 StartCoroutine(ResetShooting());
-                Debug.Log("Shooting in single mode");
+                //Debug.Log("Shooting in single mode");
             }
             else if(shootingMode == ShootingMode.Auto){
+                _animator.SetBool("shooting", true);
+                StartCoroutine(ResetShooting());
                 //Debug.Log("Shooting in auto mode");
             }
             Vector3 point = new Vector3(_camera.pixelWidth/2, _camera.pixelHeight/2, 0);
             Vector3 worldPoint = _camera.ScreenToWorldPoint(point);
-            RaycastHit hit;
-            Physics.Raycast(worldPoint, _camera.gameObject.transform.forward, out hit, _bulletRange);
-            float hitDistance = hit.transform != null ? hit.distance : _bulletRange;
+            // RaycastHit hit;
+            // Physics.Raycast(worldPoint, _camera.gameObject.transform.forward, out hit, _bulletRange, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
+            // float hitDistance = hit.transform != null ? hit.distance : _bulletRange;
 
             //create bullet from the center of the gun, direct it towards the hit point and then
             //set velocity and direction inside the BulletBehaviour script
