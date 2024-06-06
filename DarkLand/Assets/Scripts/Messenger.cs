@@ -126,7 +126,8 @@ static public class Messenger {
 	static public void Broadcast<TReturn>(string eventType, Action<TReturn> returnCall, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
 		var invocationList = MessengerInternal.GetInvocationList<Func<TReturn>>(eventType);
-
+		if(invocationList == null)
+			return;
 		foreach(var result in invocationList.Select(del => del.Invoke()).Cast<TReturn>()) {
 			returnCall.Invoke(result);
 		}
@@ -162,7 +163,8 @@ static public class Messenger<T> {
 	static public void Broadcast(string eventType, T arg1, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
 		var invocationList = MessengerInternal.GetInvocationList<Action<T>>(eventType);
-
+		if(invocationList == null)
+			return;
 		foreach(var callback in invocationList)
 			callback.Invoke(arg1);
 	}
@@ -170,7 +172,8 @@ static public class Messenger<T> {
 	static public void Broadcast<TReturn>(string eventType, T arg1, Action<TReturn> returnCall, MessengerMode mode) {
 		MessengerInternal.OnBroadcasting(eventType, mode);
 		var invocationList = MessengerInternal.GetInvocationList<Func<T, TReturn>>(eventType);
-
+		if(invocationList == null)
+			return;
 		foreach(var result in invocationList.Select(del => del.Invoke(arg1)).Cast<TReturn>()) {
 			returnCall.Invoke(result);
 		}
