@@ -89,7 +89,7 @@ private IEnumerator FollowMe(){
                     yield return null;
                 }
             }else{
-                if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance )){
+                if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
                     Debug.DrawRay(startRaycast, direction, Color.yellow);
                     if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
                         inSight = true;

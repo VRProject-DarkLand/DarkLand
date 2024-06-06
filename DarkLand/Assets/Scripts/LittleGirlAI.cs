@@ -53,7 +53,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
     private bool CanSeeTarget(Transform target, float viewAngle, float viewRange){
         Vector3 toTarget = target.position - transform.position;
         if (Vector3.Angle(transform.forward, toTarget) <= viewAngle)
-            if (Physics.Raycast(transform.position, toTarget, out RaycastHit hit, viewRange))
+            if (Physics.Raycast(transform.position, toTarget, out RaycastHit hit, viewRange, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore))
                 if (hit.transform.root == target)
                     return true;
         return false;

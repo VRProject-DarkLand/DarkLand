@@ -55,7 +55,7 @@ public class Trajectory : MonoBehaviour
             overlap = Vector3.Distance(position, nextPosition) * rayOverlap;
 
             //When hitting a surface we want to show the surface marker and stop updating our line
-            if (Physics.Raycast(position, velocity.normalized, out RaycastHit hit, overlap))
+            if (Physics.Raycast(position, velocity.normalized, out RaycastHit hit, overlap, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore))
             {
                 UpdateLineRender(i, (i - 1, hit.point));
                 MoveHitMarker(hit);
