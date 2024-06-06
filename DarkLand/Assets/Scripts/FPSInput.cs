@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.ReorderableList;
 using UnityEditor.Build.Content;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -28,20 +29,25 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     private CharacterController _charController;
     private Camera _camera;
     [SerializeField] private GameObject head;
+    [SerializeField] private AudioClip footStepSound;
     private List<Actions> actions;
     private ControllerColliderHit _contact; 
     private Quaternion _jumpRotation;
     private Vector3 standingHead;
     private Vector3 crouchHead;
     private bool blocked = false;
-    private int _health;
+    public int _health{get;private set;}
     private bool alive;
-
-
+    private float _footStepSoundLength;
+    private bool _step = true;
+    private bool moveAction ;
+    private AudioSource _soundSource;
 
     // Start is called before the first frame update
     void Start()
     {
+        _footStepSoundLength = 0.3f;
+        _soundSource = GetComponent<AudioSource>();
         _health = Managers.Player.maxHealth;
         _charController = GetComponent<CharacterController>();   
         _camera = GetComponentInChildren<Camera>();
@@ -49,6 +55,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         gameObject.tag = Settings.PLAYER_TAG;
         //Messenger<bool>.AddListener(GameEvent.IS_HIDING, Hide);
         hide = false;
+        moveAction = false;
         alive = !Managers.Player.dead;
         standingHead = head.transform.localPosition;
         crouchHead = standingHead+new Vector3(0f, -0.3f, 0f);
@@ -79,6 +86,8 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
               crouch = true;
               setCamera(crouchHead);
               speed = FPSInput.CROUCH_SPEED;
+              _footStepSoundLength = 0.7f;
+              _soundSource.volume = 0.5f;
         } 
     }
 
@@ -93,20 +102,33 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         crouch = false;
         setCamera(standingHead);
         speed = FPSInput.WALK_SPEED;
+        _soundSource.volume = 0.75f;
+        _footStepSoundLength = 0.5f;
     }
 
     private void Run(){
         if(onGround){
             speed = FPSInput.RUN_SPEED;  
             setCamera(standingHead);
+            _footStepSoundLength = 0.32f;
+            _soundSource.volume = 1f;
             crouch = false;
         }
+    }
+
+    private IEnumerator WaitForFootSteps(){
+        _step = false;
+        yield return new WaitForSeconds(_footStepSoundLength);
+        _step = true;
     }
 
     private void MovePlayer(Vector3 movement) {
         if (blocked)
             return;
-
+         if (_charController.velocity.magnitude > 1f && _step && moveAction) {
+            _soundSource.PlayOneShot(footStepSound);
+            StartCoroutine(WaitForFootSteps());
+        }
         _charController.Move(movement);
         // if ((!onGround) && (flags & CollisionFlags.Below) != 0){
         //     actions.RemoveAll(action => action == Actions.Jump);
@@ -151,13 +173,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
                 InteractableManager.InteractWithSelectedItem(true);
             } 
             
-            if(Input.GetKeyDown(KeyCode.F)){
-                if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && Managers.Player.maxHealth > _health)
-                {
-                    Managers.Inventory.ConsumeItem(Settings.HEALTH);
-                    IncreaseHealth();
-                }    
-            }   
+           
         }
 
         float scroll = Input.mouseScrollDelta.y;
@@ -183,9 +199,10 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         Messenger.Broadcast(GameEvent.PLAYER_DEAD, MessengerMode.DONT_REQUIRE_LISTENER);
     }
 
-    private void IncreaseHealth(){
+    public void IncreaseHealth(){        
         _health = Managers.Player.maxHealth;
         Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, false);
+            
     }
     public void Hurt(int damage){
         _health -= damage;
@@ -207,6 +224,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             }
             return;
         }
+        moveAction = false;
         onGround = detectOnGround();
         readActionFromInput();
         if(!(GameEvent.isInDialog || GameEvent.isHiding)){
@@ -232,16 +250,17 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             dirX = 0;
             dirZ = 0;
         } 
-
         if(onGround){
             if (Input.GetButtonDown("Jump")){
                 if(!GameEvent.isInDialog){
                     Jump();
+                    
                 }
             }else{
                 deltaY = _minFall;
                 deltaX = speed;
                 deltaZ = speed;
+                moveAction = dirX != 0 ||  dirZ != 0;
             }
         }
         else{
@@ -253,7 +272,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             }
         }
 
-
+       
         deltaY += gravity * Time.deltaTime;
         //applying direction to X and Z delta
         Vector3 velocity = new Vector3(deltaX*dirX, 0, deltaZ*dirZ);
