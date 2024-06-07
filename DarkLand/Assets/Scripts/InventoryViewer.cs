@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -15,6 +16,10 @@ public class InventoryViewer : MonoBehaviour
     [SerializeField] private Image selectedItem;
     [SerializeField] private TextMeshProUGUI selectedName;
     [SerializeField] private TextMeshProUGUI description;
+    [SerializeField] private GameObject inventory;
+    [SerializeField] private GameObject commands;
+    [SerializeField] private GameObject next;
+    [SerializeField] private GameObject previous;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +27,9 @@ public class InventoryViewer : MonoBehaviour
     }
 
     public void Show(){
+        PanelShow(true);
         var items = Managers.Inventory.GetItemsKey();
+        
         foreach(string item in items) {
             InventoryItem invItem = Managers.Inventory.GetItem(item);
             if(invItem == null) continue;
@@ -31,11 +38,25 @@ public class InventoryViewer : MonoBehaviour
             slot.transform.GetChild(0).GetComponent<Image>().sprite = ResourceLoader.GetImage(invItem.InventoryClassKey);
             AddEvent(slot, EventTriggerType.PointerClick, e => SelectItem(item, invItem) );
         }
-        if(items.Count > 0)
+        if(items.Count > 0){
             SelectItem(items[0], Managers.Inventory.GetItem(items[0]));
-
+            descriptionPanel.SetActive(true);
+        }else{
+            descriptionPanel.SetActive(false);
+        }
     }
 
+    public void PanelShow(bool showInventory ){
+        inventory.SetActive(showInventory);
+        commands.SetActive(!showInventory);
+    }
+
+    public void OnCommandsPage(){
+        PanelShow(false);
+    }
+    public void OnInventoryPage(){
+        PanelShow(true);
+    }
     private void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action)
     {
         EventTrigger trigger = obj.GetComponent<EventTrigger>();

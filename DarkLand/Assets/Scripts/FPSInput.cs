@@ -24,7 +24,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     private float dirX; 
     private float dirZ; 
     public bool onGround = false;
-    private bool crouch = false;
+    public bool crouch {get; private set;} = false;
     private bool hide;
     private CharacterController _charController;
     private Camera _camera;
