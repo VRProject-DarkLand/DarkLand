@@ -31,7 +31,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     #endregion
     
     #region PrivateAttributes
-        private GameObject target;
+        private FPSInput target;
         private AudioSource audioSource;
         private Vector3 spawnPosition;
         private NavMeshAgent navMeshAgent;
@@ -50,7 +50,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     // Start is called before the first frame update
     void Start()
     {
-        target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
+        target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>();
         spawnPosition = gameObject.transform.position;
         inSight = false;
         audioSource = GetComponent<AudioSource>();
@@ -120,7 +120,11 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                     yield return null;
                 }
             }else{
-                if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
+                float detectionDistance = maxDistance;
+                if(target.crouch){
+                    detectionDistance/=4;
+                }
+                if ( Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
                     Debug.DrawRay(startRaycast, direction, Color.yellow);
                     if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
                         inSight = true;
