@@ -11,14 +11,16 @@ public class ThrowableInfo{
     public float drag = 0;
 
 }
-
+[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
 public class ThrowableObject : IUsableObject
 {
     //TrajectoryPredictor trajectoryPredictor;
     Rigidbody objectToThrow;
-    [SerializeField, Range(0.0f, 50.0f)]
-    float force = 300;
+    [SerializeField, Range(0.0f, 50.0f)]  float force = 300;
+    [SerializeField] private AudioClip collisionSound;
+    [SerializeField] private bool hasAudio = true;
+    private AudioSource audioSource;
     private bool _isAiming = false;
     //[SerializeField]
     //Transform StartPosition;
@@ -26,7 +28,11 @@ public class ThrowableObject : IUsableObject
     void Start(){
         objectToThrow = gameObject.GetComponent<Rigidbody>();
         objectToThrow.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        
+        if(collisionSound == null)
+            collisionSound = ResourceLoader.GetSound("objectDropped");
+        audioSource = GetComponent<AudioSource>();
+        audioSource.spatialBlend = 1f;
+        audioSource.playOnAwake = false;
     }
 
     public override void Collected()
@@ -88,9 +94,12 @@ public class ThrowableObject : IUsableObject
         rb.isKinematic = false;
         rb.velocity = gameObject.transform.parent.GetComponentInParent<CharacterController>().velocity;
         rb.AddForce(gameObject.transform.parent.forward * force, ForceMode.Impulse);
-        
+        if(useSound == null){
+            Managers.AudioManager.PlaySound(ResourceLoader.GetSound("ThrowingSound"));
+        }
         //copy.transform.SetParent(null, true);
         Managers.Inventory.ConsumeItem(gameObject.name);
+
         //Managers.UsableInventory.RemoveSelectable(gameObject);
         copy.transform.parent = Managers.Persistence.GetAllCollectablesContainer().transform;
         
@@ -108,6 +117,13 @@ public class ThrowableObject : IUsableObject
         info.direction = gameObject.transform.parent.forward;
         Messenger<ThrowableInfo>.Broadcast(GameEvent.PREDICT_TRAJECTORY, info);
         _isAiming = true;
+    }
+
+    void OnCollisionEnter(Collision collision){
+        if(!hasAudio)
+            return;
+        if(collision.relativeVelocity.magnitude > 2)
+            audioSource.PlayOneShot(collisionSound);
     }
 
     public override void UndoSecondaryUse()

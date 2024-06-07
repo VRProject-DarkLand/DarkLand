@@ -18,6 +18,9 @@ public class Collectable : IInteractableObject, IDataPersistenceSave{
         interactableTrigger = GetComponent<InteractableTrigger>();
         interactableTrigger.isCollectable = true;
         interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.COLLECT_ITEM);
+        if(interactionSound == null){
+            interactionSound = ResourceLoader.GetSound("pickUpSound");
+        }
     }
     public override void Interact(){
         bool InsertResult = inventory ? inventory.AddItem(gameObject, maxUsages) : false;
