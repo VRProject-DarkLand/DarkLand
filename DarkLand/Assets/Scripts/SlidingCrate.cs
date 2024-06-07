@@ -10,6 +10,7 @@ public class SlidingCrate : IInteractableObject
     private float timeCount;
     [SerializeField] private GameObject slidingCrate;
     [SerializeField] private bool requireKey = false;
+    [SerializeField] private bool containObject;
     [SerializeField] private string key = "Key";
     private Vector3 open;
     private Vector3 close;
@@ -55,6 +56,11 @@ public class SlidingCrate : IInteractableObject
         {
             ChangeState();
             StartCoroutine(AnimateDoor());
+            if (containObject)
+            {
+                GetComponent<InteractableTrigger>().enabled = false;
+                GetComponent<BoxCollider>().enabled = false;
+            }
         }
     }
 
