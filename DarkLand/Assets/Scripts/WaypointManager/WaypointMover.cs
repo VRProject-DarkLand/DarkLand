@@ -1,8 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.UI.Image;
+using UnityEngine.UIElements;
+using Unity.AI.Navigation;
 
 public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
     [System.Serializable]
@@ -16,6 +21,12 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float distanceThreshold = 0.1f;
     [SerializeField] private float attackThreshold = 2.5f;
+    [SerializeField] private GameObject _renderer;
+    [SerializeField] private GameObject dropKey;
+    [SerializeField] private GameObject dropLetter;
+    [SerializeField] private LightsLeverInteractable lightsLever;
+    [SerializeField] private GameObject doorToClose;
+    private bool doorClosed = false;
     private NavMeshAgent navMeshAgent;
     private GameObject target;
     private Animator animator;
@@ -47,13 +58,14 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
 
     // Update is called once per frame
-    void Update(){
-        if (alive && currentWaypoint != null){
-           animator.SetBool("Idle", false);
+    void Update() {
+        if (alive && currentWaypoint != null) {
+            animator.SetBool("Idle", false);
+            if(!doorClosed) closeDoor();
             transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.position, moveSpeed * Time.deltaTime);
-            if (Vector3.Distance(transform.position,currentWaypoint.position) < distanceThreshold){
+            if (Vector3.Distance(transform.position, currentWaypoint.position) < distanceThreshold) {
                 currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
-                if (currentWaypoint != null){
+                if (currentWaypoint != null) {
                     transform.LookAt(currentWaypoint);
                 }
                 else
@@ -67,8 +79,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
                 }
             }
         }
-        else{
-            //GetComponent<Animator>().SetBool("Idle", true);
+        else { 
             if (alive && IsInsideNavMesh(target.transform.position)){
                 navMeshAgent.SetDestination(target.transform.position);
                 NavMeshPath path = new NavMeshPath();
@@ -79,13 +90,29 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
                     StartCoroutine(Attack());
                 }
             }
-            else
-            {
-               animator.SetBool("Idle", true);
-            }
         }
     }
 
+    private void closeDoor()
+    {
+        OpenDoubleDoor openDoubleDoor = doorToClose.GetComponentInChildren<OpenDoubleDoor>();
+        NavMeshLink link = doorToClose.GetComponentInChildren<NavMeshLink>();
+        InteractableTrigger interactableTrigger = doorToClose.GetComponentInChildren<InteractableTrigger>();
+        interactableTrigger.enabled = false;
+        link.enabled = false;
+        if (openDoubleDoor.IsOpened())
+        {
+            openDoubleDoor.Interact();
+        }
+        doorClosed = true;
+    }
+    private void OpenDoor()
+    {
+        NavMeshLink link = doorToClose.GetComponentInChildren<NavMeshLink>();
+        InteractableTrigger interactableTrigger = doorToClose.GetComponentInChildren<InteractableTrigger>();
+        interactableTrigger.enabled = true;
+        link.enabled = true;
+    }
     private IEnumerator Attack(){
         animator.SetBool("Attack", true);
         navMeshAgent.speed = 0;
@@ -118,11 +145,41 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     public void AddSpiderTrigger(SpiderTrigger trigger){
         spiderTriggers.Add(trigger);
     }
+    private IEnumerator disappear()
+    {
+        Renderer currentRendered = _renderer.GetComponent<Renderer>();
+        Color start = currentRendered.material.color;
+        Color end = new Color32(255, 255, 255, 0);
+        float count = 0f;
+        while (count < 1.0f)
+        {
+            currentRendered.material.color = Color.Lerp(start, end, count);
+            count += Time.deltaTime/5f;
+            Debug.Log(count);
+            yield return null;
+        }
+        DropItems();
+        OpenDoor();
+        Destroy(transform.parent.gameObject);
+    }
+
+    private void DropItems()
+    {
+        GameObject key = Instantiate(dropKey, transform.position, Quaternion.identity, GameObject.Find("AllCollectables").transform);
+        key.name = "Mortuary room key";
+        GameObject letter = Instantiate(dropLetter, transform.position, Quaternion.identity, GameObject.Find("AllCollectables").transform);
+        letter.name = "Spider Letter";
+        lightsLever.Interact();
+    }
+
     public void Die(){
         foreach(SpiderTrigger t in spiderTriggers){
             t.RemoveSpider(gameObject);
         }
-        Destroy(transform.parent.gameObject);
+        navMeshAgent.SetDestination(transform.position);
+        animator.SetBool("Dead", true);
+        alive = false;
+        StartCoroutine(disappear());
     }
     public void WakeUp(){
         alive = true;

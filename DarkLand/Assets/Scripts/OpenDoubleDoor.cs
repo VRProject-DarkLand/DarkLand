@@ -121,15 +121,15 @@ public class OpenDoubleDoor :  IInteractableObject
                 timeCount = 0;
         }
     }
-
-    public bool get_opened()
-    {
-        return opened;
-    }
     public override void Interact(){
         if(!isMoving){
             ChangeState();
             StartCoroutine(AnimateDoor());
         }
+    }
+
+    public bool IsOpened()
+    {
+        return opened;
     }
 }

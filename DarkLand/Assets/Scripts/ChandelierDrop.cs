@@ -25,7 +25,7 @@ public class ChandelierDrop : MonoBehaviour
     {
         if (script != null)
         {
-            if (script.get_opened())
+            if (script.IsOpened())
             {
                 Vector3 startPos = transform.position;
                 Vector3 endPos = new Vector3(startPos.x, endY, startPos.z);

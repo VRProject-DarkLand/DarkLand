@@ -28,6 +28,8 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         //save if the enemy has been awaken s.t. upon spawning
         [SerializeField] private ScaryGirlTrigger sceneScaryGirlTrigger;
         [SerializeField] private int attackDamage = 60;
+        [SerializeField] private GameObject exitKey;
+        [SerializeField] private GameObject _renderer;
     #endregion
     
     #region PrivateAttributes
@@ -217,8 +219,16 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         }
         animator.SetBool("Dead", true);
         dead = true;
+        DropItems();
         
     }
+    private void DropItems()
+    {
+        GameObject key = Instantiate(exitKey,transform.position - new Vector3(2f,0f,0f), Quaternion.identity,GameObject.Find("AllCollectables").transform);
+        key.name = "Exit Key";
+        //Destroy(gameObject.transform.parent.gameObject);
+    }
+
     public void AddScaryGirlTrigger(ScaryGirlTrigger trigger){
         scaryGirlTriggers.Add(trigger);
         //Debug.Log("There");
