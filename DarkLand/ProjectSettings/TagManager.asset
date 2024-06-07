@@ -8,6 +8,8 @@ TagManager:
   - NeonLights
   - Prototype
   - Enemy
+  - SpiderTrigger
+  - ScaryGirlTrigger
   layers:
   - Default
   - TransparentFX

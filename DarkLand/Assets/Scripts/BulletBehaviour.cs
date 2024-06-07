@@ -29,11 +29,12 @@ public class BulletBehaviour : MonoBehaviour{
         //hitting in this frame
         if(currentHit.transform != null && currentHit.distance < deltaMagnitude){
             Messenger.Broadcast(GameEvent.ENEMY_DAMAGED);
-            //Debug.Log("Bullet hit " + currentHit.transform.name);
-            currentHit.transform.gameObject.SendMessage("Hurt", _attackDamage, SendMessageOptions.DontRequireReceiver);
+            
             Vector3 hitPoint = currentHit.point;
             GameObject hole = Instantiate(_bulletHolePrefab, currentHit.point + Vector3.ClampMagnitude(currentHit.normal, _distanceOfBulletHoleFromTarget), Quaternion.LookRotation(-currentHit.normal));
             hole.transform.SetParent(currentHit.transform, true);
+            Debug.Log("Bullet hit " + currentHit.transform.name);
+            currentHit.transform.gameObject.SendMessage("Hurt", _attackDamage, SendMessageOptions.DontRequireReceiver);
             Destroy(gameObject);
         }
 

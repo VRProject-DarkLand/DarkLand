@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UsableAxe : IUsableObject{
@@ -8,7 +9,9 @@ public class UsableAxe : IUsableObject{
 
     private Renderer _axeRenderer;
     private Renderer _armsRenderer;
-    [SerializeField] private int attackDamage = 10;
+    private int attackDamage = 3;
+    [SerializeField] private Collider axeCollider;
+    private bool _damaged = false;
     void Awake(){
         Renderer[] renderers = transform.GetComponentsInChildren<Renderer>();
         _axeRenderer = renderers[0];
@@ -31,14 +34,16 @@ public class UsableAxe : IUsableObject{
 
     public override void Use(){
         if(_readyToHit){
+            axeCollider.enabled = true;
             _animator.SetBool("hitting", true);
-            //Debug.Log("hitting");
+            //Debug.Log("hitting with axe");
+            _damaged = false;
             StartCoroutine(Hit());
         }
     }
 
     public override void Deselect(){
-        Debug.Log("Deselected axe");
+        //Debug.Log("Deselected axe");
         DisableAxe();
         _animator.SetBool("selected", false);
         _animator.SetBool("hitting", false);
@@ -70,11 +75,20 @@ public class UsableAxe : IUsableObject{
         yield return new WaitForSeconds(_pickupTime);
         _readyToHit = true;
     }
-        private IEnumerator Hit(){
+    private IEnumerator Hit(){
         _readyToHit = false;
         yield return new WaitForSeconds(0.5f);
         _animator.SetBool("hitting", false);
         _readyToHit = true;
+        axeCollider.enabled = false;
+    }
+    public void Damage(GameObject obj){
+        //if axe is Hitting, then damage
+        if(axeCollider.enabled && !_damaged){
+            Debug.Log("Calling damage on spider");
+            obj.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
+            _damaged = true;
+        }
     }
 }
 

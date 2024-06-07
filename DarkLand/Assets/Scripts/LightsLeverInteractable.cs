@@ -1,16 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 public class LightsLeverInteractable : IInteractableObject, IDataPersistenceSave{
     [SerializeField] LightsManager manager;
-    // Start is called before the first frame update
+    void Awake(){
+        Messenger.AddListener(GameEvent.ALL_MANAGERS_LOADED, ChangeAnimation);
+    }
+    void OnDestroy(){
+        Messenger.RemoveListener(GameEvent.ALL_MANAGERS_LOADED, ChangeAnimation);
+    }
+    private void ChangeAnimation(){
+        if(!manager.on)
+            gameObject.GetComponent<Animator>().SetBool("On", false);
+    }
     void Start()
     {
         interactableTrigger = GetComponent<InteractableTrigger>();
         if(manager.on)
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.TURN_OFF);
-        else 
+        else
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.TURN_ON);
     }
 

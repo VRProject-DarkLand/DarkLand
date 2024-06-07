@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave{
+public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
     [System.Serializable]
     public class ScaryGirlSavingData {
         public Vector3 position;
         public Vector3 rotation;
         public bool dead;
         public bool awaken;
+        public List<string> scaryGirlTriggersNames;
     }
     private GameObject target;
 
@@ -30,22 +33,27 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave{
     //save if the enemy has been awaken s.t. upon spawning
     //it can be activated without using the trigger
     private bool awaken = false;
-    
+    [SerializeField] private ScaryGirlTrigger sceneScaryGirlTrigger;
+    List<ScaryGirlTrigger> scaryGirlTriggers = new List<ScaryGirlTrigger>();
     // Start is called before the first frame update
     void Start()
     {
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         spawnPosition = gameObject.transform.position;
         inSight = false;
-       
+        if(!Settings.LoadedFromSave){
+            scaryGirlTriggers.Add(sceneScaryGirlTrigger);
+            ActivateNavMeshAndAnimator();
+        }
     }
-
-    public void WakeUp(){
+    private void ActivateNavMeshAndAnimator(){
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
         defaultSpeed = navMeshAgent.speed;
         animator = GetComponent<Animator>();
         animator.enabled = true;
+    }
+    public void WakeUp(){
         animator.SetBool("Alive", true);
         awaken = true;
     }
@@ -157,7 +165,7 @@ private IEnumerator FollowMe(){
         if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
             if(hit.collider.gameObject == target)
             {
-                Debug.Log("Ti scasciai "+Time.frameCount );
+                //Debug.Log("Ti scasciai "+Time.frameCount );
                 hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
@@ -171,14 +179,20 @@ private IEnumerator FollowMe(){
      public void HitByTeddyBear()
     {
         hitByTeddy = true;
-        Debug.Log("Hit by teddy");
+        //Debug.Log("Hit by teddy");
     }
 
-    public void Die()
-    {
+    public void Die(){
+        foreach(ScaryGirlTrigger t in scaryGirlTriggers){
+            t.RemoveScaryGirl(gameObject);
+        }
         animator.SetBool("Dead", true);
         dead = true;
         
+    }
+    public void AddScaryGirlTrigger(ScaryGirlTrigger trigger){
+        scaryGirlTriggers.Add(trigger);
+        //Debug.Log("There");
     }
     // Update is called once per frame
     void Update()
@@ -191,6 +205,10 @@ private IEnumerator FollowMe(){
         data.rotation = transform.localEulerAngles;
         data.dead = dead;
         data.awaken = awaken;
+        data.scaryGirlTriggersNames = new List<string>();
+        foreach(ScaryGirlTrigger t in scaryGirlTriggers){
+            data.scaryGirlTriggersNames.Add(t.gameObject.name);
+        }
         Settings.gameData.scaryGirlsData.Add(data); 
     }
     public void LoadFromData(ScaryGirlSavingData data ){
@@ -198,12 +216,27 @@ private IEnumerator FollowMe(){
         transform.parent.localEulerAngles = data.rotation;
         dead = data.dead;  
         awaken = data.awaken;
+        
+        foreach(string t in data.scaryGirlTriggersNames){
+            GameObject triggerObject = GameObject.Find(t);
+            if(triggerObject != null){
+                ScaryGirlTrigger trigger = triggerObject.GetComponent<ScaryGirlTrigger>();
+                trigger.AddScaryGirl(gameObject);
+                scaryGirlTriggers.Add(trigger);
+            }
+        }
         if(dead)
             Destroy(this.transform.parent.gameObject);
         else{
-            if(awaken)
+            ActivateNavMeshAndAnimator();
+            if(awaken){
                 WakeUp();
+            }
         }
+        
     
+    }
+
+    public void Hurt(int damage){
     }
 }

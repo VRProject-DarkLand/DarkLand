@@ -37,8 +37,10 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
         }
         else
         {
+            Settings.canSave = true;
             currentState = States.hiding;
         }
+        
     }
     public void PlaySoundWithCallback(AudioClip clip, AudioCallback callback)
     {
@@ -75,6 +77,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
 
     private void StartCounting()
     {
+        Settings.canSave = false;
         currentState = States.counting;
         PlaySoundWithCallback(countingClip, StopCounting);
     }

@@ -17,8 +17,8 @@ public class LightsManager : MonoBehaviour
     }
     public void ActivatePointLightManager(){
 
-        Debug.Log("Activating blinking manager");
-        on = true;
+        //Debug.Log("Activating blinking manager");
+        //on = true;
         // Find the player GameObject (assuming it has a tag "Player")
         player = GameObject.FindGameObjectWithTag("Player");
         // Find all GameObjects with Light component
@@ -26,7 +26,7 @@ public class LightsManager : MonoBehaviour
         for(int i= 0;i<allLights.Count;++i){
             if (allLights[i].gameObject.tag == Settings.TORCH_TAG){
                     allLights.Remove(allLights[i]);
-                    Debug.Log("Removed light from list");
+                    //Debug.Log("Removed light from list");
                     //break;
             }
         }
@@ -96,7 +96,9 @@ public class LightsManager : MonoBehaviour
     }
 
     private void OperateOnLights(bool turnOn){
-        on = !on;
+        if(allLights == null)
+            ActivatePointLightManager();
+        on = turnOn;
         Color emissionColor = Color.black;
         if(turnOn){
           emissionColor = Color.white;
@@ -111,7 +113,6 @@ public class LightsManager : MonoBehaviour
                     emissiveMaterial = r.material;
                 }else if( light.transform.gameObject.TryGetComponent<Renderer>(out r)){
                     emissiveMaterial = r.material;
-                    Debug.Log("OOOOH");
                 }
                 if(emissiveMaterial == null){
                     continue;

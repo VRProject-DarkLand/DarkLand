@@ -9,6 +9,7 @@ public class Settings
     public const string ENEMY_TAG = "Enemy";
     public static string LastSaving = "";
     public static bool LoadedFromSave = false;
+    public static bool canSave = true;
     public const string ASYLUM_SCENE = "Scenes/Asylum";
     public const string MAIN_MENU = "Scenes/MainMenu";
     public static GameData gameData;

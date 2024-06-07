@@ -165,6 +165,7 @@ public class UIController : MonoBehaviour
         if(choice){
             Managers.Pause.OnClickResume();
             SceneManager.LoadScene(Settings.MAIN_MENU);
+            Settings.LoadedFromSave = false;
         }else{
             ConfirmationPopup.SetActive(false);
         }

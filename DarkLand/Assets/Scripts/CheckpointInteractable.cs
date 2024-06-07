@@ -4,10 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class CheckpointInteractable : IInteractableObject{
-    private bool _canSave = false;
     public override void Interact(){
-        if(_canSave){
-            _canSave = false;
+        if(Settings.canSave){
+            Settings.canSave = false;
             StartCoroutine(Managers.Persistence.SaveGame());
             StartCoroutine(WaitForNextSave());
             //interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.SAVE_GAME);
@@ -16,6 +15,9 @@ public class CheckpointInteractable : IInteractableObject{
         }
         //Debug.Log("Asked to save");
     }
+    public override bool CanInteract(){
+        return Settings.canSave;
+    }
     void Start(){
         interactableTrigger = GetComponent<InteractableTrigger>();
         interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.SAVE_GAME);
@@ -23,7 +25,7 @@ public class CheckpointInteractable : IInteractableObject{
         StartCoroutine(WaitForNextSave());
     }
     private IEnumerator WaitForNextSave(){
-        yield return new WaitForSeconds(1f);
-        _canSave = true;
+        yield return new WaitForSeconds(3f);
+        Settings.canSave = true;
     }
 }
