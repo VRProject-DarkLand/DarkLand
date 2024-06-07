@@ -94,6 +94,7 @@ public class ThrowableObject : IUsableObject
         rb.isKinematic = false;
         rb.velocity = gameObject.transform.parent.GetComponentInParent<CharacterController>().velocity;
         rb.AddForce(gameObject.transform.parent.forward * force, ForceMode.Impulse);
+        rb.AddRelativeTorque(new Vector3(1,-1,1) * force/10f, ForceMode.Impulse);
         if(useSound == null){
             Managers.AudioManager.PlaySound(ResourceLoader.GetSound("ThrowingSound"));
         }

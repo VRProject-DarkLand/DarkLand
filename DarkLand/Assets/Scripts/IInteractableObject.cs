@@ -9,4 +9,5 @@ public abstract class IInteractableObject: MonoBehaviour{
     [SerializeField] protected AudioClip interactionSound;
     public abstract void Interact();
     public virtual bool CanInteract(){return true;}
+    public virtual void ReactiveInteraction(){}
 }

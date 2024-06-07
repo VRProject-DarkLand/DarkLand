@@ -22,12 +22,18 @@ public class AudioManager : MonoBehaviour, IGameManager {
         status = ManagerStatus.Started;
     }
 
-    public void PlaySound(AudioClip clip) {
+
+
+    public void PlaySound(AudioClip clip, float volume=-1) {
         if(clip == null){
             return;
         }
-        uiSoundSource.PlayOneShot(clip);
+        if(volume < 0){
+            volume = uiSoundSource.volume;
+        }
+        uiSoundSource.PlayOneShot(clip, volume);
     }
+
 
     public float musicVolume {
         get {

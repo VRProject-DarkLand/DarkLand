@@ -7,6 +7,8 @@ public class Settings
     public const string TORCH_TAG = "Torch";
     public const string PLAYER_TAG = "Player";
     public const string ENEMY_TAG = "Enemy";
+
+    public const string INTERACTION_ENEMY_TAG = "InteractiveEnemy";
     public static string LastSaving = "";
     public static bool LoadedFromSave = false;
     public static bool canSave = true;

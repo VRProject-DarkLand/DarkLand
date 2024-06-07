@@ -125,18 +125,15 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     private void MovePlayer(Vector3 movement) {
         if (blocked)
             return;
+
          if (_charController.velocity.magnitude > 1f && _step && moveAction) {
             _soundSource.PlayOneShot(footStepSound);
             StartCoroutine(WaitForFootSteps());
         }
         _charController.Move(movement);
-        // if ((!onGround) && (flags & CollisionFlags.Below) != 0){
-        //     actions.RemoveAll(action => action == Actions.Jump);
-        //     onGround = true;
-        // }
     }
 
-        private void readActionFromInput(){
+    private void readActionFromInput(){
         if (onGround){
             dirX =  Input.GetAxis("Horizontal");
             dirZ =  Input.GetAxis("Vertical");
@@ -287,17 +284,8 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             velocity = transform.TransformDirection(velocity);
             transform.rotation = rot;
         }
-        if(!onGround){
-            if(_charController.isGrounded){
-                if(Vector3.Dot(velocity, _contact.normal) < 0){
-                    velocity = _contact.normal * speed;
-                }
-                else{
-                    velocity += _contact.normal * speed;
-                }
-            }
-
-        }
+        
+        
         velocity *= Time.deltaTime;  
         MovePlayer(velocity);
     }

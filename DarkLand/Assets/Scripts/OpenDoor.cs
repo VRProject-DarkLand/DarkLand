@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,10 +12,12 @@ public class OpenDoor : IInteractableObject{
     private bool isMoving;
     private float speed;
     private float timeCount;
+    private IEnumerator coroutine;
     [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
     [SerializeField] private bool requireKey = false;
     [SerializeField] private string key = "Key";
+    [SerializeField] private NavMeshLink link = null; 
 
     // Start is called before the first frame update
     void Start(){
@@ -29,6 +32,8 @@ public class OpenDoor : IInteractableObject{
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
         else
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK);
+         if(link != null)
+            link.enabled = !requireKey;
         timeCount = 0;
         speed = 1f;
         interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
@@ -89,10 +94,24 @@ public class OpenDoor : IInteractableObject{
 
     }
 
+    public override void ReactiveInteraction(){
+        if(!requireKey){
+            isMoving = false;
+            if(coroutine != null)
+                StopCoroutine(coroutine);
+            timeCount = 1;
+            door.transform.rotation = open;
+            opened = true;
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+        }
+    }
+
     public void ChangeState(){
             if(CanInteract()){
                 if(requireKey){
                     requireKey = false;
+                    if(link != null)
+                        link.enabled = true;
                     //Managers.Inventory.ConsumeItem(key);
                     interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
                     return;
@@ -110,6 +129,7 @@ public class OpenDoor : IInteractableObject{
             Managers.AudioManager.PlaySound(interactionSound);
             opened = !opened;   
             isMoving = true;  
+            timeCount = 0;
 
                
     }
@@ -117,7 +137,8 @@ public class OpenDoor : IInteractableObject{
     public override void Interact(){
         if(!isMoving){
             ChangeState();
-            StartCoroutine(AnimateDoor());
+             coroutine = AnimateDoor();
+            StartCoroutine(coroutine);
         }
     }
 }

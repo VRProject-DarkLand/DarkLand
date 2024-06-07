@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(AudioSource))]
 public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
     [System.Serializable]
     public class ScaryGirlSavingData {
@@ -15,37 +16,50 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         public bool awaken;
         public List<string> scaryGirlTriggersNames;
     }
-    private GameObject target;
 
-    [SerializeField] private NavMeshSurface surface;
-    private Vector3 spawnPosition;
-    private NavMeshAgent navMeshAgent;
-    private float defaultSpeed;
-    [SerializeField] private float attackThreshold = 2.5f;
-    private bool inSight = false;
-     bool isAttacking = false;
-    [SerializeField] private  bool chasing = false;
-    [SerializeField] private float maxDistance = 10f;
-    private Animator animator;
-    [SerializeField] private int attackDamage = 60;
-    private bool hitByTeddy = false;
-    private bool dead = false;
-    //save if the enemy has been awaken s.t. upon spawning
-    //it can be activated without using the trigger
-    private bool awaken = false;
-    [SerializeField] private ScaryGirlTrigger sceneScaryGirlTrigger;
+    #region SerializeField
+        [SerializeField] private AudioClip attackingSound;
+        [SerializeField] private AudioClip grunt;
+        [SerializeField] private AudioClip scream;
+
+        [SerializeField] private float attackThreshold = 2.5f;
+        [SerializeField] private  bool chasing = false;
+        [SerializeField] private float maxDistance = 10f;
+        //save if the enemy has been awaken s.t. upon spawning
+        [SerializeField] private ScaryGirlTrigger sceneScaryGirlTrigger;
+        [SerializeField] private int attackDamage = 60;
+    #endregion
+    
+    #region PrivateAttributes
+        private GameObject target;
+        private AudioSource audioSource;
+        private Vector3 spawnPosition;
+        private NavMeshAgent navMeshAgent;
+        private float defaultSpeed;
+        private Animator animator;
+        private bool hitByTeddy = false;
+        private bool dead = false;
+        private bool inSight = false;
+        //it can be activated without using the trigger
+        private bool awaken = false;
+    #endregion
+
+    bool isAttacking = false;
     List<ScaryGirlTrigger> scaryGirlTriggers = new List<ScaryGirlTrigger>();
+
     // Start is called before the first frame update
     void Start()
     {
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         spawnPosition = gameObject.transform.position;
         inSight = false;
+        audioSource = GetComponent<AudioSource>();
         if(!Settings.LoadedFromSave){
             scaryGirlTriggers.Add(sceneScaryGirlTrigger);
             ActivateNavMeshAndAnimator();
         }
     }
+
     private void ActivateNavMeshAndAnimator(){
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
@@ -53,13 +67,15 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         animator = GetComponent<Animator>();
         animator.enabled = true;
     }
+
     public void WakeUp(){
         animator.SetBool("Alive", true);
         awaken = true;
     }
 
     public void Scream(){
-        GetComponent<AudioSource>().Play();
+        //2D sound, distance does not matter
+        Managers.AudioManager.PlaySound(scream);
     }
 
     public void StartRunning(){
@@ -69,15 +85,22 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         StartCoroutine(FollowMe());
     }
 
-private IEnumerator FollowMe(){
+    private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
+        audioSource.clip = grunt;
+        audioSource.loop = true;
+        audioSource.spatialBlend = 1;
+        audioSource.pitch = 2;
+        audioSource.Play();
         while(!dead){
             if (hitByTeddy)
             {
+                audioSource.Stop();
                 navMeshAgent.SetDestination(transform.position);
                 animator.SetBool("HitByTeddy", true);
                 yield return new WaitForSeconds(6f);
                 hitByTeddy = false;
+                audioSource.Play();
                 animator.SetBool("HitByTeddy", false);
                 if (dead) break;
             }
@@ -169,10 +192,12 @@ private IEnumerator FollowMe(){
                 hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
+        audioSource.Stop();
+        audioSource.PlayOneShot(attackingSound,1f);
         yield return new WaitForSeconds(0.6f);
         animator.SetBool("Attack", false);
         yield return new WaitForSeconds(0.5f);
-        
+        audioSource.Play();
 
         isAttacking = false;
     }
