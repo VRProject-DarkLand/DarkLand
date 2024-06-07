@@ -29,14 +29,14 @@ public class UsableGun : IUsableObject{
         //Debug.Log("Deselected pistol");
         _animator.SetBool("selected", false);
         _animator.SetBool("shooting", false);
-        GameEvent.isUsingGun = false;
+        Messenger<bool>.Broadcast(GameEvent.IS_USING_GUN, false);
         DisableGun();
     }
     //position and activate the gun
     public override void Select(){
         EnableGun();
         CreateAnimatorIfNull();
-        GameEvent.isUsingGun = true;
+        Messenger<bool>.Broadcast(GameEvent.IS_USING_GUN, true);
         _animator.SetBool("selected", true);
         StartCoroutine(PickupTime());
         Debug.Log("Pistol selected");

@@ -1,17 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ScaryGirlTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject scaryGirl;
+    
+    private List<GameObject> scaryGirls;
+    [SerializeField] private GameObject sceneScaryGirl;
 
+    void Start(){
+        scaryGirls = new List<GameObject>();
+        if(!Settings.LoadedFromSave)
+            scaryGirls.Add(sceneScaryGirl);
+    }
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag(Settings.PLAYER_TAG)){
-            scaryGirl.GetComponentInChildren<ScaryGirlAI>().WakeUp();
+        foreach(GameObject girl in scaryGirls){
+            if (other.CompareTag(Settings.PLAYER_TAG)){
+                girl.GetComponent<ScaryGirlAI>().WakeUp();
+            }
         }
     }
-    public void SetScaryGirl(GameObject girl) {
-        scaryGirl = girl;
+    public void AddScaryGirl(GameObject girl) {
+        scaryGirls.Add(girl);
+    }
+    public void RemoveScaryGirl(GameObject girl) {
+        scaryGirls.Remove(girl);
     }
 }

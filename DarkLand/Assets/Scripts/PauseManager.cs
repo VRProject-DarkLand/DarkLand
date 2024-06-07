@@ -40,7 +40,7 @@ public class PauseManager : MonoBehaviour, IGameManager
         paused = true;
         Time.timeScale = 0;
         AudioListener.pause = true;
-        Messenger<bool>.Broadcast(GameEvent.PAUSED, paused);
+        Messenger<bool>.Broadcast(GameEvent.PAUSED, paused,MessengerMode.DONT_REQUIRE_LISTENER);
     }
 
     public void OnRestart(){

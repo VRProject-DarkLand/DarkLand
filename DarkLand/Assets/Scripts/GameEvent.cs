@@ -19,7 +19,8 @@ public class GameEvent : MonoBehaviour{
     public const string IS_HIDING = "HIDING";
     public const string CHANGED_HEALTH = "HEALTH_CHANGED";
     public const string PLAYER_DEAD = "PLAYER_DEAD";
-
+    public const string IS_USING_GUN = "IS_USING_GUN";
+    public const string ENEMY_DAMAGED = "ENEMY_DAMAGED";
     public const string PAUSED = "PAUSED";
     public const string USED_USABLE = "USED_USABLE";
     public const string CHANGED_SELECTABLE = "CHANGED_SELECTABLE";

@@ -22,6 +22,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
     public void Startup(){
         Debug.Log("Player manager starting...");
         maxHealth = 100;
+        health = maxHealth;
         healthPackValue = 2;
         fearLevel = 0f;
         dead = false;

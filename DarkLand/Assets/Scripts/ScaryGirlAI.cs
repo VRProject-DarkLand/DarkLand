@@ -1,57 +1,81 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave{
+[RequireComponent(typeof(AudioSource))]
+public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
     [System.Serializable]
     public class ScaryGirlSavingData {
         public Vector3 position;
         public Vector3 rotation;
         public bool dead;
         public bool awaken;
+        public List<string> scaryGirlTriggersNames;
     }
-    private GameObject target;
 
-    [SerializeField] private NavMeshSurface surface;
-    private Vector3 spawnPosition;
-    private NavMeshAgent navMeshAgent;
-    private float defaultSpeed;
-    [SerializeField] private float attackThreshold = 2.5f;
-    private bool inSight = false;
-     bool isAttacking = false;
-    [SerializeField] private  bool chasing = false;
-    [SerializeField] private float maxDistance = 10f;
-    private Animator animator;
-    [SerializeField] private int attackDamage = 60;
-    private bool hitByTeddy = false;
-    private bool dead = false;
-    //save if the enemy has been awaken s.t. upon spawning
-    //it can be activated without using the trigger
-    private bool awaken = false;
+    #region SerializeField
+        [SerializeField] private AudioClip attackingSound;
+        [SerializeField] private AudioClip grunt;
+        [SerializeField] private AudioClip scream;
+
+        [SerializeField] private float attackThreshold = 2.5f;
+        [SerializeField] private  bool chasing = false;
+        [SerializeField] private float maxDistance = 10f;
+        //save if the enemy has been awaken s.t. upon spawning
+        [SerializeField] private ScaryGirlTrigger sceneScaryGirlTrigger;
+        [SerializeField] private int attackDamage = 60;
+    #endregion
     
+    #region PrivateAttributes
+        private GameObject target;
+        private AudioSource audioSource;
+        private Vector3 spawnPosition;
+        private NavMeshAgent navMeshAgent;
+        private float defaultSpeed;
+        private Animator animator;
+        private bool hitByTeddy = false;
+        private bool dead = false;
+        private bool inSight = false;
+        //it can be activated without using the trigger
+        private bool awaken = false;
+    #endregion
+
+    bool isAttacking = false;
+    List<ScaryGirlTrigger> scaryGirlTriggers = new List<ScaryGirlTrigger>();
+
     // Start is called before the first frame update
     void Start()
     {
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
         spawnPosition = gameObject.transform.position;
         inSight = false;
-       
+        audioSource = GetComponent<AudioSource>();
+        if(!Settings.LoadedFromSave){
+            scaryGirlTriggers.Add(sceneScaryGirlTrigger);
+            ActivateNavMeshAndAnimator();
+        }
     }
 
-    public void WakeUp(){
+    private void ActivateNavMeshAndAnimator(){
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
         defaultSpeed = navMeshAgent.speed;
         animator = GetComponent<Animator>();
         animator.enabled = true;
+    }
+
+    public void WakeUp(){
         animator.SetBool("Alive", true);
         awaken = true;
     }
 
     public void Scream(){
-        GetComponent<AudioSource>().Play();
+        //2D sound, distance does not matter
+        Managers.AudioManager.PlaySound(scream);
     }
 
     public void StartRunning(){
@@ -61,15 +85,22 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave{
         StartCoroutine(FollowMe());
     }
 
-private IEnumerator FollowMe(){
+    private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
+        audioSource.clip = grunt;
+        audioSource.loop = true;
+        audioSource.spatialBlend = 1;
+        audioSource.pitch = 2;
+        audioSource.Play();
         while(!dead){
             if (hitByTeddy)
             {
+                audioSource.Stop();
                 navMeshAgent.SetDestination(transform.position);
                 animator.SetBool("HitByTeddy", true);
                 yield return new WaitForSeconds(6f);
                 hitByTeddy = false;
+                audioSource.Play();
                 animator.SetBool("HitByTeddy", false);
                 if (dead) break;
             }
@@ -89,7 +120,7 @@ private IEnumerator FollowMe(){
                     yield return null;
                 }
             }else{
-                if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance )){
+                if ( Physics.Raycast(startRaycast, direction, out hit, maxDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
                     Debug.DrawRay(startRaycast, direction, Color.yellow);
                     if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
                         inSight = true;
@@ -157,28 +188,36 @@ private IEnumerator FollowMe(){
         if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
             if(hit.collider.gameObject == target)
             {
-                Debug.Log("Ti scasciai "+Time.frameCount );
+                //Debug.Log("Ti scasciai "+Time.frameCount );
                 hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
+        audioSource.Stop();
+        audioSource.PlayOneShot(attackingSound,1f);
         yield return new WaitForSeconds(0.6f);
         animator.SetBool("Attack", false);
         yield return new WaitForSeconds(0.5f);
-        
+        audioSource.Play();
 
         isAttacking = false;
     }
      public void HitByTeddyBear()
     {
         hitByTeddy = true;
-        Debug.Log("Hit by teddy");
+        //Debug.Log("Hit by teddy");
     }
 
-    public void Die()
-    {
+    public void Die(){
+        foreach(ScaryGirlTrigger t in scaryGirlTriggers){
+            t.RemoveScaryGirl(gameObject);
+        }
         animator.SetBool("Dead", true);
         dead = true;
         
+    }
+    public void AddScaryGirlTrigger(ScaryGirlTrigger trigger){
+        scaryGirlTriggers.Add(trigger);
+        //Debug.Log("There");
     }
     // Update is called once per frame
     void Update()
@@ -191,6 +230,10 @@ private IEnumerator FollowMe(){
         data.rotation = transform.localEulerAngles;
         data.dead = dead;
         data.awaken = awaken;
+        data.scaryGirlTriggersNames = new List<string>();
+        foreach(ScaryGirlTrigger t in scaryGirlTriggers){
+            data.scaryGirlTriggersNames.Add(t.gameObject.name);
+        }
         Settings.gameData.scaryGirlsData.Add(data); 
     }
     public void LoadFromData(ScaryGirlSavingData data ){
@@ -198,12 +241,27 @@ private IEnumerator FollowMe(){
         transform.parent.localEulerAngles = data.rotation;
         dead = data.dead;  
         awaken = data.awaken;
+        
+        foreach(string t in data.scaryGirlTriggersNames){
+            GameObject triggerObject = GameObject.Find(t);
+            if(triggerObject != null){
+                ScaryGirlTrigger trigger = triggerObject.GetComponent<ScaryGirlTrigger>();
+                trigger.AddScaryGirl(gameObject);
+                scaryGirlTriggers.Add(trigger);
+            }
+        }
         if(dead)
             Destroy(this.transform.parent.gameObject);
         else{
-            if(awaken)
+            ActivateNavMeshAndAnimator();
+            if(awaken){
                 WakeUp();
+            }
         }
+        
     
+    }
+
+    public void Hurt(int damage){
     }
 }

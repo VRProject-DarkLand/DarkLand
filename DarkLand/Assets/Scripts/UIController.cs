@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider _healthBar;
     [SerializeField] private Slider _fearBar;
     [SerializeField] private Image damageImage;
+    [SerializeField] private Image cureImage;
     [SerializeField] private GameObject usableSlots;
     [SerializeField] private GameObject usableSlotContainer; 
     [SerializeField] private GameObject ConfirmationPopup;
@@ -23,7 +24,7 @@ public class UIController : MonoBehaviour
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
     private int animatingDamageTimeElapsed = 0;
-    
+    private Image currentImage;    
     // Start is called before the first frame update
     void Start()
     {
@@ -55,7 +56,7 @@ public class UIController : MonoBehaviour
     }
 
     private void UpdateUIOnSaveLoad(){
-        OnHealthChanged(Managers.Player.health, false);
+        _healthBar.value = _healthBar.maxValue * Managers.Player.health/Managers.Player.maxHealth;
         OnFearChanged();
     }
 
@@ -66,16 +67,23 @@ public class UIController : MonoBehaviour
 
     public void OnHealthChanged(float health, bool damaged){
         _healthBar.value = _healthBar.maxValue * health/Managers.Player.maxHealth;
-        if(!damageImage.enabled && damaged){
-            damageImage.color = new Color(1,1,1,0.8f);
-            damageImage.enabled = true;
-            StartCoroutine(FadeAwayImage());
-        }
-        else if(!damaged){
-             damageImage.enabled = false;
-        }
-        else{
+        bool startFade = false;
+        if(currentImage == null)
+            startFade = true;
+        else
+            currentImage.enabled = false;
+        if(damaged){
+                damageImage.color = new Color(1,1,1,0.8f);
+                currentImage = damageImage;
+                animatingDamageTimeElapsed = 0;
+        }else{
+            cureImage.color = new Color(1,1,1,0.8f);
+            currentImage = cureImage;
             animatingDamageTimeElapsed = 0;
+        }
+        currentImage.enabled = true;
+        if(startFade){
+            StartCoroutine(FadeAwayImage());
         }
     }
 
@@ -86,10 +94,11 @@ public class UIController : MonoBehaviour
         while(a != 0){
             a = Mathf.Lerp(0.8f,0,speed*animatingDamageTimeElapsed);
             animatingDamageTimeElapsed++;
-            damageImage.color= new Color(1,1,1,a);
+            currentImage.color= new Color(1,1,1,a);
             yield return new WaitForSeconds(0.1f);
         }
-        damageImage.enabled = false;
+        currentImage.enabled = false;
+        currentImage = null;
     }
     
     private void UsedElement(string name, int pos){
@@ -156,6 +165,7 @@ public class UIController : MonoBehaviour
         if(choice){
             Managers.Pause.OnClickResume();
             SceneManager.LoadScene(Settings.MAIN_MENU);
+            Settings.LoadedFromSave = false;
         }else{
             ConfirmationPopup.SetActive(false);
         }

@@ -11,6 +11,9 @@ public class InteractableTrigger : MonoBehaviour{
     protected Transform playerTransform;
 
     private bool looking = false;
+    private IInteractableObject interactableObject;
+
+    [SerializeField] private bool reactToEnemy = false;
 
     public bool isCollectable  {get; internal set;} = false;
 
@@ -27,15 +30,16 @@ public class InteractableTrigger : MonoBehaviour{
 
     void Start() {
         //OpenDoor openDoor;
+        interactableObject = GetComponent<IInteractableObject>();
+
     }
     void Update(){
-        IInteractableObject obj = GetComponent<IInteractableObject>();
         if(enteredInRange){
             float lookingScore = LookingCondition(playerTransform, gameObject.transform);
             if(lookingScore > 0){
                 bool can_do = true;
-                if(obj != null){
-                    can_do = obj.CanInteract();
+                if(interactableObject != null){
+                    can_do = interactableObject.CanInteract();
                 }
                 InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float, bool>(this, lookingScore, can_do));
                 if(!looking){
@@ -53,6 +57,11 @@ public class InteractableTrigger : MonoBehaviour{
         if(collider.tag == Settings.PLAYER_TAG){
             enteredInRange = true;
             playerTransform = collider.gameObject.transform;
+        }
+        if(!reactToEnemy)
+            return;
+        if(collider.tag == Settings.INTERACTION_ENEMY_TAG){
+            interactableObject.ReactiveInteraction();
         }
 
     }

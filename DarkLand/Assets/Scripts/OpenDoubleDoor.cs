@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class OpenDoubleDoor :  IInteractableObject
 {
@@ -17,6 +19,9 @@ public class OpenDoubleDoor :  IInteractableObject
     [SerializeField] private float right_rotation;
     [SerializeField] private GameObject left;
     [SerializeField] private GameObject right;
+    [SerializeField] private NavMeshLink link;
+    
+    private IEnumerator coroutine;
     
     [SerializeField] private bool requireKey = false;
     [SerializeField] private string key = "Key";
@@ -26,6 +31,8 @@ public class OpenDoubleDoor :  IInteractableObject
         isMoving = false;
         speed = 1f;
         timeCount = 0f; 
+        if(link != null)
+            link.enabled = !requireKey;
         interactableTrigger = GetComponent<InteractableTrigger>();
          interactableTrigger = GetComponent<InteractableTrigger>();
         if(!requireKey)
@@ -67,12 +74,27 @@ public class OpenDoubleDoor :  IInteractableObject
 
     }
 
+    public override void ReactiveInteraction(){
+        if(!requireKey){
+            isMoving = false;
+            if(coroutine != null)
+                StopCoroutine(coroutine);
+            timeCount = 1;
+            left.transform.rotation =open.Item1;
+            right.transform.rotation = open.Item2;
+            opened = true;
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+        }
+    }
+
 
     public void ChangeState(){
         if(left != null && right != null){
               if(CanInteract()){
                  if(requireKey){
                     requireKey = false;
+                    if(link != null)
+                        link.enabled = true;
                     //Managers.Inventory.ConsumeItem(key);
                     interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
                     return;
@@ -85,12 +107,18 @@ public class OpenDoubleDoor :  IInteractableObject
                 //     left.transform.rotation = open.Item1 ;
                 //     right.transform.rotation = open.Item2 ;
                 // }
-                if(opened)
-                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
-                else
-                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+            if(opened){
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_CLOSE_SOUND);
+                
+            }   else {
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+                interactionSound =  ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
+            }
+            Managers.AudioManager.PlaySound(interactionSound);
                 opened = !opened;   
                 isMoving = true;  
+                timeCount = 0;
         }
     }
     public override void Interact(){

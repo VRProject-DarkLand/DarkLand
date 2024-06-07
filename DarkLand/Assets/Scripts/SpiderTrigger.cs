@@ -1,17 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpiderTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject spider;
-
+    private List<GameObject> spiders;
+    [SerializeField] private GameObject _sceneSpider;
+    void Start(){
+        spiders = new List<GameObject>();
+        if(!Settings.LoadedFromSave){
+            spiders.Add(_sceneSpider);
+        }
+    }
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")){
-            spider.GetComponent<WaypointMover>().WakeUp();
+        foreach(GameObject spider in spiders){
+            if (other.CompareTag(Settings.PLAYER_TAG)){
+                spider.GetComponent<WaypointMover>().WakeUp();
+            }
         }
     }
     public void AddSpider(GameObject spider){
-        this.spider = spider;
+        spiders.Add(spider);
+    }
+    public void RemoveSpider(GameObject spider){
+        spiders.Remove(spider);
     }
 }

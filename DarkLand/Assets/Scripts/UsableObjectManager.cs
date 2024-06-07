@@ -138,11 +138,11 @@ public class UsableObjectManager : MonoBehaviour, IGameManager, IDataPersistence
         }else {
            // _currentObject.gameObject.SetActive(false);
         }
-         string tot = "Usable objects: ";
-         for(int i = 0; i < _selectable.Count; ++i){
-            tot+=" "+_selectable[i].gameObject.name;
-         }
-        Debug.Log(tot);
+        //  string tot = "Usable objects: ";
+        //  for(int i = 0; i < _selectable.Count; ++i){
+        //     tot+=" "+_selectable[i].gameObject.name;
+        //  }
+        // Debug.Log(tot);
     }
 
     public void SecondaryUse(){

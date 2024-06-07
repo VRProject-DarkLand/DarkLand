@@ -7,6 +7,7 @@ public abstract class IUsableObject: MonoBehaviour{
     protected Animator _animator;
     [SerializeField] protected Vector3 _handlingPosition = Vector3.zero;
     [SerializeField] protected Vector3 _handlingRotation = Vector3 .zero;
+    [SerializeField] protected AudioClip useSound ;
     public abstract void Use();
     
     public virtual void SecondaryUse(){

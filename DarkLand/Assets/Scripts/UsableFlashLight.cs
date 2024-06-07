@@ -20,6 +20,7 @@ public class UsableFlashLight : IUsableObject{
     public override void Use(){
         if(!GameEvent.isInDialog){
             Debug.Log("Changing light status");
+            Managers.AudioManager.PlaySound(useSound);
             gameObject.GetComponentInChildren<Light>().enabled = !gameObject.GetComponentInChildren<Light>().enabled;
         } 
         if(GameEvent.isHiding)

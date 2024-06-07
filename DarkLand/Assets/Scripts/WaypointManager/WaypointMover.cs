@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
+public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
     [System.Serializable]
     public class SpiderData{
         public int health;
         public Vector3 position;
         public Vector3 rotation;
+        public List<string> spiderTriggersNames;
     }
     [SerializeField] private Waypoints waypoints;
     [SerializeField] private float moveSpeed = 3.5f;
@@ -24,7 +26,10 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
     private Transform currentWaypoint = null;
     private Vector3 startPosition;
     private Vector3 startRotation;
-    private int _health = 10;
+    private int _health = 20;
+
+    [SerializeField] private SpiderTrigger sceneTrigger;
+    private List<SpiderTrigger> spiderTriggers = new List<SpiderTrigger>();
     // Start is called before the first frame update
     void Start(){
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
@@ -36,6 +41,9 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
         animator.SetBool("Idle", true);
         startPosition = transform.parent.position;
         startRotation = transform.parent.localEulerAngles;
+        if(!Settings.LoadedFromSave){
+            spiderTriggers.Add(sceneTrigger);
+        }
     }
 
     // Update is called once per frame
@@ -87,7 +95,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
         if(Physics.SphereCast(transform.position, 1.2f ,transform.forward , out hit, attackThreshold, 63 )){
             if(hit.collider.gameObject == target)
             {
-                Debug.Log("Ti scasciai "+Time.frameCount );
+                //Debug.Log("Ti scasciai "+Time.frameCount );
                 hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
@@ -98,16 +106,23 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
         isAttacking = false;
     }
     public void Hurt(int damage){
-        Debug.Log("spider damaged");
         _health -= damage;
+        //Debug.Log("spider damaged Current life " + _health);
+
         if(_health <= 0){
-            Debug.Log("spider died");
+            //Debug.Log("spider died");
             Die();
         }
 
     }
+    public void AddSpiderTrigger(SpiderTrigger trigger){
+        spiderTriggers.Add(trigger);
+    }
     public void Die(){
-        Destroy(gameObject);
+        foreach(SpiderTrigger t in spiderTriggers){
+            t.RemoveSpider(gameObject);
+        }
+        Destroy(transform.parent.gameObject);
     }
     public void WakeUp(){
         alive = true;
@@ -147,10 +162,22 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave{
         data.position = startPosition;
         data.rotation = startRotation;
         Settings.gameData.spidersData.Add(data);
+        data.spiderTriggersNames = new List<string>();
+        foreach(SpiderTrigger t in spiderTriggers){
+            data.spiderTriggersNames.Add(t.gameObject.name);
+        }
     }
     public void LoadFromData(SpiderData data){
         _health = data.health;
         transform.parent.position = data.position;
         transform.parent.localEulerAngles = data.rotation;        
+        foreach(string t in data.spiderTriggersNames){
+            GameObject triggerObject = GameObject.Find(t);
+            if(triggerObject != null){
+                SpiderTrigger trigger = triggerObject.GetComponent<SpiderTrigger>();
+                trigger.AddSpider(gameObject);
+                spiderTriggers.Add(trigger);
+            }
+        }
     }
 }

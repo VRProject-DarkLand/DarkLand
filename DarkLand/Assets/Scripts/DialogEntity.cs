@@ -10,8 +10,9 @@ public class DialogEntity : IInteractableObject{
         interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.TALK_TO_NPC);
     }
     public override void Interact(){
-        if(!GameEvent.isInDialog)
+        if(!GameEvent.isInDialog){
+            Managers.AudioManager.PlaySound(interactionSound);
             Messenger<string>.Broadcast(GameEvent.OPEN_DIALOG, gameObject.name);
-        
+        }
     }
 }
