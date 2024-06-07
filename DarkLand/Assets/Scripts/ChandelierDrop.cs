@@ -15,7 +15,7 @@ public class ChandelierDrop : MonoBehaviour
     void Start()
     {
         script = door.GetComponent<OpenDoubleDoor>();
-        speed = 1f;
+        speed = 0.3f;
         timeCount = 0;
 
     }
