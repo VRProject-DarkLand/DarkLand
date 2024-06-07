@@ -12,7 +12,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
     private GameObject target;
     [SerializeField] private float viewAngle;
     [SerializeField] private float viewRange;
-    private Transform lastPoint = null;
+    private Vector3 lastPoint = new Vector3(0f,0f,0f);
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private FPSInput targetInput;
@@ -89,15 +89,8 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
     private void TeleportToRandomPoint()
     {
         navMeshAgent.enabled = false;
-        Debug.Log("Sampling");
         int randomIndex = Random.Range(0, numberOfHidingPoints);
         Transform randomChild = hidingPoints.transform.GetChild(randomIndex);
-        while (randomChild == lastPoint)
-        {
-            randomIndex = Random.Range(0, numberOfHidingPoints);
-            randomChild = hidingPoints.transform.GetChild(randomIndex);
-        }
-        Debug.Log("Teleporting to: " + randomIndex);
         transform.position = randomChild.position;
         transform.rotation = randomChild.rotation;
         navMeshAgent.enabled = true;
@@ -105,39 +98,25 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
     // Update is called once per frame
     void Update()
     {
-        if(currentState == States.idle && CanSeeTarget(target.transform, viewAngle, viewRange))
+        if(currentState == States.idle)
         {
-            StartCounting();
+            if(CanSeeTarget(target.transform, viewAngle, viewRange))
+            {
+                lastPoint = target.transform.position;
+                //Debug.Log("Ti vidu " + lastPoint);
+                StartCounting();
+            }
+            else
+            {
+                TeleportCloserToPlayer();
+            }
         }
         else if(currentState == States.hiding)
         {
             TeleportToRandomPoint();
             currentState = States.idle;
             animator.SetBool("Moving", false);
-            /*
-            if (!moving)
-            {
-                Debug.Log("Sampling");
-                int randomIndex = Random.Range(0, numberOfHidingPoints);
-                Transform randomChild = hidingPoints.transform.GetChild(randomIndex);
-                while(randomChild == lastPoint)
-                {
-                    randomIndex = Random.Range(0, numberOfHidingPoints);
-                    randomChild = hidingPoints.transform.GetChild(randomIndex);
-                }
-                navMeshAgent.SetDestination(randomChild.position);
-                moving = true;
-                lastPoint = randomChild;
-            }
-            if (PathFinished())
-            {
-                Debug.Log("Going back idle");
-                moving = false;
-                transform.Rotate(0f, 180f, 0f);
-                currentState = States.idle;
-                animator.SetBool("Moving", false);
-            }
-            */
+
         }
         else if(currentState == States.chasing)
         {
@@ -154,6 +133,37 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
                 currentState = States.hiding;
             }
         }
+    }
+
+    private void TeleportCloserToPlayer()
+    {
+        navMeshAgent.enabled = false;
+        Transform closestHidingPoint = null;
+        float closestDistanceSqr = Mathf.Infinity;
+
+        foreach (Transform hidingPoint in hidingPoints.transform)
+        {
+            //Debug.Log("From: " + hidingPoint.position + " To: " + lastPoint + " = " + Vector3.Distance(hidingPoint.position, lastPoint));
+            if (Vector3.Distance(hidingPoint.position,lastPoint) > 5.0f)
+            {
+                Vector3 directionToTarget = hidingPoint.position - target.transform.position;
+                float dSqrToTarget = directionToTarget.sqrMagnitude;
+
+                if (dSqrToTarget < closestDistanceSqr)
+                {
+                    closestDistanceSqr = dSqrToTarget;
+                    closestHidingPoint = hidingPoint;
+                }
+            }
+
+        }
+
+        if (closestHidingPoint != null && transform.position != closestHidingPoint.position)
+        {
+            transform.position = closestHidingPoint.position;
+            transform.rotation = closestHidingPoint.rotation;
+        }
+        navMeshAgent.enabled = true;
     }
 
     public void SaveData(){
