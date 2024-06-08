@@ -15,6 +15,7 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private TMP_Dropdown qualityDrop;
     [SerializeField] private Toggle musicToggle;
     [SerializeField] private Toggle soundToggle;
+    [SerializeField] private Toggle vsynch;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider soundSlider;
     private List<GameObject> panels ;
@@ -27,6 +28,8 @@ public class SettingsController : MonoBehaviour
         panels = new List<GameObject>(){audioPanel, infoPanel,videoPanel};
         qualityDrop.value = QualitySettings.GetQualityLevel();
         qualityDrop.RefreshShownValue();
+        vsynch.isOn = QualitySettings.vSyncCount > 0;
+        
         Screen.fullScreen = true;
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
@@ -56,6 +59,13 @@ public class SettingsController : MonoBehaviour
 
     public void SetQuality(int indQuality){
         QualitySettings.SetQualityLevel(indQuality);
+    }
+
+    public void SetVSynch(bool vSynch){
+        if(vSynch){
+            QualitySettings.vSyncCount = 2;
+        }else
+            QualitySettings.vSyncCount = 0;
     }
 
     public void HideAll(){

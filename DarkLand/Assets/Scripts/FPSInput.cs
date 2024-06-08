@@ -287,7 +287,8 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         
         
         velocity *= Time.deltaTime;  
-        MovePlayer(velocity);
+        if(!GameEvent.isHiding)
+            MovePlayer(velocity);
     }
 
     // private void Hide(bool hide){

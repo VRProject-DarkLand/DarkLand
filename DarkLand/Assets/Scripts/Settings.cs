@@ -31,7 +31,3 @@ public class Settings
         public const string DOOR_CLOSE_SOUND = "DoorClosesSound";
     }
 }
-
-internal class final
-{
-}
