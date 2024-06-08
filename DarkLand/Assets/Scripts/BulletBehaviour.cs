@@ -28,8 +28,6 @@ public class BulletBehaviour : MonoBehaviour{
         Physics.Raycast(transform.position, _direction, out currentHit, _bulletRange - _distance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
         //hitting in this frame
         if(currentHit.transform != null && currentHit.distance < deltaMagnitude){
-            Messenger.Broadcast(GameEvent.ENEMY_DAMAGED);
-            
             Vector3 hitPoint = currentHit.point;
             GameObject hole = Instantiate(_bulletHolePrefab, currentHit.point + Vector3.ClampMagnitude(currentHit.normal, _distanceOfBulletHoleFromTarget), Quaternion.LookRotation(-currentHit.normal));
             hole.transform.SetParent(currentHit.transform, true);

@@ -693,15 +693,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4260686675564693167, guid: f3a8337e197203c43b1355ca535b92d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 110.8
+      value: 183.61
       objectReference: {fileID: 0}
     - target: {fileID: 4260686675564693167, guid: f3a8337e197203c43b1355ca535b92d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 29.75
+      value: 47.18
       objectReference: {fileID: 0}
     - target: {fileID: 4260686675564693167, guid: f3a8337e197203c43b1355ca535b92d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 558.77
+      value: 551.47
       objectReference: {fileID: 0}
     - target: {fileID: 4260686675564693167, guid: f3a8337e197203c43b1355ca535b92d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -733,7 +733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6491076346237408483, guid: f3a8337e197203c43b1355ca535b92d7, type: 3}
       propertyPath: m_SkinWidth
-      value: 0.01
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 6621047758925518364, guid: f3a8337e197203c43b1355ca535b92d7, type: 3}
       propertyPath: m_Name
@@ -1021,7 +1021,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 75776450146953377, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 31.590954
+      value: 32.2
       objectReference: {fileID: 0}
     - target: {fileID: 75776450146953377, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14206,16 +14206,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 33796933105687587, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
-      propertyPath: m_Size.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 33796933105687587, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
-      propertyPath: m_Size.z
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 33796933105687587, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
-      propertyPath: m_Center.z
-      value: 0
+      propertyPath: m_Size.y
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 75776450146953377, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14262,12 +14254,8 @@ PrefabInstance:
       value: GateCemetaryWithColumns
       objectReference: {fileID: 0}
     - target: {fileID: 4983018319255735202, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
-      propertyPath: m_Size.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4983018319255735202, guid: dbf4c33855e60d34aa2d3f87e910ad89, type: 3}
-      propertyPath: m_Size.z
-      value: 0.2
+      propertyPath: m_Size.y
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

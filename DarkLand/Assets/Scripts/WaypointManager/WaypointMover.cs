@@ -145,6 +145,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
     public void Hurt(int damage){
         _health -= damage;
+        Messenger.Broadcast(GameEvent.ENEMY_DAMAGED);
         //Debug.Log("spider damaged Current life " + _health);
 
         if(_health <= 0){

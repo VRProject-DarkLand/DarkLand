@@ -11,6 +11,7 @@ public class GameData{
     public int playerHealth;
     
     public List<string> collectableItemsPrefabs;
+    public List<string> collectableItemsNames;
     public List<Vector3> collectableItemsPosition;
     public List<Vector3> collectableItemsRotation;
     public List<Vector3> collectableItemsScale;
@@ -28,6 +29,7 @@ public class GameData{
     public bool allLightsStatus;
     public GameData(){
         collectableItemsPrefabs = new List<string>();
+        collectableItemsNames = new List<string>();
         collectableItemsPosition = new List<Vector3>();
         collectableItemsRotation = new List<Vector3>();
         collectableItemsScale = new List<Vector3>();

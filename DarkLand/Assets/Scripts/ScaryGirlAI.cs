@@ -29,7 +29,6 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         [SerializeField] private ScaryGirlTrigger sceneScaryGirlTrigger;
         [SerializeField] private int attackDamage = 60;
         [SerializeField] private GameObject exitKey;
-        [SerializeField] private GameObject _renderer;
     #endregion
     
     #region PrivateAttributes

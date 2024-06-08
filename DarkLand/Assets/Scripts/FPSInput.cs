@@ -42,6 +42,9 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     private bool _step = true;
     private bool moveAction ;
     private AudioSource _soundSource;
+    private float _maxJumpingAngle = 45f;
+    private float _maxNonSlidingAngle = 40f;
+    private RaycastHit _bottomHit;
 
     // Start is called before the first frame update
     void Start()
@@ -90,12 +93,17 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
               _soundSource.volume = 0.5f;
         } 
     }
-
+    private float ComputeGroundSlope(){
+        return Vector3.Angle(_bottomHit.normal, Vector3.up);
+    }
     private void Jump(){
-        if(!crouch && onGround){
-            onGround = false;
-            deltaY = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            _jumpRotation = transform.rotation;
+        if(!crouch && onGround){    
+            float groundSlope = ComputeGroundSlope();
+            if(groundSlope <= _maxJumpingAngle){
+                onGround = false;
+                deltaY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                _jumpRotation = transform.rotation;
+            }
         }
     }
     private void Walk(){
@@ -183,10 +191,9 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
 
     private bool detectOnGround(){
         bool hitGround = false;
-        RaycastHit hit;
-        if(deltaY <= 0 && Physics.Raycast(transform.position ,Vector3.down, out hit)){
+        if(deltaY <= 0 && Physics.Raycast(transform.position ,Vector3.down, out _bottomHit)){
             float check = (_charController.height + _charController.radius)/1f;
-            hitGround = hit.distance <= check;
+            hitGround = _bottomHit.distance <= check;
         }
         return hitGround;
     }
@@ -284,7 +291,11 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             velocity = transform.TransformDirection(velocity);
             transform.rotation = rot;
         }
-        
+        float groundSlope = ComputeGroundSlope();
+        if(onGround &&  groundSlope > _maxNonSlidingAngle){
+            Vector3 downwardDirection = Vector3.ProjectOnPlane(Vector3.down, _bottomHit.normal).normalized; 
+            velocity += downwardDirection;
+        }
         
         velocity *= Time.deltaTime;  
         if(!GameEvent.isHiding)

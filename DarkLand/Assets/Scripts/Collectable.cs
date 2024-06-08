@@ -37,7 +37,11 @@ public class Collectable : IInteractableObject, IDataPersistenceSave{
     public string InventoryName{get =>  collectedName != ""? collectedName:gameObject.name;}
     public void SaveData(){
         if(!Collected){
-            Settings.gameData.collectableItemsPrefabs.Add(transform.name);
+            Settings.gameData.collectableItemsNames.Add(transform.name);
+            if(collectedName == "")
+                Settings.gameData.collectableItemsPrefabs.Add(transform.name);
+            else
+                Settings.gameData.collectableItemsPrefabs.Add(collectedName);
             Settings.gameData.collectableItemsPosition.Add(transform.position);
             Settings.gameData.collectableItemsRotation.Add(transform.localEulerAngles);
             Settings.gameData.collectableItemsScale.Add(transform.localScale);

@@ -66,7 +66,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             //Debug.Log("Positioning object with guid: " + Settings.gameData.collectableItemsPrefabs[i]);
             string prefabName = GetPrefabName(Settings.gameData.collectableItemsPrefabs[i]);
 
-            //Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
+            Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
             objPrefab = _collectablePrototypes.transform.Find(prefabName).gameObject;
             Vector3 objPos= Settings.gameData.collectableItemsPosition[i];
             Vector3 objRot = Settings.gameData.collectableItemsRotation[i];
@@ -76,7 +76,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             obj.transform.parent = _allCollectablesContainer.transform;
             obj.transform.localEulerAngles = objRot;
             obj.transform.localScale = objScale;
-            obj.transform.name = Settings.gameData.collectableItemsPrefabs[i];
+            obj.transform.name = Settings.gameData.collectableItemsNames[i];
         }
         
         GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>().SetSaveData();
