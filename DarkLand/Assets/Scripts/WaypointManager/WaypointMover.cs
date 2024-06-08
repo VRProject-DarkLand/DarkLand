@@ -20,10 +20,11 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     [SerializeField] private Waypoints waypoints;
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float distanceThreshold = 0.1f;
-    [SerializeField] private float attackThreshold = 2.5f;
+    [SerializeField] private float attackThreshold = 1.5f;
     [SerializeField] private GameObject _renderer;
     [SerializeField] private GameObject dropKey;
     [SerializeField] private GameObject dropLetter;
+    [SerializeField] private GameObject dropAdrenaline;
     [SerializeField] private LightsLeverInteractable lightsLever;
     [SerializeField] private GameObject doorToClose;
     private bool doorClosed = false;
@@ -41,6 +42,8 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
 
     [SerializeField] private SpiderTrigger sceneTrigger;
     private List<SpiderTrigger> spiderTriggers = new List<SpiderTrigger>();
+    private float viewAngle = 30f;
+
     // Start is called before the first frame update
     void Start(){
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
@@ -76,18 +79,26 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
                     navMeshAgent.radius = 1;
                     navMeshAgent.height = 1;
                     navMeshAgent.speed = 3f;
+                    navMeshAgent.angularSpeed = 3000;
                 }
             }
         }
         else { 
-            if (alive && IsInsideNavMesh(target.transform.position)){
+            if (alive && IsInsideNavMesh(target.transform.position) && !isAttacking){
                 navMeshAgent.SetDestination(target.transform.position);
                 NavMeshPath path = new NavMeshPath();
                 navMeshAgent.CalculatePath(target.transform.position, path);
                animator.SetBool("Idle", false);
                 RotateTowardsDestination();
-                if(Vector3.Distance(target.transform.position, transform.position) < attackThreshold && !isAttacking){
-                    StartCoroutine(Attack());
+                Vector3 ignoreY = new Vector3(target.transform.position.x,transform.position.y,target.transform.position.z);
+                Vector3 toTarget = ignoreY - transform.position;
+                if (Vector3.Angle(transform.forward, toTarget) <= viewAngle)
+                {
+                    Debug.Log("Ti vidu");
+                    if (Vector3.Distance(target.transform.position, transform.position) < attackThreshold && !isAttacking)
+                    {
+                        StartCoroutine(Attack());
+                    }
                 }
             }
         }
@@ -115,22 +126,22 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
     private IEnumerator Attack(){
         animator.SetBool("Attack", true);
-        navMeshAgent.speed = 0;
+        navMeshAgent.SetDestination(transform.position);
         isAttacking = true;
         yield return new WaitForSeconds(0.75f);
         RaycastHit hit;
-        if(Physics.SphereCast(transform.position, 1.2f ,transform.forward , out hit, attackThreshold, 63 )){
+        Debug.DrawRay(transform.position + new Vector3(0f,0.5f,0f), transform.forward, Color.magenta,2f);
+        if(Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward , out hit, 3, 63 )){
+            Debug.Log("Scaciato: " + hit.collider.gameObject.name);
             if(hit.collider.gameObject == target)
             {
-                //Debug.Log("Ti scasciai "+Time.frameCount );
+                Debug.Log("Ti scasciai "+Time.frameCount );
                 hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
-        navMeshAgent.speed = moveSpeed;
-        yield return new WaitForSeconds(3f);
         animator.SetBool("Attack", false);
-
         isAttacking = false;
+        yield return new WaitForSeconds(3f);
     }
     public void Hurt(int damage){
         _health -= damage;
@@ -169,6 +180,8 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         key.name = "Mortuary room key";
         GameObject letter = Instantiate(dropLetter, transform.position, Quaternion.identity, GameObject.Find("AllCollectables").transform);
         letter.name = "Spider Letter";
+        GameObject adrenaline = Instantiate(dropAdrenaline, transform.position, Quaternion.identity, GameObject.Find("AllCollectables").transform);
+        adrenaline.name = "Adrenaline";
         lightsLever.Interact();
     }
 

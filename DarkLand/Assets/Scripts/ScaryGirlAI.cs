@@ -100,6 +100,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                 audioSource.Stop();
                 navMeshAgent.SetDestination(transform.position);
                 animator.SetBool("HitByTeddy", true);
+                GameEvent.chasingSet.Remove(GetInstanceID());
                 yield return new WaitForSeconds(6f);
                 hitByTeddy = false;
                 audioSource.Play();
@@ -192,10 +193,9 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         yield return new WaitForSeconds(0.2f);
         RaycastHit hit;
         if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
-            if(hit.collider.gameObject == target)
+            if(hit.collider.gameObject == target.gameObject)
             {
-                //Debug.Log("Ti scasciai "+Time.frameCount );
-                hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
+                target.Hurt(attackDamage);
             }
         }
         audioSource.Stop();
@@ -210,7 +210,6 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
      public void HitByTeddyBear()
     {
         hitByTeddy = true;
-        //Debug.Log("Hit by teddy");
     }
 
     public void Die(){
