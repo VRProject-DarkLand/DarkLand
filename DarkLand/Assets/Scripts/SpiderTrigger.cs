@@ -7,11 +7,14 @@ using UnityEngine;
 public class SpiderTrigger : MonoBehaviour
 {
     private List<GameObject> spiders;
-    [SerializeField] private GameObject _sceneSpider;
+    [SerializeField] private GameObject[] _sceneSpider;
     void Start(){
         spiders = new List<GameObject>();
         if(!Settings.LoadedFromSave){
-            spiders.Add(_sceneSpider);
+            foreach(GameObject obj in _sceneSpider)
+            {
+                spiders.Add(obj);
+            }
         }
     }
     private void OnTriggerEnter(Collider other) {

@@ -27,6 +27,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     [SerializeField] private GameObject dropAdrenaline;
     [SerializeField] private LightsLeverInteractable lightsLever;
     [SerializeField] private GameObject doorToClose;
+    [SerializeField] private bool goBehindPlayer = false;
     private bool doorClosed = false;
     private NavMeshAgent navMeshAgent;
     private GameObject target;
@@ -43,6 +44,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     [SerializeField] private SpiderTrigger sceneTrigger;
     private List<SpiderTrigger> spiderTriggers = new List<SpiderTrigger>();
     private float viewAngle = 30f;
+    private float distanceBehind = 0.5f;
 
     // Start is called before the first frame update
     void Start(){
@@ -83,23 +85,24 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
                 }
             }
         }
-        else { 
-            if (alive && IsInsideNavMesh(target.transform.position) && !isAttacking){
-                navMeshAgent.SetDestination(target.transform.position);
-                NavMeshPath path = new NavMeshPath();
-                navMeshAgent.CalculatePath(target.transform.position, path);
-               animator.SetBool("Idle", false);
-                RotateTowardsDestination();
-                Vector3 ignoreY = new Vector3(target.transform.position.x,transform.position.y,target.transform.position.z);
+        else if(navMeshAgent != null && alive){
+            
+            if (alive && !isAttacking){
+                Vector3 goTo = goBehindPlayer ? target.transform.position - target.transform.forward * distanceBehind : target.transform.position;
+                navMeshAgent.SetDestination(goTo);
+                animator.SetBool("Idle", false);
+                Vector3 ignoreY = new Vector3(goTo.x, goTo.y, goTo.z);
                 Vector3 toTarget = ignoreY - transform.position;
                 if (Vector3.Angle(transform.forward, toTarget) <= viewAngle)
                 {
-                    Debug.Log("Ti vidu");
+                    //Debug.Log("Ti vidu");
                     if (Vector3.Distance(target.transform.position, transform.position) < attackThreshold && !isAttacking)
                     {
+                        transform.LookAt(target.transform.position);
                         StartCoroutine(Attack());
                     }
                 }
+
             }
         }
     }
@@ -128,10 +131,10 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         animator.SetBool("Attack", true);
         navMeshAgent.SetDestination(transform.position);
         isAttacking = true;
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.6f);
         RaycastHit hit;
         Debug.DrawRay(transform.position + new Vector3(0f,0.5f,0f), transform.forward, Color.magenta,2f);
-        if(Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward , out hit, 3, 63 )){
+        if(Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward , out hit, 3, ~LayerMask.GetMask("Ignore Raycast"))){
             Debug.Log("Scaciato: " + hit.collider.gameObject.name);
             if(hit.collider.gameObject == target)
             {
@@ -170,8 +173,11 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
             Debug.Log(count);
             yield return null;
         }
-        DropItems();
-        OpenDoor();
+        if(GameObject.Find("Spider 1")  == null || GameObject.Find("Spider 2") == null) {
+            DropItems();
+            OpenDoor();
+        }
+
         Destroy(transform.parent.gameObject);
     }
 
@@ -197,19 +203,6 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
     public void WakeUp(){
         alive = true;
-    }
-    private bool IsInsideNavMesh(Vector3 position)
-    {
-        NavMeshHit hit;
-
-        // Sample a position on the NavMesh closest to the given position
-        if (NavMesh.SamplePosition(position, out hit, Mathf.Infinity, NavMesh.AllAreas))
-        {
-            // Check if the sampled position is close enough to the original position
-            return Vector3.Distance(position, hit.position) < 5f;
-        }
-
-        return false;
     }
     private void RotateTowardsDestination()
     {
