@@ -15,7 +15,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         [SerializeField] private float attackThreshold = 3.5f;
         [SerializeField] private float maxDistance = 2000f;
         //save if the enemy has been awaken s.t. upon spawning
-        [SerializeField] private FinalBossTrigger sceneScaryGirlTrigger;
+        [SerializeField] private FinalBossTrigger finalBossTrigger;
         [SerializeField] private int attackDamage = 60;
     #endregion
     
@@ -43,7 +43,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     #endregion
 
     bool isAttacking = false;
-    List<FinalBossTrigger> scaryGirlTriggers = new List<FinalBossTrigger>();
+    List<FinalBossTrigger> finalBossTriggers = new List<FinalBossTrigger>();
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +52,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         spawnPosition = gameObject.transform.position;
         audioSource = GetComponent<AudioSource>();
         if(!Settings.LoadedFromSave){
-            scaryGirlTriggers.Add(sceneScaryGirlTrigger);
+            finalBossTriggers.Add(finalBossTrigger);
             ActivateNavMeshAndAnimator();
         }
     }
@@ -197,8 +197,8 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     }
 
     public void Die(){
-        foreach(FinalBossTrigger t in scaryGirlTriggers){
-            t.RemoveScaryGirl(gameObject);
+        foreach(FinalBossTrigger t in finalBossTriggers){
+            t.RemoveFinalBoss(gameObject);
         }
         audioSource.PlayOneShot(deathSound);
         animator.SetBool("Dead", true);
@@ -213,8 +213,8 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         
     }
 
-    public void AddScaryGirlTrigger(FinalBossTrigger trigger){
-        //scaryGirlTriggers.Add(trigger);
+    public void AddFinalBossTrigger(FinalBossTrigger trigger){
+        finalBossTriggers.Add(trigger);
         //Debug.Log("There");
     }
     // Update is called once per frame

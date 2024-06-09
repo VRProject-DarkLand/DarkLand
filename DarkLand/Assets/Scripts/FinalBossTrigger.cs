@@ -16,16 +16,16 @@ public class FinalBossTrigger : MonoBehaviour
             bosses.Add(boss);
     }
     private void OnTriggerEnter(Collider other) {
-        foreach(GameObject girl in bosses){
+        foreach(GameObject boss in bosses){
             if (other.CompareTag(Settings.PLAYER_TAG)){
-                girl.GetComponent<CreepHorrorCreature>().WakeUp();
+                boss.GetComponent<CreepHorrorCreature>().WakeUp();
             }
         }
     }
-    public void AddScaryGirl(GameObject girl) {
+    public void AddFinalBoss(GameObject girl) {
         bosses.Add(girl);
     }
-    public void RemoveScaryGirl(GameObject girl) {
+    public void RemoveFinalBoss(GameObject girl) {
         bosses.Remove(girl);
     }
 }
