@@ -26,6 +26,7 @@ public class Managers : MonoBehaviour
     void Awake(){
         //Settings.LoadData;
         //LoadManager.Load();
+        Time.timeScale = 1f;
         Player = GetComponent<PlayerManager>();
         Inventory = GetComponent<InventoryManager>();
         UsableInventory = GetComponent<UsableObjectManager>(); 

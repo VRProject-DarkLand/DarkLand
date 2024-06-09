@@ -86,6 +86,10 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         StartCoroutine(FollowMe());
     }
 
+    // private void SetAgentDestination(Vector3 point){
+    //     NavMeshAgent
+    // }
+
     private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
         audioSource.clip = grunt;
@@ -94,6 +98,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         audioSource.pitch = 2;
         audioSource.Play();
         while(!dead){
+            Debug.Log("Awaken: " + awaken );
             if (hitByTeddy)
             {
                 audioSource.Stop();
@@ -126,7 +131,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                 if(target.crouch){
                     detectionDistance/=4;
                 }
-                if ( Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
+                if ( awaken && Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
                     Debug.DrawRay(startRaycast, direction, Color.yellow);
                     if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
                         inSight = true;
@@ -144,7 +149,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                         yield return new WaitForSeconds(0.2f);
                     }else {
                         inSight = false;
-                        if ( chasing && distance<10f){
+                        if (awaken && chasing && distance<10f){
                             navMeshAgent.speed=2*defaultSpeed;
                             navMeshAgent.SetDestination(target.transform.position);
                             if (navMeshAgent.isOnOffMeshLink){
@@ -158,7 +163,14 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                     chasing = false;
                 }
             }
-          
+
+            NavMeshPath navMeshPath = new NavMeshPath();
+            if (navMeshAgent.CalculatePath(target.transform.position, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathPartial)
+            {
+                awaken = false;
+                chasing = false;
+            }
+
             if(!chasing){
                 GameEvent.chasingSet.Remove(GetInstanceID());
                 //maybe sample position for random point in navmesh

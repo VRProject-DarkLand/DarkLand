@@ -1906,7 +1906,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Managers
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9090718713076603278, guid: 2375fb27dd10e8843925b5dca1fbaade, type: 3}
+    - {fileID: 6911943552860935889, guid: 2375fb27dd10e8843925b5dca1fbaade, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

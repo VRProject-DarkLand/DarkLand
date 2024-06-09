@@ -11,7 +11,7 @@ public class BulletBehaviour : MonoBehaviour{
     private float _distance = 0.0f;
     private GameObject _bulletHolePrefab;
     private float _distanceOfBulletHoleFromTarget = 0.01f;
-    private int _attackDamage = 5;
+    private int _attackDamage = 25;
     void Update(){
         //compute the distance(actually the jump) that the projectile will do in this frame
         //without appying it
