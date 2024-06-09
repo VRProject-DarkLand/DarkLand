@@ -9,9 +9,11 @@ public class SaveMenuObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI id;
     [SerializeField] private TextMeshProUGUI profile;
     [SerializeField] private TextMeshProUGUI time;
+    [SerializeField] private TextMeshProUGUI sceneNameGUI;
     private static  Color defColor = new Color32(176,1,1,160);
     private static Color selected = new Color32(255,255,255,160);
     public string fileName {get;private set;} = "";
+    public string sceneName = Settings.ASYLUM_SCENE;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +24,9 @@ public class SaveMenuObject : MonoBehaviour
         this.fileName = filename;
         string [] elements = fileName.Split('_');
         this.id.text = id;
-        this.profile.text =  elements[0];
+        this.sceneName =  elements[0];
+        this.sceneNameGUI.text = this.sceneName;
+        this.profile.text =  elements[1];
         this.time.text = time;
     }
 

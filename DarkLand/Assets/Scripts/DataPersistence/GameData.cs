@@ -4,7 +4,6 @@ using UnityEngine;
 
 [System.Serializable]
 public class GameData{
-
     public Vector3 playerPosition;
     public Vector3 playerRotation;
     // public Vector3 playerRotation {get; set;}
@@ -20,13 +19,14 @@ public class GameData{
     public List<string> usableItemsNames;
 
     public List<string> inventoryItemsNames;
+    public List<string> inventoryItemsPrefabs;
     public List<string> inventoryItemsQuantities;
 
     public List<ScaryGirlAI.ScaryGirlSavingData> scaryGirlsData;
     public List<LittleGirlAI.LittleGirlSavingData> littleGirlsData;
 
     public List<WaypointMover.SpiderData> spidersData;
-    public bool allLightsStatus;
+    public bool allLightsStatus = true;
     public GameData(){
         collectableItemsPrefabs = new List<string>();
         collectableItemsNames = new List<string>();
@@ -39,6 +39,7 @@ public class GameData{
         scaryGirlsData = new List<ScaryGirlAI.ScaryGirlSavingData>();
         littleGirlsData = new List<LittleGirlAI.LittleGirlSavingData>();
         spidersData = new List<WaypointMover.SpiderData>();
+        inventoryItemsPrefabs = new List<string>();
     }
 
 }

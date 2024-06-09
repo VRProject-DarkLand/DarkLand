@@ -228,14 +228,16 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
 
     public void SaveData(){
-        SpiderData data = new SpiderData();
-        data.health = _health;
-        data.position = startPosition;
-        data.rotation = startRotation;
-        Settings.gameData.spidersData.Add(data);
-        data.spiderTriggersNames = new List<string>();
-        foreach(SpiderTrigger t in spiderTriggers){
-            data.spiderTriggersNames.Add(t.gameObject.name);
+        if(!GameEvent.exitingCurrentScene){
+            SpiderData data = new SpiderData();
+            data.health = _health;
+            data.position = startPosition;
+            data.rotation = startRotation;
+            Settings.gameData.spidersData.Add(data);
+            data.spiderTriggersNames = new List<string>();
+            foreach(SpiderTrigger t in spiderTriggers){
+                data.spiderTriggersNames.Add(t.gameObject.name);
+            }
         }
     }
     public void LoadFromData(SpiderData data){

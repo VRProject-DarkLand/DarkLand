@@ -18,14 +18,13 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
     [SerializeField] private GameObject _collectablePrototypes;
     [SerializeField] private GameObject _allCollectablesContainer;
     [SerializeField] private MonsterPrototypeHandler _monsterPrototypes;
-    
+     
     public void Startup(){
         _fileName = Settings.LastSaving;
         status = ManagerStatus.Started;
         //find contained of prefabs for all objects that can be saved
         _collectablePrototypes = GameObject.Find("CollectablePrototype");
     }
-
     public void NewGame(){
         //Debug.Log("New game creation");
     }
@@ -46,6 +45,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         }
         FileDataHandler.Save(_fileName);
         //Debug.Log("Saved data");
+        Messenger.Broadcast(GameEvent.SAVE_FINISHED, MessengerMode.DONT_REQUIRE_LISTENER);
     }
     public void SetLoadedData(){
         _collectablePersistenceObject = FindAllCollectableObjects();
@@ -66,7 +66,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             //Debug.Log("Positioning object with guid: " + Settings.gameData.collectableItemsPrefabs[i]);
             string prefabName = GetPrefabName(Settings.gameData.collectableItemsPrefabs[i]);
 
-            Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
+            //Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
             objPrefab = _collectablePrototypes.transform.Find(prefabName).gameObject;
             Vector3 objPos= Settings.gameData.collectableItemsPosition[i];
             Vector3 objRot = Settings.gameData.collectableItemsRotation[i];
@@ -82,48 +82,58 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>().SetSaveData();
         
         //destroy all monsters in the scene and substitute them with those in the save file
-        _allMonsters = FindAllMonsters();
-        foreach(GameObject monster in _allMonsters){
-            //Debug.Log("Deleting scary girl");
-            Destroy(monster);
-        }
-        _scaryGirlTriggers = FindAllScaryGirlTriggers();
-        //Debug.Log("Found " +_scaryGirlTriggers.Count + " triggers");
-        //restore scary girls
-        GameObject scaryGirl;
-        foreach(ScaryGirlAI.ScaryGirlSavingData data in Settings.gameData.scaryGirlsData){
-            //Debug.Log("Creating scary girl");
-            if(!data.dead){
-                scaryGirl = Instantiate(_monsterPrototypes._scaryGirlPrefab);
-                ScaryGirlAI ai = scaryGirl.GetComponentInChildren<ScaryGirlAI>();
-                foreach(ScaryGirlTrigger t in _scaryGirlTriggers){
-                    t.AddScaryGirl(scaryGirl.transform.GetChild(0).gameObject);
-                    ai.AddScaryGirlTrigger(t);
+        if(!GameEvent.exitingCurrentScene){
+            _allMonsters = FindAllMonsters();
+            foreach(GameObject monster in _allMonsters){
+                //Debug.Log("Deleting scary girl");
+                Destroy(monster);
+            }
+            _scaryGirlTriggers = FindAllScaryGirlTriggers();
+            //Debug.Log("Found " +_scaryGirlTriggers.Count + " triggers");
+            //restore scary girls
+            GameObject scaryGirl;
+            foreach(ScaryGirlAI.ScaryGirlSavingData data in Settings.gameData.scaryGirlsData){
+                //Debug.Log("Creating scary girl");
+                if(!data.dead){
+                    scaryGirl = Instantiate(_monsterPrototypes._scaryGirlPrefab);
+                    ScaryGirlAI ai = scaryGirl.GetComponentInChildren<ScaryGirlAI>();
+                    foreach(ScaryGirlTrigger t in _scaryGirlTriggers){
+                        t.AddScaryGirl(scaryGirl.transform.GetChild(0).gameObject);
+                        ai.AddScaryGirlTrigger(t);
+                    }
+                    ai.LoadFromData(data);
                 }
-                ai.LoadFromData(data);
+            }
+            GameObject littleGirl;
+            foreach(LittleGirlAI.LittleGirlSavingData data in Settings.gameData.littleGirlsData){
+                //Debug.Log("Creating little girl");
+                littleGirl = Instantiate(_monsterPrototypes._littleGirlPrefab);
+                littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
+            }
+            GameObject spider;
+            List<SpiderTrigger> SpiderTriggers = FindAllSpiderTriggers();
+            foreach(WaypointMover.SpiderData data in Settings.gameData.spidersData){
+                //Debug.Log("Creating little girl");
+                spider = Instantiate(_monsterPrototypes._spiderPrefab);
+                spider.GetComponentInChildren<WaypointMover>().LoadFromData(data);
+                foreach(SpiderTrigger t in SpiderTriggers){
+                    t.AddSpider(spider.transform.GetChild(0).gameObject);
+                    spider.GetComponentInChildren<WaypointMover>().AddSpiderTrigger(t);
+                }
+                //littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
             }
         }
-        GameObject littleGirl;
-        foreach(LittleGirlAI.LittleGirlSavingData data in Settings.gameData.littleGirlsData){
-            //Debug.Log("Creating little girl");
-            littleGirl = Instantiate(_monsterPrototypes._littleGirlPrefab);
-            littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
-        }
-        GameObject spider;
-        List<SpiderTrigger> SpiderTriggers = FindAllSpiderTriggers();
-        foreach(WaypointMover.SpiderData data in Settings.gameData.spidersData){
-            //Debug.Log("Creating little girl");
-            spider = Instantiate(_monsterPrototypes._spiderPrefab);
-            spider.GetComponentInChildren<WaypointMover>().LoadFromData(data);
-            foreach(SpiderTrigger t in SpiderTriggers){
-                t.AddSpider(spider.transform.GetChild(0).gameObject);
-                spider.GetComponentInChildren<WaypointMover>().AddSpiderTrigger(t);
-            }
-            //littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
-        }
-        if(!Settings.gameData.allLightsStatus){
+        //set lights to off only when inside asylum
+        if(ScenesController.instance._currentScene == Settings.ASYLUM_SCENE && !Settings.gameData.allLightsStatus){
             Messenger<bool>.Broadcast(GameEvent.OPERATE_ON_LIGHTS, false, MessengerMode.DONT_REQUIRE_LISTENER);
         }
+
+        //Make a preliminary save of the new scene
+        if(GameEvent.exitingCurrentScene){
+            GameEvent.exitingCurrentScene = false;
+            StartCoroutine(SaveGame());
+        }
+        
     }
     private string GetPrefabName(string name){
         string prefabName = name;    
@@ -136,19 +146,35 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         return prefabName;
     }
 
-    public GameObject CreateInventoryItem(string objectName){
+    public GameObject CreateInventoryItem(string prefabName){
         GameObject objPrefab = null;
-        Transform t =  _collectablePrototypes.transform.Find(objectName);
+        Transform t =  _collectablePrototypes.transform.Find(prefabName);
         if(t != null){
             objPrefab = t.gameObject;
         }else
-            objPrefab = _collectablePrototypes.transform.Find(GetPrefabName(objectName)).gameObject;
+            objPrefab = _collectablePrototypes.transform.Find(GetPrefabName(prefabName)).gameObject;
        
         GameObject obj = Instantiate(objPrefab);
-        obj.name = objectName;
+        //obj.name = objectName;
         //Debug.Log("Created inventory item in scene " + obj.name);
 
         return obj;
+    }
+       public void DeleteFile(){
+        try{
+            if(Settings.LastSaving != ""){
+                
+                #if UNITY_EDITOR
+                UnityEditor.FileUtil.DeleteFileOrDirectory( Path.Combine(Settings.SAVE_DIR, Settings.LastSaving));
+		        UnityEditor.AssetDatabase.Refresh();
+                #else 
+                File.Delete( Path.Combine(Settings.SAVE_DIR, Settings.LastSaving) );
+		        #endif
+            }
+        }
+        catch{
+            Debug.Log("Unable to delete file");
+        }
     }
     private List<IDataPersistenceSave> FindAllDataPersistenceObjects(){
         IEnumerable<IDataPersistenceSave> data = FindObjectsOfType<MonoBehaviour>().OfType<IDataPersistenceSave>();

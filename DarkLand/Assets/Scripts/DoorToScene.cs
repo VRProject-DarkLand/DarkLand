@@ -21,7 +21,9 @@ public class DoorToScene : IInteractableObject
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.EXIT_DOOR);
                 return;
             }
-            ScenesController.instance.ChangeScene(scene);
+            GameEvent.exitingCurrentScene = true;
+            GameEvent.newScene = scene;
+            StartCoroutine(Managers.Persistence.SaveGame());
         }
     }
 

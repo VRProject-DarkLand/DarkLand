@@ -22,7 +22,7 @@ public class InteractableManager : MonoBehaviour{
         if(selectedInteractable.Item1 != null){
             if(interactable == selectedInteractable.Item1){
                     interactableChanged = true;
-                    Messenger.Broadcast(GameEvent.INTERACTION_DISABLED_MESSAGE);
+                    Messenger.Broadcast(GameEvent.INTERACTION_DISABLED_MESSAGE, MessengerMode.DONT_REQUIRE_LISTENER);
                     selectedInteractable = new Tuple<InteractableTrigger, float, bool>(null, 0,true);
             }
         }

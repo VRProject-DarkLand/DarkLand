@@ -36,7 +36,7 @@ public class Collectable : IInteractableObject, IDataPersistenceSave{
     }
     public string InventoryName{get =>  collectedName != ""? collectedName:gameObject.name;}
     public void SaveData(){
-        if(!Collected){
+        if(!Collected && !GameEvent.exitingCurrentScene){
             Settings.gameData.collectableItemsNames.Add(transform.name);
             if(collectedName == "")
                 Settings.gameData.collectableItemsPrefabs.Add(transform.name);

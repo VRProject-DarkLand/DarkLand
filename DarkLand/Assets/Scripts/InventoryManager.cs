@@ -100,10 +100,11 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
     public void SetLoadedGameData(){
         //instantiate object, then collect
         for(int i = 0; i < Settings.gameData.inventoryItemsNames.Count; ++i){
-            GameObject obj = Managers.Persistence.CreateInventoryItem(Settings.gameData.inventoryItemsNames[i]);
+            GameObject obj = Managers.Persistence.CreateInventoryItem(Settings.gameData.inventoryItemsPrefabs[i]);
+            obj.name = Settings.gameData.inventoryItemsNames[i];
             AddItem(obj, obj.GetComponent<Collectable>().GetMaxUsages());
             //Collectable coll = obj.GetComponent<Collectable>();
-            Debug.Log("Destroy inv obj " + obj.name);
+            //Debug.Log("Destroy inv obj " + obj.name);
             Destroy(obj);
         }
     }
@@ -111,6 +112,7 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
         List<string> items = GetItemsKey();
         foreach(string item in items){
             Settings.gameData.inventoryItemsNames.Add(item);
+            Settings.gameData.inventoryItemsPrefabs.Add(_items[item].InventoryClassKey);
             Settings.gameData.inventoryItemsQuantities.Add(_items[item].Count.ToString());
         }
     }

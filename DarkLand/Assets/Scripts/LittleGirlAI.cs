@@ -167,10 +167,12 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
     }
 
     public void SaveData(){
-        LittleGirlSavingData data = new LittleGirlSavingData();
-        data.position = transform.position;
-        data.rotation = transform.localEulerAngles;
-        Settings.gameData.littleGirlsData.Add(data); 
+        if(!GameEvent.exitingCurrentScene){
+            LittleGirlSavingData data = new LittleGirlSavingData();
+            data.position = transform.position;
+            data.rotation = transform.localEulerAngles;
+            Settings.gameData.littleGirlsData.Add(data); 
+        }
     }
     public void LoadFromData(LittleGirlSavingData data ){
         //Debug.Log("Setting parent position to " + data.position);

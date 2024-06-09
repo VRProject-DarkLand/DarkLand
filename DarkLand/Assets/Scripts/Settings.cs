@@ -14,6 +14,7 @@ public class Settings
     public static bool canSave = true;
     public const string ASYLUM_SCENE = "Scenes/Asylum";
     public const string MAIN_MENU = "Scenes/MainMenu";
+    public const string OUTSIDE_SCENE = "Scenes/Forest";
     public static GameData gameData;
     public static string SAVE_DIR = Application.persistentDataPath;
     public const string HEALTH = "Adrenaline";

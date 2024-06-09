@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -138,9 +139,9 @@ public class Menu : MonoBehaviour
     public void OnValueChanged(string value){
         if(value.Trim().Length == 0){
             startNewGameButton.SetActive(false);
-        }else 
-            startNewGameButton.SetActive(true);
-
+        }else{ 
+            startNewGameButton.SetActive(Regex.IsMatch(value, "^[a-zA-Z0-9]*$"));
+        }
     }
 
     public void OnPlayButton(bool newGame)
@@ -149,10 +150,11 @@ public class Menu : MonoBehaviour
             Loader.Load(Settings.LastSaving);
             
         }else{
-            Settings.LastSaving = newGameName.text.Trim()+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
-
+            Settings.LastSaving = "Asylum_" + newGameName.text.Trim()+"_"+DateTime.Now.ToString("yyyy-MM-dd_HH_mm");
+            ScenesController.instance.ChangeScene(Settings.ASYLUM_SCENE);
+            return;
         }
-        ScenesController.instance.ChangeScene(Settings.ASYLUM_SCENE);
+        ScenesController.instance.ChangeScene(saveObjects[selected].sceneName);
     }
 
     public void OnQuitButton()

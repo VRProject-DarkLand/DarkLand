@@ -237,16 +237,18 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     }
 
     public void SaveData(){
-        ScaryGirlSavingData data = new ScaryGirlSavingData();
-        data.position = transform.position;
-        data.rotation = transform.localEulerAngles;
-        data.dead = dead;
-        data.awaken = awaken;
-        data.scaryGirlTriggersNames = new List<string>();
-        foreach(ScaryGirlTrigger t in scaryGirlTriggers){
-            data.scaryGirlTriggersNames.Add(t.gameObject.name);
+        if(!GameEvent.exitingCurrentScene){
+            ScaryGirlSavingData data = new ScaryGirlSavingData();
+            data.position = transform.position;
+            data.rotation = transform.localEulerAngles;
+            data.dead = dead;
+            data.awaken = awaken;
+            data.scaryGirlTriggersNames = new List<string>();
+            foreach(ScaryGirlTrigger t in scaryGirlTriggers){
+                data.scaryGirlTriggersNames.Add(t.gameObject.name);
+            }
+            Settings.gameData.scaryGirlsData.Add(data); 
         }
-        Settings.gameData.scaryGirlsData.Add(data); 
     }
     public void LoadFromData(ScaryGirlSavingData data ){
         transform.parent.position = data.position;
