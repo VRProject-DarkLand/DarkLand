@@ -10838,7 +10838,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: pistol
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8113770916095843387, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
+      propertyPath: interactionSound
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8341786835151107996, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
+      propertyPath: useSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c3cf5b6143a54ff48b2f9f2a141aff4a, type: 3}
+    - target: {fileID: 9029379182554800212, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
+      propertyPath: _shootAudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c3cf5b6143a54ff48b2f9f2a141aff4a, type: 3}
+    m_RemovedComponents:
+    - {fileID: 1870899874233951872, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -14617,12 +14630,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackingSound: {fileID: 8300000, guid: 8bcd59dc95ec96a45b80a7127d6f98d6, type: 3}
-  stepSound: {fileID: 8300000, guid: 9f169a6409f5dbb4cb5db18f0a333144, type: 3}
+  stepSound: {fileID: 8300000, guid: d4f06251b7a75d84ea863fe0b0d55315, type: 3}
   scream: {fileID: 8300000, guid: 9cc8933208d4a64448a1b1356dae263b, type: 3}
   deathSound: {fileID: 8300000, guid: a61ab3f533b486d42a3d4202ef583843, type: 3}
   attackThreshold: 2.5
   maxDistance: 10
-  sceneScaryGirlTrigger: {fileID: 1347700967}
+  finalBossTrigger: {fileID: 1347700967}
   attackDamage: 60
   item: {fileID: 3493048315491332693, guid: a5692252a65d2784fad5bd6673ab750f, type: 3}
 --- !u!195 &1333403746
@@ -14703,7 +14716,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0

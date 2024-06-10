@@ -37,8 +37,9 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         private Vector3 freezeTargetPosition; 
         [SerializeField] private GameObject item;
         private float _footStepSoundLength = 0.4f;
-        private bool _step = false;
-        private bool freeze = false;
+        private bool _step = true;
+        private bool freeze = true;
+        private Coroutine FollowMeCoroutine; 
 
     #endregion
 
@@ -87,7 +88,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         animator.SetBool("Run", false);
         freeze = true;
         GameEvent.chasingSet.Add(GetInstanceID());
-        StartCoroutine(FollowMe());
+        FollowMeCoroutine = StartCoroutine(FollowMe());
     }
 
     private IEnumerator ChargingRun(){
@@ -131,6 +132,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     private IEnumerator WaitForFootSteps(){
         _step = false;
         yield return new WaitForSeconds(_footStepSoundLength);
+        audioSource.PlayOneShot(stepSound,1f);
         _step = true;
     }
 
@@ -162,7 +164,6 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
                     Walk();
                 }                
             }else{        
-                Debug.Log("Ti seguo baby");
                 Vector3 direction = target.transform.position- gameObject.transform.position;
                 float distance = direction.magnitude;
                 navMeshAgent.SetDestination(target.transform.position);
@@ -197,17 +198,20 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     }
 
     public void Die(){
+        dead = true;
         foreach(FinalBossTrigger t in finalBossTriggers){
             t.RemoveFinalBoss(gameObject);
         }
+        running = false;
         audioSource.PlayOneShot(deathSound);
         animator.SetBool("Dead", true);
-        dead = true;
+        StopCoroutine(FollowMeCoroutine);
         //DropItems();
         
     }
     private void DropItems()
     {
+        Debug.Log("DROPPED RADIO");
         GameObject dropped = Instantiate(item,transform.position - new Vector3(2f,0f,0f), Quaternion.identity,GameObject.Find("AllCollectables").transform);
         dropped.name = item.name;
         
@@ -231,15 +235,16 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     {
         if(isVulnerable)
             health-=damage;
-        if(health<=0){
-            animator.SetBool("Dead", true);
-            dead = true;
-            DropItems();
+        if(health<=0 && !dead){
+            
+            Die();
         }
     }
 
     void Update(){
-        if(_step &&  !freeze){
+        Debug.Log("step e freeze: "+_step +" "+freeze);
+        if(_step && !freeze){
+            
             StartCoroutine(WaitForFootSteps());
         }
     }

@@ -16,13 +16,11 @@ public class ShootingBehaviour : MonoBehaviour
     [SerializeField] private float _bulletsSpeed = 50f;
     [SerializeField] private float _bulletRange = 100f;
     private Animator _animator;
-    private AudioSource _audioSource;
     [SerializeField] private GameObject _bulletSource;
     [SerializeField] private AudioClip _shootAudioClip;
     [SerializeField] private GameObject bulletHolePrefab;
     private void Start(){
         _camera = Camera.main;
-        _audioSource = GetComponent<AudioSource>();
     }
     public void Shoot(){
         if(_animator == null){
@@ -71,7 +69,7 @@ public class ShootingBehaviour : MonoBehaviour
             // Apply the rotation to the projectile
             projectile.transform.rotation = lookRotation;
             //play shoot sound
-            _audioSource.PlayOneShot(_shootAudioClip);
+            Managers.AudioManager.PlaySound(_shootAudioClip, 1f);
         }
     }
     // private IEnumerator SphereIndicator(Vector3 pos){
