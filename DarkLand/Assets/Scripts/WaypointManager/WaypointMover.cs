@@ -44,7 +44,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     private int fear = 15;
     [SerializeField] private SpiderTrigger sceneTrigger;
     private List<SpiderTrigger> spiderTriggers = new List<SpiderTrigger>();
-    private const float viewAngle = 30f;
+    private float viewAngle = 30f;
     private const float distanceBehind = 0.5f;
 
     // Start is called before the first frame update
@@ -92,7 +92,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
                 Vector3 goTo = goBehindPlayer ? target.transform.position - target.transform.forward * distanceBehind : target.transform.position;
                 navMeshAgent.SetDestination(goTo);
                 animator.SetBool("Idle", false);
-                Vector3 ignoreY = new Vector3(goTo.x, goTo.y, goTo.z);
+                Vector3 ignoreY = new Vector3(goTo.x, transform.position.y, goTo.z);
                 Vector3 toTarget = ignoreY - transform.position;
                 if (Vector3.Angle(transform.forward, toTarget) <= viewAngle)
                 {

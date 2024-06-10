@@ -48,6 +48,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
 
     bool isAttacking = false;
     List<ScaryGirlTrigger> scaryGirlTriggers = new List<ScaryGirlTrigger>();
+    private bool lockedInPlace;
 
     // Start is called before the first frame update
     void Start()
@@ -98,101 +99,129 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         audioSource.spatialBlend = 1;
         audioSource.pitch = 2;
         audioSource.Play();
-        while(!dead){
-            Debug.Log("Awaken: " + awaken );
+        while (!dead)
+        {
             if (hitByTeddy)
             {
                 audioSource.Stop();
                 navMeshAgent.SetDestination(transform.position);
-               Managers.Player.RemoveEnemy(GetInstanceID(), fear);
+                Managers.Player.RemoveEnemy(GetInstanceID(), fear);
+                animator.SetBool("HitByTeddy", true);
                 yield return new WaitForSeconds(6f);
+                animator.SetBool("HitByTeddy", false);
                 hitByTeddy = false;
                 audioSource.Play();
                 if (dead) break;
             }
-            Vector3 startRaycast = gameObject.transform.position+new Vector3(0,1.5f,0);
-            RaycastHit hit;
-            Vector3 direction = target.transform.position-startRaycast;
-            //Debug.Log(Vector3.Distance(target.transform.position,transform.position));
-            float distance = direction.magnitude;
-            if(GameEvent.isHiding){
-                if(!inSight)
-                    chasing = false;
-                else{ 
-                    if(distance  < attackThreshold && !isAttacking){
-                        StartCoroutine(Attack());
-                    }
-                    navMeshAgent.SetDestination(target.transform.position);
-                    yield return null;
-                }
-            }else{
-                float detectionDistance = maxDistance;
-                if(target.crouch){
-                    detectionDistance/=4;
-                }
-                if ( awaken && Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore)){
-                    Debug.DrawRay(startRaycast, direction, Color.yellow);
-                    if(hit.collider.gameObject.tag == Settings.PLAYER_TAG){
-                        inSight = true;
-                        chasing = true;
-                        if(distance  < attackThreshold && !isAttacking){
+            if (!lockedInPlace)
+            {
+                Vector3 startRaycast = gameObject.transform.position + new Vector3(0, 1.5f, 0);
+                RaycastHit hit;
+                Vector3 direction = target.transform.position - startRaycast;
+                //Debug.Log(Vector3.Distance(target.transform.position,transform.position));
+                float distance = direction.magnitude;
+                if (GameEvent.isHiding)
+                {
+                    if (!inSight)
+                        chasing = false;
+                    else
+                    {
+                        if (distance < attackThreshold && !isAttacking)
+                        {
                             StartCoroutine(Attack());
                         }
-                       Managers.Player.AddEnemy(GetInstanceID(),fear);
-                        navMeshAgent.speed=2*defaultSpeed;    
                         navMeshAgent.SetDestination(target.transform.position);
-                        if (navMeshAgent.isOnOffMeshLink){
-                            navMeshAgent.speed = 2.5f;
-                        }
-                        
-                        yield return new WaitForSeconds(0.2f);
-                    }else {
-                        inSight = false;
-                        if (awaken && chasing && distance<10f){
-                            navMeshAgent.speed=2*defaultSpeed;
+                        yield return null;
+                    }
+                }
+                else
+                {
+                    float detectionDistance = maxDistance;
+                    if (target.crouch)
+                    {
+                        detectionDistance /= 4;
+                    }
+                    if (awaken && Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore))
+                    {
+                        Debug.DrawRay(startRaycast, direction, Color.yellow);
+                        if (hit.collider.gameObject.tag == Settings.PLAYER_TAG)
+                        {
+                            inSight = true;
+                            chasing = true;
+                            if (distance < attackThreshold && !isAttacking)
+                            {
+                                StartCoroutine(Attack());
+                            }
+                            Managers.Player.AddEnemy(GetInstanceID(), fear);
+                            navMeshAgent.speed = 2 * defaultSpeed;
                             navMeshAgent.SetDestination(target.transform.position);
-                            if (navMeshAgent.isOnOffMeshLink){
+                            if (navMeshAgent.isOnOffMeshLink)
+                            {
                                 navMeshAgent.speed = 2.5f;
                             }
-                            yield return null;
-                        }else 
-                            chasing = false;
+
+                            yield return new WaitForSeconds(0.2f);
+                        }
+                        else
+                        {
+                            inSight = false;
+                            if (awaken && chasing && distance < 10f)
+                            {
+                                navMeshAgent.speed = 2 * defaultSpeed;
+                                navMeshAgent.SetDestination(target.transform.position);
+                                if (navMeshAgent.isOnOffMeshLink)
+                                {
+                                    navMeshAgent.speed = 2.5f;
+                                }
+                                yield return null;
+                            }
+                            else
+                                chasing = false;
+                        }
                     }
-                }else{
+                    else
+                    {
+                        chasing = false;
+                    }
+                }
+
+                NavMeshPath navMeshPath = new NavMeshPath();
+                if (navMeshAgent.CalculatePath(target.transform.position, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathPartial)
+                {
+                    awaken = false;
                     chasing = false;
                 }
-            }
 
-            NavMeshPath navMeshPath = new NavMeshPath();
-            if (navMeshAgent.CalculatePath(target.transform.position, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathPartial)
-            {
-                awaken = false;
-                chasing = false;
-            }
-
-            if(!chasing){
-               Managers.Player.RemoveEnemy(GetInstanceID(),fear);
-                //maybe sample position for random point in navmesh
-                navMeshAgent.speed=defaultSpeed;
-                if(Vector3.Distance(navMeshAgent.destination,transform.position)<2.5f){
-                    Vector3 randomDirection = Random.insideUnitSphere * 25f;
-                    randomDirection += transform.position;
-                    NavMeshHit hit1;
-                    NavMesh.SamplePosition(randomDirection, out hit1, 25f, ~LayerMask.GetMask("SpiderNavMesh"));
-                    Vector3 finalPosition = hit1.position;
-                    navMeshAgent.SetDestination(finalPosition);
-                }
-                if(distance<maxDistance)
+                if (!chasing)
                 {
-                    yield return new WaitForSeconds(0.2f);
-                }else if(distance <2*maxDistance)
-                    yield return new WaitForSeconds(3f);
-                else 
-                    yield return new WaitForSeconds(6f);
-            }else{
-               
+                    Managers.Player.RemoveEnemy(GetInstanceID(), fear);
+                    //maybe sample position for random point in navmesh
+                    navMeshAgent.speed = defaultSpeed;
+                    if (Vector3.Distance(navMeshAgent.destination, transform.position) < 2.5f)
+                    {
+                        Vector3 randomDirection = Random.insideUnitSphere * 25f;
+                        randomDirection += transform.position;
+                        NavMeshHit hit1;
+                        NavMesh.SamplePosition(randomDirection, out hit1, 25f, ~LayerMask.GetMask("SpiderNavMesh"));
+                        Vector3 finalPosition = hit1.position;
+                        navMeshAgent.SetDestination(finalPosition);
+                    }
+                    if (distance < maxDistance)
+                    {
+                        yield return new WaitForSeconds(0.2f);
+                    }
+                    else if (distance < 2 * maxDistance)
+                        yield return new WaitForSeconds(3f);
+                    else
+                        yield return new WaitForSeconds(6f);
+                }
+                else
+                {
+
+                }
             }
         }
+        audioSource.Stop();
         yield return null;
     }
 
@@ -288,5 +317,10 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     }
 
     public void Hurt(int damage){
+    }
+
+    internal void lockInPlace()
+    {
+        lockedInPlace = true;
     }
 }
