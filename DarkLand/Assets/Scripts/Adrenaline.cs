@@ -15,6 +15,7 @@ public class Adrenaline : IUsableObject
             if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && Managers.Player.maxHealth > player._health)
             {
                 Managers.Inventory.ConsumeItem(Settings.HEALTH); 
+                Managers.Player.AddFear(-50);
                 player.IncreaseHealth();
             }
         }
