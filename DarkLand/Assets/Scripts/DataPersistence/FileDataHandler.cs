@@ -37,6 +37,7 @@ public class FileDataHandler{
             //Debug.Log("Creating savings file  " + fullPath);
             //Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
             //serialize the content of the data in JSON format
+            File.WriteAllText(fullPath, string.Empty);
             string dataString = JsonUtility.ToJson(Settings.gameData, true);
             Debug.Log("Creating savings\n  " + dataString);
             // using (FileStream stream = new FileStream(fullPath, FileMode.OpenOrCreate)){
@@ -46,10 +47,7 @@ public class FileDataHandler{
             //     }
             // }
             
-            StreamWriter streamWriter = new StreamWriter(new FileStream(fullPath, 
-                                       FileMode.OpenOrCreate, 
-                                       FileAccess.ReadWrite, 
-                                       FileShare.Read));
+            StreamWriter streamWriter = new StreamWriter(fullPath, false);
             streamWriter.Write(dataString);
             streamWriter.Close();
 
