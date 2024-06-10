@@ -67,7 +67,7 @@ public class ThrowableObject : IUsableObject
         RaycastHit hitTowardsTrowableObj;
         Vector3 toCheckDirection = transform.position -  _camera.transform.position;
         float cameraToThrowable = Vector3.Distance(transform.position, _camera.transform.position);
-        Physics.Raycast(_camera.transform.position, toCheckDirection, out hitTowardsTrowableObj, cameraToThrowable, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
+        Physics.Raycast(_camera.transform.position, toCheckDirection, out hitTowardsTrowableObj, cameraToThrowable, ~LayerMask.GetMask("Ignore Raycast", "Player"), QueryTriggerInteraction.Ignore);
         //do not thow an object if there is something bwtween the player and the object
         if(hitTowardsTrowableObj.transform != null){
             Debug.Log("Cannot throw, something is between camera and the object");

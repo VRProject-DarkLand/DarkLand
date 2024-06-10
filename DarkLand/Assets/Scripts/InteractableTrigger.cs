@@ -41,6 +41,7 @@ public class InteractableTrigger : MonoBehaviour{
                 if(interactableObject != null){
                     can_do = interactableObject.CanInteract();
                 }
+                //Debug.Log(gameObject.name +" " +lookingScore);
                 InteractableManager.SetInteractableGameObject(new Tuple<InteractableTrigger, float, bool>(this, lookingScore, can_do));
                 if(!looking){
                     looking = true;
@@ -56,7 +57,7 @@ public class InteractableTrigger : MonoBehaviour{
    void OnTriggerEnter(Collider collider){
         if(collider.tag == Settings.PLAYER_TAG){
             enteredInRange = true;
-            playerTransform = collider.gameObject.transform;
+            playerTransform = Camera.main.transform;
         }
         if(!reactToEnemy)
             return;
@@ -86,10 +87,24 @@ public class InteractableTrigger : MonoBehaviour{
          InteractableManager.DeselectInteractableGameObject(this);
     }
 
+    public void RemoveFromInteractables(){
+        InteractableManager.DeselectInteractableGameObject(this);
+    }
+
     public float LookingCondition(Transform source, Transform target){
         if(ignoreLookingScore)
-            return 1f;
-        Vector3 sourceDirection =  target.transform.position - source.position;
-        return Vector3.Dot(source.forward, sourceDirection) ;
+            return 0.9f;
+        Vector3 sourceDirection = target.transform.position - source.position ;
+        if(isCollectable){
+            RaycastHit hit;
+            if(Physics.Raycast(target.position, -sourceDirection, out hit, 10)){
+                if(hit.collider.tag != Settings.PLAYER_TAG ){
+                    Debug.Log("LOOK: "+ hit.collider.gameObject.name);
+                    return 0;
+                }
+            }
+        }
+        //Debug.Log(gameObject.name +" "+ Vector3.Dot(source.forward, sourceDirection.normalized));
+        return Vector3.Dot(source.forward, sourceDirection.normalized) ;
     }
 }

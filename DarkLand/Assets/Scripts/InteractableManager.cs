@@ -10,11 +10,15 @@ public class InteractableManager : MonoBehaviour{
     private static bool interactableChanged = false;
     
     public static void SetInteractableGameObject(Tuple<InteractableTrigger, float, bool> interactable){
-        if(interactable.Item1 != selectedInteractable.Item1 || (selectedInteractable.Item3 != interactable.Item3)){
-            if(interactable.Item2 >= selectedInteractable.Item2 || selectedInteractable.Item1 == null ){
-                selectedInteractable = interactable;
-                interactableChanged = true;
-            }
+        if(interactable.Item1 == selectedInteractable.Item1 ){
+            selectedInteractable = interactable;
+            return; 
+        }
+        if(selectedInteractable.Item1 != null && interactable.Item1 != null)
+            Debug.Log(selectedInteractable.Item1.gameObject.name + " " + selectedInteractable.Item2 +" vs "+ interactable.Item1.gameObject.name + " " + interactable.Item2  );
+        if(interactable.Item2 >= selectedInteractable.Item2 || selectedInteractable.Item1 == null ){
+            selectedInteractable = interactable;
+            interactableChanged = true;
         }
     }
 
