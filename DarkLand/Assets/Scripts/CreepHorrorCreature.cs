@@ -40,6 +40,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         private bool _step = true;
         private bool freeze = true;
         private Coroutine FollowMeCoroutine; 
+        private Material creepMaterial;
 
     #endregion
 
@@ -51,6 +52,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     {
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>();
         spawnPosition = gameObject.transform.position;
+        creepMaterial = GetComponentInChildren<Renderer>().material;
         audioSource = GetComponent<AudioSource>();
         if(!Settings.LoadedFromSave){
             finalBossTriggers.Add(finalBossTrigger);
@@ -122,6 +124,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         animator.SetBool("Attack", false);
         animator.SetBool("Run", false);
         isVulnerable = false;
+        creepMaterial.color = Color.white;
         navMeshAgent.SetDestination(target.transform.position);
         navMeshAgent.speed=defaultSpeed; 
         running = false;
@@ -159,6 +162,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
                 if(navMeshAgent.remainingDistance < 1.5f){
                     Freeze();
                     isVulnerable = true;
+                    creepMaterial.color = Color.red;
                     yield return new WaitForSeconds(4f);
                     charging = false;
                     Walk();
@@ -233,8 +237,10 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
 
     public void Hurt(int damage)
     {
-        if(isVulnerable)
+        if(isVulnerable){
             health-=damage;
+            Messenger.Broadcast(GameEvent.ENEMY_DAMAGED);
+        }
         if(health<=0 && !dead){
             
             Die();
