@@ -20,6 +20,7 @@ public class GameEvent : MonoBehaviour{
     public const string CHANGED_HEALTH = "HEALTH_CHANGED";
     public const string PLAYER_DEAD = "PLAYER_DEAD";
     public const string IS_USING_GUN = "IS_USING_GUN";
+    public const string FEAR_CHANGED = "FEAR_CHANGED";
     public const string ENEMY_DAMAGED = "ENEMY_DAMAGED";
     public const string PAUSED = "PAUSED";
     public const string USED_USABLE = "USED_USABLE";
@@ -36,7 +37,6 @@ public class GameEvent : MonoBehaviour{
     public static bool isUsingGun = false;
     public static bool exitingCurrentScene = false;
     public static string newScene = "Asylum";
-    public static HashSet<int> chasingSet = new();
 
     public enum InteractWithMessage{
         TALK_TO_NPC,

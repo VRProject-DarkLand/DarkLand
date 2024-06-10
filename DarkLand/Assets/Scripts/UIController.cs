@@ -34,6 +34,7 @@ public class UIController : MonoBehaviour
         Messenger<bool>.AddListener(GameEvent.SHOW_INVENTORY, OnInventoryChange);
         Messenger.AddListener(GameEvent.PLAYER_DEAD,OnPlayerDead);
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
+        Messenger<int>.AddListener(GameEvent.FEAR_CHANGED, OnFearChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
         Messenger.AddListener(GameEvent.ALL_MANAGERS_LOADED, LoadedManagers);
         for(int i = 0;i<Managers.UsableInventory._maxSize;++i){
@@ -44,6 +45,7 @@ public class UIController : MonoBehaviour
         //LayoutRebuilder.ForceRebuildLayoutImmediate(UsableSlots.GetComponent<RectTransform>());
         damageImage.enabled = false;
         inventory.gameObject.SetActive(false);
+        
         ConfirmationPopup.SetActive(false);
         leftMenu = pauseMenu.transform.Find("LeftPanel")?.gameObject;
         Paused(false);
@@ -57,7 +59,7 @@ public class UIController : MonoBehaviour
 
     private void UpdateUIOnSaveLoad(){
         _healthBar.value = _healthBar.maxValue * Managers.Player.health/Managers.Player.maxHealth;
-        OnFearChanged();
+        OnFearChanged(0);
     }
 
     private void AddUsableElement(string name, int pos){
@@ -107,8 +109,8 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void OnFearChanged(){
-
+    public void OnFearChanged(int fear){
+        _fearBar.value = fear;
     }
 
     public void OnSettingsClick(){
@@ -183,6 +185,7 @@ public class UIController : MonoBehaviour
         Messenger<float, bool>.RemoveListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<string, int>.RemoveListener(GameEvent.USABLE_ADDED, AddUsableElement);
         Messenger<string, int>.RemoveListener(GameEvent.USED_USABLE, UsedElement);
+        Messenger<int>.RemoveListener(GameEvent.FEAR_CHANGED, OnFearChanged);
         Messenger<int>.RemoveListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
         Messenger<bool>.RemoveListener(GameEvent.PAUSED, Paused);
         Messenger.RemoveListener(GameEvent.ALL_MANAGERS_LOADED, LoadedManagers);

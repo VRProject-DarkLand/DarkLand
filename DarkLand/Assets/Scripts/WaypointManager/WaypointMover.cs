@@ -34,18 +34,18 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     private GameObject target;
     private Animator animator;
     private bool alive = false;
-
+    private const float fearDistance = 8f;
     private bool isAttacking = false;
     [SerializeField] private int attackDamage = 20;
     private Transform currentWaypoint = null;
     private Vector3 startPosition;
     private Vector3 startRotation;
     private int _health = 20;
-
+    private int fear = 15;
     [SerializeField] private SpiderTrigger sceneTrigger;
     private List<SpiderTrigger> spiderTriggers = new List<SpiderTrigger>();
-    private float viewAngle = 30f;
-    private float distanceBehind = 0.5f;
+    private const float viewAngle = 30f;
+    private const float distanceBehind = 0.5f;
 
     // Start is called before the first frame update
     void Start(){
@@ -96,8 +96,15 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
                 Vector3 toTarget = ignoreY - transform.position;
                 if (Vector3.Angle(transform.forward, toTarget) <= viewAngle)
                 {
+                    float distance = Vector3.Distance(target.transform.position, transform.position);
+                    if(distance <= fearDistance)
+                    {
+                        Managers.Player.AddEnemy(GetInstanceID(),fear);
+                    }else{
+                        Managers.Player.RemoveEnemy(GetInstanceID(),fear);
+                    }
                     //Debug.Log("Ti vidu");
-                    if (Vector3.Distance(target.transform.position, transform.position) < attackThreshold && !isAttacking)
+                    if ( distance < attackThreshold && !isAttacking)
                     {
                         transform.LookAt(target.transform.position);
                         StartCoroutine(Attack());
@@ -136,10 +143,8 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         RaycastHit hit;
         Debug.DrawRay(transform.position + new Vector3(0f,0.5f,0f), transform.forward, Color.magenta,2f);
         if(Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward , out hit, 3, ~LayerMask.GetMask("Ignore Raycast"))){
-            Debug.Log("Scaciato: " + hit.collider.gameObject.name);
             if(hit.collider.gameObject == target)
             {
-                Debug.Log("Ti scasciai "+Time.frameCount );
                 hit.collider.gameObject.SendMessage("Hurt", attackDamage, SendMessageOptions.DontRequireReceiver);
             }
         }
@@ -194,6 +199,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
 
     public void Die(){
+        Managers.Player.RemoveEnemy(GetInstanceID(),fear);
         GetComponent<AudioSource>().Stop();
         foreach(SpiderTrigger t in spiderTriggers){
             t.RemoveSpider(gameObject);

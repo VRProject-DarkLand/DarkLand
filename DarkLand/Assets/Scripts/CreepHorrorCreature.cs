@@ -89,7 +89,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         animator.SetBool("Walk", false);
         animator.SetBool("Run", false);
         freeze = true;
-        GameEvent.chasingSet.Add(GetInstanceID());
+        Managers.Player.AddEnemy(GetInstanceID(), 0);
         FollowMeCoroutine = StartCoroutine(FollowMe());
     }
 
@@ -203,6 +203,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
 
     public void Die(){
         dead = true;
+        Managers.Player.RemoveEnemy(GetInstanceID(), 0);
         foreach(FinalBossTrigger t in finalBossTriggers){
             t.RemoveFinalBoss(gameObject);
         }

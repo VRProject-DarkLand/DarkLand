@@ -102,7 +102,7 @@ public class HidingInteractable : IInteractableObject{
 
     public override bool CanInteract()
     {
-        return  GameEvent.chasingSet.Count == 0; 
+        return  Managers.Player.GetChasingEnemies() == 0;
     }
 
     public override void Interact(){

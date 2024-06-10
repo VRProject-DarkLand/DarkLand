@@ -43,6 +43,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         private bool inSight = false;
         //it can be activated without using the trigger
         private bool awaken = false;
+        private int fear = 60;
     #endregion
 
     bool isAttacking = false;
@@ -82,7 +83,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     public void StartRunning(){
         chasing = true;
         inSight = true;
-        GameEvent.chasingSet.Add(GetInstanceID());
+       Managers.Player.AddEnemy(GetInstanceID(),fear);
         StartCoroutine(FollowMe());
     }
 
@@ -103,12 +104,10 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
             {
                 audioSource.Stop();
                 navMeshAgent.SetDestination(transform.position);
-                animator.SetBool("HitByTeddy", true);
-                GameEvent.chasingSet.Remove(GetInstanceID());
+               Managers.Player.RemoveEnemy(GetInstanceID(), fear);
                 yield return new WaitForSeconds(6f);
                 hitByTeddy = false;
                 audioSource.Play();
-                animator.SetBool("HitByTeddy", false);
                 if (dead) break;
             }
             Vector3 startRaycast = gameObject.transform.position+new Vector3(0,1.5f,0);
@@ -139,7 +138,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                         if(distance  < attackThreshold && !isAttacking){
                             StartCoroutine(Attack());
                         }
-                        GameEvent.chasingSet.Add(GetInstanceID());
+                       Managers.Player.AddEnemy(GetInstanceID(),fear);
                         navMeshAgent.speed=2*defaultSpeed;    
                         navMeshAgent.SetDestination(target.transform.position);
                         if (navMeshAgent.isOnOffMeshLink){
@@ -172,7 +171,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
             }
 
             if(!chasing){
-                GameEvent.chasingSet.Remove(GetInstanceID());
+               Managers.Player.RemoveEnemy(GetInstanceID(),fear);
                 //maybe sample position for random point in navmesh
                 navMeshAgent.speed=defaultSpeed;
                 if(Vector3.Distance(navMeshAgent.destination,transform.position)<2.5f){
@@ -203,7 +202,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         isAttacking = true;
         yield return new WaitForSeconds(0.2f);
         RaycastHit hit;
-        if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
+        if(Physics.SphereCast(transform.position, 0.2f ,transform.forward , out hit, attackThreshold, ~LayerMask.GetMask("Ignore Raycast"), QueryTriggerInteraction.Ignore )){
             if(hit.collider.gameObject == target.gameObject)
             {
                 target.Hurt(attackDamage);

@@ -209,6 +209,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     }
     public void Hurt(int damage){
         _health -= damage;
+        Managers.Player.AddFear(damage/2);
         Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, true);
         //sound?
         if(_health <= 0){

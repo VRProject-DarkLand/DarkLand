@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class AudioManager : MonoBehaviour, IGameManager {
     [SerializeField] private AudioSource uiSoundSource;
     [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource heartBeat;
+    [SerializeField] private AudioSource whisper;
 [SerializeField] private string introBGMusic;
 [SerializeField] private string levelBGMusic;
 
@@ -80,6 +82,24 @@ public class AudioManager : MonoBehaviour, IGameManager {
     public bool soundOn {
         get {return !AudioListener.pause;}
         set {AudioListener.pause = !value;}
+    }
+
+    public void PlayHearthBeat(bool play){
+        if(!heartBeat.isPlaying){
+            if(play)
+                heartBeat.Play();
+            else 
+                heartBeat.Stop();
+        }
+    }
+
+    public void PlayWhisper(bool play){
+         if(!whisper.isPlaying){
+            if(play)
+                whisper.Play();
+            else 
+                whisper.Stop();
+        }
     }
 
     public void PlayIntroMusic() {
