@@ -10838,10 +10838,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: pistol
       objectReference: {fileID: 0}
-    - target: {fileID: 8113770916095843387, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
-      propertyPath: interactionSound
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8341786835151107996, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
       propertyPath: useSound
       value: 
@@ -10850,8 +10846,7 @@ PrefabInstance:
       propertyPath: _shootAudioClip
       value: 
       objectReference: {fileID: 8300000, guid: c3cf5b6143a54ff48b2f9f2a141aff4a, type: 3}
-    m_RemovedComponents:
-    - {fileID: 1870899874233951872, guid: 2545d6e81619e2749baa66100c3e848c, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
