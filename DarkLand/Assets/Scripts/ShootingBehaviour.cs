@@ -26,6 +26,10 @@ public class ShootingBehaviour : MonoBehaviour
         if(_animator == null){
             _animator = gameObject.GetComponent<Animator>();
         }
+        int bulletsLeft = Managers.Inventory.GetItemCount("Ammo Box");
+        if(bulletsLeft == 0){
+            return;
+        }
        if(!_animator.GetBool("shooting")){
             RaycastHit hitTowardsBulletSource;
             Vector3 toCheckDirection = _bulletSource.transform.position - _camera.transform.position;
@@ -41,11 +45,13 @@ public class ShootingBehaviour : MonoBehaviour
             if(shootingMode == ShootingMode.Single){
                 _animator.SetBool("shooting", true);
                 StartCoroutine(ResetShooting());
+                Managers.Inventory.ConsumeItem("Ammo Box");
                 //Debug.Log("Shooting in single mode");
             }
             else if(shootingMode == ShootingMode.Auto){
                 _animator.SetBool("shooting", true);
                 StartCoroutine(ResetShooting());
+                Managers.Inventory.ConsumeItem("Ammo Box");
                 //Debug.Log("Shooting in auto mode");
             }
             Vector3 point = new Vector3(_camera.pixelWidth/2, _camera.pixelHeight/2, 0);

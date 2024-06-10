@@ -67,8 +67,10 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
 
     public void SetSaveData(){
         _health  = Settings.gameData.playerHealth;
-        transform.position = Settings.gameData.playerPosition;
-        transform.localEulerAngles = Settings.gameData.playerRotation;
+        if(!GameEvent.exitingCurrentScene){
+            transform.position = Settings.gameData.playerPosition;
+            transform.localEulerAngles = Settings.gameData.playerRotation;
+        }
     }
     private enum Actions{
         Walk = 0,
