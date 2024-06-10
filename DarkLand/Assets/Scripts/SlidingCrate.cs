@@ -2,38 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlidingCrate : IInteractableObject
-{
-    private bool opened;
-    private bool isMoving;
+public class SlidingCrate : IInteractableObject, IDataPersistenceSave{
+    [System.Serializable]
+    public class WeaponBoxData {
+        public string name;
+        public bool used;
+    }
+
+    private bool used = false;
+    private bool isMoving = false;
     private float speed;
     private float timeCount;
     [SerializeField] private GameObject slidingCrate;
     [SerializeField] private bool requireKey = false;
-    [SerializeField] private bool containObject;
     [SerializeField] private string key = "Key";
     private Vector3 open;
     private Vector3 close;
     public float openingRange = 0.6f;
-
+    private Transform center;
     // Start is called before the first frame update
     void Start()
     {
-        if (slidingCrate != null)
-        {
-            opened = false;
-            isMoving = false;
-            close = slidingCrate.transform.position;
-            open = slidingCrate.transform.position + Vector3.left * openingRange;
-        }
-        speed = 1f;
-        timeCount = 0;
+
         interactableTrigger = GetComponent<InteractableTrigger>();
         if (!requireKey)
-            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_AMMO_BOX);
         else
-            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK);
+            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK_AMMO_BOX);
         
+        center = transform.Find("center");
     }
 
     public override bool CanInteract()
@@ -50,17 +47,21 @@ public class SlidingCrate : IInteractableObject
 
     }
 
-    public override void Interact()
-    {
+    public override void Interact(){
+
+        Debug.Log("Called interact");
+        if(used)
+            return;
         if (!isMoving)
         {
+            if(interactionSound != null)
+                GetComponent<AudioSource>().PlayOneShot(interactionSound);
             ChangeState();
-            StartCoroutine(AnimateDoor());
-            if (containObject)
-            {
-                GetComponent<InteractableTrigger>().enabled = false;
-                GetComponent<BoxCollider>().enabled = false;
-            }
+            GameObject drop = Managers.DropsManager.DropRandomItem();
+            drop.transform.position = center.position;
+            
+            interactableTrigger.RemoveFromInteractables();
+            GetComponent<InteractableTrigger>().enabled = false;
         }
     }
 
@@ -69,53 +70,42 @@ public class SlidingCrate : IInteractableObject
     {
         if (slidingCrate != null )
         {
-            if (CanInteract())
+            if (requireKey)
             {
-                if (requireKey)
-                {
-                    requireKey = false;
-                    Managers.Inventory.ConsumeItem(key);
-                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
-                    return;
-                }
+                requireKey = false;
+                Managers.Inventory.ConsumeItem(key);
+                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_AMMO_BOX);
+                return;
             }
-            // if(opened){
-            //     left.transform.rotation = close.Item1 ;
-            //     right.transform.rotation = close.Item2 ;
-            // }else{
-            //     left.transform.rotation = open.Item1 ;
-            //     right.transform.rotation = open.Item2 ;
-            // }
-            if (opened)
-                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
-            else
-                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
-            opened = !opened;
+            used = true;
             isMoving = true;
+            StartCoroutine(AnimateDoor());
         }
     }
 
-    private IEnumerator AnimateDoor()
-    {
-        Vector3 begin = open;
-        Vector3 end = close;
-        if (opened)
-        {
-            begin = close;
-            end = open;
+    private IEnumerator AnimateDoor(){
+        if (slidingCrate != null){
+            close = slidingCrate.transform.position;
+            open = slidingCrate.transform.position + slidingCrate.transform.forward * openingRange;
         }
-        while (isMoving)
-        {
-            slidingCrate.transform.position = Vector3.Lerp(begin, end, timeCount * speed);
+        speed = 1f;
+        timeCount = 0;
+        while (isMoving){
+            slidingCrate.transform.position = Vector3.Lerp(close, open, timeCount * speed);
            
             timeCount += Time.deltaTime;
-            if (slidingCrate.transform.position == end)
-            {
+            if (slidingCrate.transform.position == open){
               isMoving = false;
               timeCount = 0;
             }
             yield return null;
-        }
+        }       
     }
-    // Update is called once per frame
+
+    public void SaveData(){
+        WeaponBoxData data = new WeaponBoxData();
+        data.name = gameObject.name;
+        data.used = used;
+        Settings.gameData.weaponBoxes.Add(data);
+    }
 }

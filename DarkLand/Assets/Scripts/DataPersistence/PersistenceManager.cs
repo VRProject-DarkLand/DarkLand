@@ -21,12 +21,13 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
      
     public void Startup(){
         _fileName = Settings.LastSaving;
+        if(Settings.LoadedFromSave){
+            GameObject wakeUpCamera = GameObject.Find("WakeUpCamera");
+            if(wakeUpCamera != null){
+                Destroy(wakeUpCamera);
+            }
+        }
         status = ManagerStatus.Started;
-        //find contained of prefabs for all objects that can be saved
-        _collectablePrototypes = GameObject.Find("CollectablePrototype");
-    }
-    public void NewGame(){
-        //Debug.Log("New game creation");
     }
     public GameObject GetAllCollectablesContainer(){
         return _allCollectablesContainer;
@@ -66,13 +67,13 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             //Debug.Log("Positioning object with guid: " + Settings.gameData.collectableItemsPrefabs[i]);
             string prefabName = GetPrefabName(Settings.gameData.collectableItemsPrefabs[i]);
 
-            //Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
+            Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
             objPrefab = _collectablePrototypes.transform.Find(prefabName).gameObject;
             Vector3 objPos= Settings.gameData.collectableItemsPosition[i];
             Vector3 objRot = Settings.gameData.collectableItemsRotation[i];
             Vector3 objScale = Settings.gameData.collectableItemsScale[i];
             GameObject obj = Instantiate(objPrefab, objPos, Quaternion.identity);
-            //Debug.Log("Restored object in scene");
+            Debug.Log("Restored object in scene");
             obj.transform.parent = _allCollectablesContainer.transform;
             obj.transform.localEulerAngles = objRot;
             obj.transform.localScale = objScale;
@@ -80,7 +81,6 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         }
         
         GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>().SetSaveData();
-        
         //destroy all monsters in the scene and substitute them with those in the save file
         if(!GameEvent.exitingCurrentScene){
             _allMonsters = FindAllMonsters();
@@ -121,6 +121,19 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
                     spider.GetComponentInChildren<WaypointMover>().AddSpiderTrigger(t);
                 }
                 //littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
+            }
+            //open all boxes that were opened in the save
+            Dictionary<string, bool> boxToState = new Dictionary<string, bool>();
+            foreach(SlidingCrate.WeaponBoxData c in Settings.gameData.weaponBoxes){
+                Debug.Log("Found box with state " + c.used);
+                boxToState[c.name] = c.used;
+            }
+            List<SlidingCrate> boxes = FindAllBoxes();
+            foreach(SlidingCrate box in boxes){
+                if(boxToState[box.name]){
+                    Debug.Log("Found open box");
+                    box.ChangeState();
+                }
             }
         }
         //set lights to off only when inside asylum
@@ -196,5 +209,9 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
     private List<GameObject> FindAllMonsters(){
         IEnumerable<GameObject> data = GameObject.FindGameObjectsWithTag(Settings.ENEMY_TAG);
         return new List<GameObject>(data);
+    }
+    private List<SlidingCrate> FindAllBoxes(){
+        IEnumerable<SlidingCrate> data = FindObjectsOfType<MonoBehaviour>().OfType<SlidingCrate>();
+        return new List<SlidingCrate>(data);
     }
 }

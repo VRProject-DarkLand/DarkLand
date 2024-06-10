@@ -26,7 +26,7 @@ public class Settings
     public const string INVENTORY_ITEMS_DESCRIPTIONS_FOLDER_NAME = "InventoryDescriptions";
     public static int RAYCAST_MASK = ~LayerMask.GetMask("IgnoreRaycast");
     public static class AudioSettings{
-        public static float musicVolume = 0.8f;
+        public static float musicVolume = 0.0f;
         public static float soundVolume = 1f;
         public static bool musicOn = true;
         public static bool soundOn = true;

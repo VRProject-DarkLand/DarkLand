@@ -28,7 +28,8 @@ public class DialogsKeeper : MonoBehaviour
             {GameEvent.InteractWithMessage.TURN_OFF, "Turn off lights"},
             {GameEvent.InteractWithMessage.SAVE_GAME, "Save game"},
             {GameEvent.InteractWithMessage.EXIT_DOOR, "Exit"},
-
+            {GameEvent.InteractWithMessage.OPEN_AMMO_BOX, "Open box"},
+            {GameEvent.InteractWithMessage.UNLOCK_AMMO_BOX, "Unlock box"},
         };
 
     }

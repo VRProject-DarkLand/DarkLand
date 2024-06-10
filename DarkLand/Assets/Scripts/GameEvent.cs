@@ -51,6 +51,8 @@ public class GameEvent : MonoBehaviour{
         TURN_ON,
         TURN_OFF,
         SAVE_GAME,
+        OPEN_AMMO_BOX,
+        UNLOCK_AMMO_BOX,
     };
 
 }

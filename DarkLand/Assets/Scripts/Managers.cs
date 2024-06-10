@@ -16,6 +16,7 @@ public class Managers : MonoBehaviour
     public static PauseManager Pause {get; private set;}
     public static PersistenceManager Persistence {get; private set;}
     public static PointerManager PointerManager {get; private set;}
+    public static DropsManager DropsManager {get; private set;}
     // Start is called before the first frame update
     private List<IGameManager> _startSequence;
     void Start()
@@ -34,14 +35,16 @@ public class Managers : MonoBehaviour
         Persistence = GetComponent<PersistenceManager>();
         AudioManager = GetComponent<AudioManager>();
         PointerManager = GetComponent<PointerManager>();
+        DropsManager = GetComponent<DropsManager>();
         _startSequence = new List<IGameManager>();
         _startSequence.Add(Player);
         _startSequence.Add(PointerManager);
         _startSequence.Add(AudioManager);
         _startSequence.Add(Inventory);
         _startSequence.Add(UsableInventory);
-         _startSequence.Add(Pause);
+        _startSequence.Add(Pause);
         _startSequence.Add(Persistence);
+        _startSequence.Add(DropsManager);
         
         StartCoroutine(StartupManagers());
     }

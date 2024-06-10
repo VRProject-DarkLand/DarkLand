@@ -27,6 +27,8 @@ public class GameData{
 
     public List<WaypointMover.SpiderData> spidersData;
     public bool allLightsStatus = true;
+
+    public List<SlidingCrate.WeaponBoxData> weaponBoxes;
     public GameData(){
         collectableItemsPrefabs = new List<string>();
         collectableItemsNames = new List<string>();
@@ -40,6 +42,7 @@ public class GameData{
         littleGirlsData = new List<LittleGirlAI.LittleGirlSavingData>();
         spidersData = new List<WaypointMover.SpiderData>();
         inventoryItemsPrefabs = new List<string>();
+        weaponBoxes = new List<SlidingCrate.WeaponBoxData>();
     }
 
 }
