@@ -9,6 +9,7 @@ using static UnityEngine.UI.Image;
 using UnityEngine.UIElements;
 using Unity.AI.Navigation;
 
+[RequireComponent(typeof(AudioSource))]
 public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
     [System.Serializable]
     public class SpiderData{
@@ -193,6 +194,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
 
     public void Die(){
+        GetComponent<AudioSource>().Stop();
         foreach(SpiderTrigger t in spiderTriggers){
             t.RemoveSpider(gameObject);
         }
@@ -203,6 +205,12 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
     public void WakeUp(){
         alive = true;
+        AudioSource source = GetComponent<AudioSource>();
+        source.clip = ResourceLoader.GetSound(Settings.AudioSettings.SPIDER_SOUND);
+        source.loop = true;
+        source.volume = 1f;
+        source.spatialBlend = 1;
+        source.Play();
     }
     private void RotateTowardsDestination()
     {
