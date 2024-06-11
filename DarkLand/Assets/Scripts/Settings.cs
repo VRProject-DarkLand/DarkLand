@@ -12,6 +12,7 @@ public class Settings
     public static string LastSaving = "";
     public static bool LoadedFromSave = false;
     public static bool canSave = true;
+    public const string ASYLUM_NAME = "Asylum";
     public const string ASYLUM_SCENE = "Scenes/Asylum";
     public const string MAIN_MENU = "Scenes/MainMenu";
     public const string OUTSIDE_SCENE = "Scenes/Forest";

@@ -16,9 +16,11 @@ public class ScaryGirlTrigger : MonoBehaviour
             scaryGirls.Add(sceneScaryGirl);
     }
     private void OnTriggerEnter(Collider other) {
+        Debug.Log("TriggerScaryGirl");
         foreach(GameObject girl in scaryGirls){
             if (other.CompareTag(Settings.PLAYER_TAG)){
                 girl.GetComponent<ScaryGirlAI>().WakeUp();
+                Debug.Log("ADSAD");
             }
         }
     }

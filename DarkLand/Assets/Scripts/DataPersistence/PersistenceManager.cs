@@ -93,7 +93,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             //restore scary girls
             GameObject scaryGirl;
             foreach(ScaryGirlAI.ScaryGirlSavingData data in Settings.gameData.scaryGirlsData){
-                //Debug.Log("Creating scary girl");
+                Debug.Log("Creating scary girl");
                 if(!data.dead){
                     scaryGirl = Instantiate(_monsterPrototypes._scaryGirlPrefab);
                     ScaryGirlAI ai = scaryGirl.GetComponentInChildren<ScaryGirlAI>();
@@ -113,6 +113,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             GameObject spider;
             List<SpiderTrigger> SpiderTriggers = FindAllSpiderTriggers();
             foreach(WaypointMover.SpiderData data in Settings.gameData.spidersData){
+                  Debug.Log("Creating spider");
                 //Debug.Log("Creating little girl");
                 spider = Instantiate(_monsterPrototypes._spiderPrefab);
                 spider.GetComponentInChildren<WaypointMover>().LoadFromData(data);

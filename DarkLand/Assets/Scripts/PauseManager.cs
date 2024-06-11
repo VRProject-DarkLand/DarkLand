@@ -21,6 +21,7 @@ public class PauseManager : MonoBehaviour, IGameManager
         paused = false;
         settings = false;
         currentScene = SceneManager.GetActiveScene();
+         AudioListener.pause = false;
     }
 
     public void OnClickResume(){

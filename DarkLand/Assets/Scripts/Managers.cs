@@ -5,7 +5,6 @@ using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(PlayerManager))]
 [RequireComponent(typeof(InventoryManager))]
 public class Managers : MonoBehaviour
 {
@@ -79,6 +78,7 @@ public class Managers : MonoBehaviour
             Player.SetLoadGameData();
             Inventory.SetLoadedGameData();
         } 
+        Time.timeScale = 1f;
         Messenger.Broadcast(GameEvent.ALL_MANAGERS_LOADED,  MessengerMode.DONT_REQUIRE_LISTENER);
         
     }

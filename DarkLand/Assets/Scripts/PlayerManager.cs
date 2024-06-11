@@ -86,7 +86,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
     private IEnumerator ActualFearChange(){
         //actualFear = Mathf.RoundToInt(Mathf.Lerp(actualFear, maxFear, Time.deltaTime));
         int count = 0;
-        Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear);
+        Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear, MessengerMode.DONT_REQUIRE_LISTENER);
         while(!dead){
             Managers.AudioManager.PlayHearthBeat(actualFear>25);
             Managers.AudioManager.PlayWhisper(actualFear>90);

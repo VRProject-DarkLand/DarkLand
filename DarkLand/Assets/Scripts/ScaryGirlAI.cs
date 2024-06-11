@@ -66,6 +66,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     private void ActivateNavMeshAndAnimator(){
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
+        Debug.Log("ENABLED: "+navMeshAgent.enabled);
         defaultSpeed = navMeshAgent.speed;
         animator = GetComponent<Animator>();
         animator.enabled = true;

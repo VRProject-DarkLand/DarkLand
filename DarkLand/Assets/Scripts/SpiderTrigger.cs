@@ -18,9 +18,11 @@ public class SpiderTrigger : MonoBehaviour
         }
     }
     private void OnTriggerEnter(Collider other) {
+
         foreach(GameObject spider in spiders){
             if (other.CompareTag(Settings.PLAYER_TAG)){
                 spider.GetComponent<WaypointMover>().WakeUp();
+                Debug.Log("SpiderMan");
             }
         }
     }

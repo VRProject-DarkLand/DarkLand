@@ -8,6 +8,8 @@ using UnityEngine.AI;
 using static UnityEngine.UI.Image;
 using UnityEngine.UIElements;
 using Unity.AI.Navigation;
+using UnityEngine.SceneManagement;
+
 
 [RequireComponent(typeof(AudioSource))]
 public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEntity{
@@ -67,7 +69,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     void Update() {
         if (alive && currentWaypoint != null) {
             animator.SetBool("Idle", false);
-            if(!doorClosed) closeDoor();
+            if(!doorClosed && doorToClose != null) closeDoor();
             transform.position = Vector3.MoveTowards(transform.position, currentWaypoint.position, moveSpeed * Time.deltaTime);
             if (Vector3.Distance(transform.position, currentWaypoint.position) < distanceThreshold) {
                 currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
@@ -180,8 +182,11 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
             yield return null;
         }
         if(GameObject.Find("Spider 1")  == null || GameObject.Find("Spider 2") == null) {
-            DropItems();
-            OpenDoor();
+            if(SceneManager.GetActiveScene().name == Settings.ASYLUM_NAME) {
+                DropItems();
+            }
+            if(doorToClose != null)
+                OpenDoor();
         }
 
         Destroy(transform.parent.gameObject);

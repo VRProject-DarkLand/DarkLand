@@ -22,8 +22,10 @@ public class HidingInteractable : IInteractableObject{
         timeCount = 0;
         speed = 0.85f;
         exitPos = gameObject.transform.position+gameObject.transform.forward;
-        quad.SetActive(false);
-        offQuadPosition = quad.transform.localPosition;
+        if(quad != null){
+            quad.SetActive(false);
+            offQuadPosition = quad.transform.localPosition;
+        }
     }
 
     // Update is called once per frame
@@ -34,7 +36,8 @@ public class HidingInteractable : IInteractableObject{
     private IEnumerator AnimateHiding(){
         if(!isHiding)
             player.SendMessage("Crouch", SendMessageOptions.DontRequireReceiver);
-        quad.SetActive(true);
+        if(quad != null)
+            quad.SetActive(true);
         Vector3 begin = player.transform.position;
         Vector3 end = gameObject.transform.position;
 
@@ -43,12 +46,14 @@ public class HidingInteractable : IInteractableObject{
         
         Vector3 startQuad = offQuadPosition;
         Vector3 endQuad = new Vector3(0f, startQuad.y, startQuad.z);
-        if(isHiding){
-            begin = gameObject.transform.position;
-            end = exitPos;
-            beginRot=endRot;
-            startQuad = quad.transform.localPosition;
-            endQuad = offQuadPosition;
+        if(quad != null){
+            if(isHiding){
+                begin = gameObject.transform.position;
+                end = exitPos;
+                beginRot=endRot;
+                startQuad = quad.transform.localPosition;
+                endQuad = offQuadPosition;
+            }
         }
         //endRot = Quaternion.Euler(beginRot.x, endRot.y, beginRot.z);
         if(!isHiding){
@@ -60,18 +65,24 @@ public class HidingInteractable : IInteractableObject{
             }
 
             isMoving = true;
-            while(isMoving){
-                SlideQuad(startQuad, endQuad);
-                yield return null;
-            }
+            if(quad != null){
+                while(isMoving){   
+                    SlideQuad(startQuad, endQuad);
+                    yield return null;
+                }
+            }else
+                isMoving = false;
         }
         else{
             isMoving = true;
-            while(isMoving){
-                SlideQuad(startQuad, endQuad);
-                yield return null;
+            if(quad!=null){
+                while(isMoving){
+                    SlideQuad(startQuad, endQuad);
+                    yield return null;
+                }
+
+                quad.SetActive(false);     
             }
-            quad.SetActive(false);
 
             isMoving = true;
             while(isMoving){
