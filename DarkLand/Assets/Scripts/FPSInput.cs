@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,8 +204,8 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         Messenger.Broadcast(GameEvent.PLAYER_DEAD, MessengerMode.DONT_REQUIRE_LISTENER);
     }
 
-    public void IncreaseHealth(){        
-        _health = Managers.Player.maxHealth;
+    public void IncreaseHealth(int amount){        
+        _health = Math.Min(Managers.Player.maxHealth, _health+amount);
         Messenger<float,bool>.Broadcast(GameEvent.CHANGED_HEALTH, _health, false);
             
     }

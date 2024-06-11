@@ -106,7 +106,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
             freeze = true;
     }
 
-    private void Run(){
+    private void Run(bool reachable){
             Vector3 direction = target.transform.position- gameObject.transform.position;
             Vector3 freezeTargetPosition = target.transform.position+direction.normalized*8;
             animator.SetBool("Walk", false);
@@ -114,23 +114,32 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
             animator.SetBool("Run", true);
             running = true;
             navMeshAgent.speed=6*defaultSpeed; 
-            navMeshAgent.SetDestination(freezeTargetPosition);
+            if(reachable)
+                navMeshAgent.SetDestination(freezeTargetPosition);
+            else 
+                navMeshAgent.SetDestination(spawnPosition);
+            
             freeze = false;
             _footStepSoundLength = 0.2f;
     }
 
-    private void Walk(){
+    private void Walk(bool reachable){
         animator.SetBool("Walk", true);
         animator.SetBool("Attack", false);
         animator.SetBool("Run", false);
         isVulnerable = false;
         creepMaterial.color = Color.white;
+        if(reachable)
+            navMeshAgent.SetDestination(target.transform.position);
+        else 
+            navMeshAgent.SetDestination(spawnPosition);
         navMeshAgent.SetDestination(target.transform.position);
         navMeshAgent.speed=defaultSpeed; 
         running = false;
         freeze = false;
         _footStepSoundLength = 0.4f;
     }
+
 
     private IEnumerator WaitForFootSteps(){
         _step = false;
@@ -144,33 +153,46 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         audioSource.spatialBlend = 1;
         audioSource.pitch = 1f;
         audioSource.volume = 1f ;
+
         //audioSource.Play();
         charging = false;
+        bool reachable = true;
         while(!dead){
+             NavMeshPath navMeshPath = new NavMeshPath();
+            if (navMeshAgent.CalculatePath(target.transform.position, navMeshPath) )
+            {
+                reachable = navMeshPath.status == NavMeshPathStatus.PathComplete;
+            }
             if(!charging){
                 charging = true;
                 StartCoroutine(ChargingRun());
-                Walk();
+                Walk(reachable);
             }
             else if(charged){
                 charged = false;
                 Freeze();
                 yield return new WaitForSeconds(1f);
-                Run();
+                Run(reachable);
             }
             else if(running){
                 if(navMeshAgent.remainingDistance < 1.5f){
                     Freeze();
-                    isVulnerable = true;
-                    creepMaterial.color = Color.red;
-                    yield return new WaitForSeconds(4f);
+                    //hit only if reachable
+                    if(reachable){
+                        isVulnerable = true;
+                        creepMaterial.color = Color.red;
+                    }
+                    yield return new WaitForSeconds(2f);
                     charging = false;
-                    Walk();
+                    Walk(reachable);
                 }                
             }else{        
                 Vector3 direction = target.transform.position- gameObject.transform.position;
                 float distance = direction.magnitude;
-                navMeshAgent.SetDestination(target.transform.position);
+                if(reachable)
+                    navMeshAgent.SetDestination(target.transform.position);
+                else 
+                    navMeshAgent.SetDestination(spawnPosition);
                 if(distance < attackThreshold && !isAttacking){
                     StartCoroutine(Attack());
                 }
@@ -210,6 +232,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         running = false;
         audioSource.PlayOneShot(deathSound);
         animator.SetBool("Dead", true);
+        creepMaterial.color = Color.white;
         StopCoroutine(FollowMeCoroutine);
         //DropItems();
         
@@ -217,7 +240,8 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     private void DropItems()
     {
         Debug.Log("DROPPED RADIO");
-        GameObject dropped = Instantiate(item,transform.position - new Vector3(2f,0f,0f), Quaternion.identity,GameObject.Find("AllCollectables").transform);
+        GameObject dropped = Instantiate(item,transform.position - new Vector3(2f,2f,0f), Quaternion.identity,GameObject.Find("AllCollectables").transform);
+        dropped.AddComponent<Rigidbody>();
         dropped.name = item.name;
         
     }

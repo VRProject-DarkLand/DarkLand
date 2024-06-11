@@ -12,11 +12,11 @@ public class Adrenaline : IUsableObject
     public override void Use()
     {
         if(player != null){
-            if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && Managers.Player.maxHealth > player._health)
+            if(Managers.Inventory.GetItemCount(Settings.HEALTH)>0 && (Managers.Player.maxHealth > player._health || Managers.Player.fearLevel > 0))
             {
                 Managers.Inventory.ConsumeItem(Settings.HEALTH); 
                 Managers.Player.AddFear(-50);
-                player.IncreaseHealth();
+                player.IncreaseHealth(50);
             }
         }
     }

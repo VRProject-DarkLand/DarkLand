@@ -23,7 +23,9 @@ public class SlidingCrate : IInteractableObject, IDataPersistenceSave{
     // Start is called before the first frame update
     void Start()
     {
-
+        if(interactionSound == null){
+            interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.SLIDING_CRATE);
+        }
         interactableTrigger = GetComponent<InteractableTrigger>();
         if (!requireKey)
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_AMMO_BOX);

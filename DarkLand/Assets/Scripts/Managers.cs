@@ -60,8 +60,10 @@ public class Managers : MonoBehaviour
             int lastReady = numReady;
             numReady = 0;
             foreach (IGameManager manager in _startSequence) {
-                if(manager == null)
+                if(manager == null){
+                    numModules-=1;
                     continue;
+                }
                 if (manager.status == ManagerStatus.Started) {
                     numReady++;
                 }

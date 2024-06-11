@@ -30,6 +30,7 @@ public class Settings
         public static float soundVolume = 1f;
         public static bool musicOn = true;
         public static bool soundOn = true;
+        public static string SLIDING_CRATE = "boxOpen";
         public const string SPIDER_SOUND = "spiderSound";
         public const string DOOR_OPEN_SOUND = "DoorOpensSound";
         public const string DOOR_CLOSE_SOUND = "DoorClosesSound";
