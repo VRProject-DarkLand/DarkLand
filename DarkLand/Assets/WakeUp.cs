@@ -21,4 +21,11 @@ public class WakeUp : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void StartWakeUpAnimation(){
+        playerCamera.enabled = false;
+        wakeUpCamera.enabled = true;
+        player.GetComponent<FPSInput>().enabled = false;
+        player.GetComponent<CharacterController>().enabled = false;
+        player.GetComponent<MouseLook>().enabled = false;
+    }
 }

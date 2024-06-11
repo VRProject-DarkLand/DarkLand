@@ -7,6 +7,7 @@ public class HidingInteractable : IInteractableObject{
     private bool isHiding;
     public  bool isMoving;
     private GameObject player;
+    
     private Vector3 exitPos ;
     private float speed;
     private float timeCount;
@@ -31,6 +32,8 @@ public class HidingInteractable : IInteractableObject{
     }
 
     private IEnumerator AnimateHiding(){
+        if(!isHiding)
+            player.SendMessage("Crouch", SendMessageOptions.DontRequireReceiver);
         quad.SetActive(true);
         Vector3 begin = player.transform.position;
         Vector3 end = gameObject.transform.position;

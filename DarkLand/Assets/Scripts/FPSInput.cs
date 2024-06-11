@@ -80,9 +80,10 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     } 
 
     private void setCamera(Vector3 position){
-        if(!GameEvent.isHiding){
+        
+        //if(!GameEvent.isHiding){
             head.transform.localPosition = position;
-        }
+        //}
     }
 
                 

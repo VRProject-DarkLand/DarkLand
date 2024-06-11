@@ -3191,7 +3191,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -4674,7 +4674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 174748147173177195, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0010375977
+      value: -0.00015258789
       objectReference: {fileID: 0}
     - target: {fileID: 320033168144906620, guid: 3cd8df699388c6c498812e1843339d5c, type: 3}
       propertyPath: m_AnchorMax.y
