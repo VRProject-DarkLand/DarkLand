@@ -59,6 +59,9 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         currentWaypoint = waypoints.GetNextWaypoint(currentWaypoint);
         animator.SetBool("Idle", true);
         startPosition = transform.parent.position;
+        if(_renderer == null){
+            _renderer = GetComponentInChildren<Renderer>().gameObject;
+        }
         startRotation = transform.parent.localEulerAngles;
         if(!Settings.LoadedFromSave){
             spiderTriggers.Add(sceneTrigger);
@@ -182,7 +185,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
             yield return null;
         }
         if(GameObject.Find("Spider 1")  == null || GameObject.Find("Spider 2") == null) {
-            if(SceneManager.GetActiveScene().name == Settings.ASYLUM_NAME) {
+            if(dropAdrenaline != null && dropKey != null && dropLetter != null) {
                 DropItems();
             }
             if(doorToClose != null)

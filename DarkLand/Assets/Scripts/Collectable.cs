@@ -1,9 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using Unity.VisualScripting.FullSerializer;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class Collectable : IInteractableObject, IDataPersistenceSave{

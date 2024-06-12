@@ -2,10 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using Unity.VisualScripting.ReorderableList;
-using UnityEditor.Build.Content;
-using UnityEditor.VersionControl;
 using UnityEngine;
 [RequireComponent(typeof (CharacterController))]
 [AddComponentMenu("Control Script/FPS Input")]

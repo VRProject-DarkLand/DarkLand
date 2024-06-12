@@ -33,7 +33,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         private bool charged = true;
         private bool running = false;
         private bool isVulnerable = false;
-        private int health = 100;
+        private int health = 250;
         private Vector3 freezeTargetPosition; 
         [SerializeField] private GameObject item;
         private float _footStepSoundLength = 0.4f;
@@ -89,7 +89,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         animator.SetBool("Walk", false);
         animator.SetBool("Run", false);
         freeze = true;
-        Managers.Player.AddEnemy(GetInstanceID(), 0);
+        Managers.Player.AddEnemy(GetInstanceID(), 80);
         FollowMeCoroutine = StartCoroutine(FollowMe());
     }
 
