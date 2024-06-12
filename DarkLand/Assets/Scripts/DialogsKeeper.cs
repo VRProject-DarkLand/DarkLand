@@ -11,10 +11,12 @@ public class DialogsKeeper : MonoBehaviour
     static DialogsKeeper(){
         ENTITY_NAME_AND_DIALOG = new Dictionary<string, string>
         {
-            {"NPC_1", "ASEREJE A A EHE"},
-            {"NPC_2", "second text"},
+            {"StartBoard", "I locked you inside, stay safe. At the first floor, next to the bathroom there are some cans... Eat or throw them."},
+            {"WeeklyBoard", "Hide the keys and pray."},
             {"ForestBoardFirst", "To the employer:\n DO NOT GO INTO THE FOREST, THOSE CRAETURES ARE HORRIBLE.\nIN CASE YOU DECIDE TO GO...GOOD LUCK AND HIDE INTO THE BIG BUSHES AS THIS BEHIND"},
-            {"WeaponBoard", "Somewhere around here I left a gun and some boxes.\nCollect them.\n\nSincerely,\nDR. Eam"}
+            {"WeaponBoard", "Somewhere around here I left a gun and some boxes.\nCollect them.\n\nSincerely,\nDR. Eam"},
+            {"VillaBoard", "The gate is locked! Stay Away! \nYou can't escape!\nI left my key where the souls rest, I hope someone has moved it inside..."},
+            {"FinalBossAreaBoard", "I heard it, that thing inside. It's eating the doctor, the poor doctor with the radio. I'm gonna take that radio!\n Good luck to me!\n\nThe one who lives!"}
         };
 
         INTERACTION_LABEL = new Dictionary<GameEvent.InteractWithMessage, string>{

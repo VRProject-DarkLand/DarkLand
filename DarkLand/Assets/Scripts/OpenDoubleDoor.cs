@@ -22,7 +22,7 @@ public class OpenDoubleDoor :  IInteractableObject
     [SerializeField] private NavMeshLink link;
     
     private IEnumerator coroutine;
-    
+    private bool fixedSound = false;
     [SerializeField] private bool requireKey = false;
     [SerializeField] private string key = "Key";
     // Start is called before the first frame updatevoid Start()
@@ -31,6 +31,7 @@ public class OpenDoubleDoor :  IInteractableObject
         isMoving = false;
         speed = 1f;
         timeCount = 0f; 
+        fixedSound = interactionSound!= null;
         if(link != null)
             link.enabled = !requireKey;
         interactableTrigger = GetComponent<InteractableTrigger>();
@@ -109,11 +110,13 @@ public class OpenDoubleDoor :  IInteractableObject
                 // }
             if(opened){
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
-                interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_CLOSE_SOUND);
+                if(!fixedSound)
+                    interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_CLOSE_SOUND);
                 
             }   else {
                 interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
-                interactionSound =  ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
+                if(!fixedSound)
+                    interactionSound =  ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
             }
             Managers.AudioManager.PlaySound(interactionSound);
                 opened = !opened;   
