@@ -57,7 +57,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         spawnPosition = gameObject.transform.position;
         inSight = false;
         audioSource = GetComponent<AudioSource>();
-        if(!Settings.LoadedFromSave){
+        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor){
             scaryGirlTriggers.Add(sceneScaryGirlTrigger);
             ActivateNavMeshAndAnimator();
         }

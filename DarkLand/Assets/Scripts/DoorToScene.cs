@@ -23,6 +23,7 @@ public class DoorToScene : IInteractableObject
             }
             GameEvent.exitingCurrentScene = true;
             GameEvent.newScene = scene;
+            GameEvent.OpenedSceneDoor = true;
             StartCoroutine(Managers.Persistence.SaveGame());
         }
     }

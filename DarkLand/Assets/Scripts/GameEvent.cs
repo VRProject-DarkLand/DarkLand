@@ -37,7 +37,7 @@ public class GameEvent : MonoBehaviour{
     public static bool isUsingGun = false;
     public static bool exitingCurrentScene = false;
     public static string newScene = "Asylum";
-
+    public static bool OpenedSceneDoor = false;
     public enum InteractWithMessage{
         TALK_TO_NPC,
         HIDE,

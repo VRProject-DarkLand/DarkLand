@@ -10,7 +10,7 @@ public class SpiderTrigger : MonoBehaviour
     [SerializeField] private GameObject[] _sceneSpider;
     void Start(){
         spiders = new List<GameObject>();
-        if(!Settings.LoadedFromSave){
+        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor){
             foreach(GameObject obj in _sceneSpider)
             {
                 spiders.Add(obj);

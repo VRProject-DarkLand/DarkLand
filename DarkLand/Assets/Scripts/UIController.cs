@@ -168,6 +168,7 @@ public class UIController : MonoBehaviour
             Managers.Pause.OnClickResume();
             SceneManager.LoadScene(Settings.MAIN_MENU);
             Settings.LoadedFromSave = false;
+            GameEvent.OpenedSceneDoor = false;
         }else{
             ConfirmationPopup.SetActive(false);
         }

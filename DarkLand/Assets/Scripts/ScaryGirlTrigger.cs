@@ -12,7 +12,7 @@ public class ScaryGirlTrigger : MonoBehaviour
 
     void Start(){
         scaryGirls = new List<GameObject>();
-        if(!Settings.LoadedFromSave)
+        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor)
             scaryGirls.Add(sceneScaryGirl);
     }
     private void OnTriggerEnter(Collider other) {
