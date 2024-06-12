@@ -54,11 +54,13 @@ public class UIController : MonoBehaviour
 
     private IEnumerator DisableNotify(){
         yield return new WaitForSeconds(5f);
-        SavedNotify.SetActive(false);
+        if(SavedNotify!=null)
+            SavedNotify.SetActive(false);
     }
 
     private void ActivateSaveNotify(){
-        SavedNotify.SetActive(true);
+        if(SavedNotify!=null)
+            SavedNotify.SetActive(true);
         StartCoroutine(DisableNotify());
     }
 
