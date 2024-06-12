@@ -17,10 +17,15 @@ public class Settings
     public const string MAIN_MENU = "Scenes/MainMenu";
     public const string OUTSIDE_SCENE = "Scenes/Forest";
     public static GameData gameData;
-
     public static bool GameFinished = false;
     public static string SAVE_DIR = Application.persistentDataPath;
     public const string HEALTH = "Adrenaline";
+
+    public static float MinSensibility = 1f;
+    public static float MaxSensibility = 15f; 
+    public static float AimSensibility = 4.5f; 
+    public static float Sensibility = 9.0f;
+
 
     public const string SOUND_FOLDER_NAME = "Sound";
     public const string INVENTORY_SPRITES_FOLDER_NAME = "InventoryIcons";

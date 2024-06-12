@@ -55,10 +55,12 @@ public class UsableGun : IUsableObject{
         }
     }
     public override void SecondaryUse(){
-        Camera.main.fieldOfView = Mathf.Lerp(40, 60, Time.deltaTime * 0.1f);
+        Camera.main.fieldOfView = 40;
+        Messenger<bool>.Broadcast(GameEvent.AIMING, true, MessengerMode.DONT_REQUIRE_LISTENER);
     }
     public override void UndoSecondaryUse(){
-        Camera.main.fieldOfView = Mathf.Lerp(60, 40, Time.deltaTime * 0.1f);
+        Camera.main.fieldOfView = 60;
+        Messenger<bool>.Broadcast(GameEvent.AIMING, false, MessengerMode.DONT_REQUIRE_LISTENER);
     }
     void CreateAnimatorIfNull(){
         if(_animator == null && _controller != null){
@@ -85,6 +87,7 @@ public class UsableGun : IUsableObject{
         _armsRenderer.enabled = true;
     }
     private void DisableGun(){
+        UndoSecondaryUse();
         _gunRenderer.enabled = false;
         _armsRenderer.enabled = false;
     }

@@ -11,20 +11,38 @@ public class MouseLook : MonoBehaviour
     }
 
     public RotationAxes axes = RotationAxes.MouseX;
-    public float sensitivityHor = 9.0f;
-    public float sensitivityVer = 9.0f;
+    public float sensitivityHor;
+    public float sensitivityVer;
 
     public float minimumVert = -60f;
     public float maximumVert = 60f;
-
+    private bool aim = false;
     private float _rotationX = 0;
     // Start is called before the first frame update
     void Start()
     {
+        aim = false;
+        sensitivityHor = Settings.Sensibility;
+        sensitivityVer = Settings.Sensibility;
+        Messenger<bool>.AddListener(GameEvent.AIMING, Aim);
+        Messenger.AddListener(GameEvent.SENSIBILITY_CHANGE, ChangeSensibility);
         Rigidbody body = GetComponent<Rigidbody>();
         if (body != null){
             body.freezeRotation = true;
         }
+    }
+
+    private void ChangeSensibility(){
+        sensitivityHor = aim? Settings.AimSensibility:Settings.Sensibility;
+        sensitivityVer = sensitivityHor; 
+    }
+
+
+
+    private void Aim(bool aim){
+        sensitivityHor = aim? Settings.AimSensibility:Settings.Sensibility;
+        sensitivityVer = sensitivityHor; 
+        this.aim = aim;
     }
 
     // Update is called once per frame
@@ -61,19 +79,9 @@ public class MouseLook : MonoBehaviour
             transform.localEulerAngles = new Vector3(_rotationX,rotationY,0);
         }
     }
-    // void OnGUI(){
-    //     if(GameEvent.isUsingGun){
-    //         // Set the style for the GUI label (for the "+")
-    //         GUIStyle style = new GUIStyle(GUI.skin.label);
-    //         style.fontSize = 30; // Set the font size
-    //         style.alignment = TextAnchor.MiddleCenter; // Set the alignment to center
 
-    //         // Get the center of the screen
-    //         float centerX = Screen.width / 2;
-    //         float centerY = Screen.height / 2;
-
-    //         // Draw the "+" symbol at the center of the screen
-    //         GUI.Label(new Rect(centerX - 15, centerY - 15, 30, 30), "+", style);
-    //     }
-    // }
+    void OnDestroy(){
+        Messenger<bool>.RemoveListener(GameEvent.AIMING, Aim);
+        Messenger.RemoveListener(GameEvent.SENSIBILITY_CHANGE, ChangeSensibility);
+    }
 }

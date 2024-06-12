@@ -55,8 +55,8 @@ public class PlayerManager : MonoBehaviour, IGameManager
         }
     }
     public void AddFear(int fear){
-        maxFear = Math.Max(0,Math.Min(maxFear+fear, 100));
-        actualFear = Math.Max(0,Math.Min(actualFear+fear, maxFear));
+        maxFear = Math.Clamp(maxFear+fear, 0, 100);
+        actualFear = Math.Clamp(actualFear+fear, 0, maxFear);
         Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear);
     }
 

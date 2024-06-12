@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject deathMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private InventoryViewer inventory;
-
+    [SerializeField] private GameObject SavedNotify;
     [SerializeField] private GameObject SettingsOptions;
     private GameObject leftMenu;
     private List<UsableSpot> spots = new List<UsableSpot>();
@@ -34,6 +35,7 @@ public class UIController : MonoBehaviour
         Messenger<float, bool>.AddListener(GameEvent.CHANGED_HEALTH, OnHealthChanged);
         Messenger<int>.AddListener(GameEvent.FEAR_CHANGED, OnFearChanged);
         Messenger<int>.AddListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
+        Messenger.AddListener(GameEvent.SAVE_FINISHED, ActivateSaveNotify);
         Messenger.AddListener(GameEvent.ALL_MANAGERS_LOADED, LoadedManagers);
         for(int i = 0;i<Managers.UsableInventory._maxSize;++i){
             GameObject slot = Instantiate(usableSlotContainer);
@@ -48,6 +50,16 @@ public class UIController : MonoBehaviour
         leftMenu = pauseMenu.transform.Find("LeftPanel")?.gameObject;
         Paused(false);
         Managers.PointerManager.ForceLock();
+    }
+
+    private IEnumerator DisableNotify(){
+        yield return new WaitForSeconds(5f);
+        SavedNotify.SetActive(false);
+    }
+
+    private void ActivateSaveNotify(){
+        SavedNotify.SetActive(true);
+        StartCoroutine(DisableNotify());
     }
 
     private void LoadedManagers(){

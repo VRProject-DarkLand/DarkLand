@@ -28,7 +28,6 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     [SerializeField] private GameObject head;
     [SerializeField] private AudioClip footStepSound;
     private List<Actions> actions;
-    private ControllerColliderHit _contact; 
     private Quaternion _jumpRotation;
     private Vector3 standingHead;
     private Vector3 crouchHead;
@@ -41,6 +40,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     private AudioSource _soundSource;
     private float _maxJumpingAngle = 45f;
     private float _maxNonSlidingAngle = 40f;
+    private bool secondaryUseCalled = false; 
     private RaycastHit _bottomHit;
 
     // Start is called before the first frame update
@@ -238,9 +238,11 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             }
 
             if(Input.GetMouseButton(1)){
+                secondaryUseCalled = true;
                 Managers.UsableInventory.SecondaryUse();
             }
-            if(Input.GetMouseButtonUp(1)){
+            else if(secondaryUseCalled || Input.GetMouseButtonUp(1)){
+                secondaryUseCalled = true;
                 Managers.UsableInventory.UndoSecondaryUse();
             }
             Actions action = actions.Last();
@@ -306,10 +308,6 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     // private void Hide(bool hide){
     //     this.hide = hide;
     // }
-
-    void OnControllerColliderHit(ControllerColliderHit hit){
-        _contact = hit;
-    }
 
     void OnDestroy(){
         //Messenger<bool>.RemoveListener(GameEvent.IS_HIDING, Hide);

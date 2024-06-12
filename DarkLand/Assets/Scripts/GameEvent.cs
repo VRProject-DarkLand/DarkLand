@@ -30,6 +30,8 @@ public class GameEvent : MonoBehaviour{
     public const string LOADING_VALUE = "LOADING_VALUE";
     public const string CHANGING_SCENE = "CHANGING_SCENE";
     public const string ALL_MANAGERS_LOADED = "ALL_MANAGERS_LOADED";
+    public const string AIMING = "Aiming";
+    public const string SENSIBILITY_CHANGE = "SENSIBILITY_CHANGE";
     public const string SAVE_FINISHED = "SAVE_FINISHED";
     public static bool isInDialog = false;
     public static bool isHiding = false ;
