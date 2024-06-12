@@ -16,6 +16,7 @@ public class DialogsKeeper : MonoBehaviour
             {"ForestBoardFirst", "To the employer:\n DO NOT GO INTO THE FOREST, THOSE CRAETURES ARE HORRIBLE.\nIN CASE YOU DECIDE TO GO...GOOD LUCK AND HIDE INTO THE BIG BUSHES AS THIS BEHIND"},
             {"WeaponBoard", "Somewhere around here I left a gun and some boxes.\nCollect them.\n\nSincerely,\nDR. Eam"},
             {"VillaBoard", "The gate is locked! Stay Away! \nYou can't escape!\nI left my key where the souls rest, I hope someone has moved it inside..."},
+            {"VillaWarningBoard", "I left the key in the villa over there! I thought it was a safe place.\n\n It was not."},
             {"FinalBossAreaBoard", "I heard it, that thing inside. It's eating the doctor, the poor doctor with the radio. I'm gonna take that radio!\n Good luck to me!\n\nThe one who lives!"}
         };
 

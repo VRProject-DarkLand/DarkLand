@@ -21273,6 +21273,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5148997807987356429, guid: f4a348004d4cec94fa5bf7bda070965f, type: 3}
   m_PrefabInstance: {fileID: 1739438274}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1742187895
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 344.60956
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 32.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 555.7587
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5947483
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.59474826
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.38245854
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.38245842
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193010125172871906, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -65.487
+      objectReference: {fileID: 0}
+    - target: {fileID: 8861038839522379864, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
+      propertyPath: m_Name
+      value: VillaWarningBoard
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bcff286ca2a595246b7cbf27d743adc7, type: 3}
 --- !u!1001 &1748401065
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26161,3 +26218,4 @@ SceneRoots:
   - {fileID: 2138797368}
   - {fileID: 1817281799}
   - {fileID: 1472090802}
+  - {fileID: 1742187895}
