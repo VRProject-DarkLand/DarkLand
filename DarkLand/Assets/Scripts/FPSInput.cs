@@ -192,9 +192,12 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
 
     private bool detectOnGround(){
         bool hitGround = false;
-        if(deltaY <= 0 && Physics.Raycast(transform.position ,Vector3.down, out _bottomHit)){
+        if(deltaY <= 0 && Physics.SphereCast(transform.position,0.15f ,Vector3.down, out _bottomHit)){
             float check = (_charController.height + _charController.radius)/1f;
             hitGround = _bottomHit.distance <= check;
+            if((_charController.collisionFlags & CollisionFlags.Below) != 0){
+                hitGround = true;
+            }
         }
         return hitGround;
     }

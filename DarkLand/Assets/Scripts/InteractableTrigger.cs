@@ -98,13 +98,14 @@ public class InteractableTrigger : MonoBehaviour{
         if(isCollectable){
             RaycastHit hit;
             if(Physics.Raycast(target.position, -sourceDirection, out hit, 10)){
+                //Debug.Log("LOOK: "+ hit.collider.gameObject.name+ " "+);
                 if(hit.collider.tag != Settings.PLAYER_TAG ){
                     Debug.Log("LOOK: "+ hit.collider.gameObject.name);
                     return 0;
                 }
             }
         }
-        //Debug.Log(gameObject.name +" "+ Vector3.Dot(source.forward, sourceDirection.normalized));
+        Debug.Log(gameObject.name +" "+ Vector3.Dot(source.forward, sourceDirection.normalized));
         return Vector3.Dot(source.forward, sourceDirection.normalized) ;
     }
 }

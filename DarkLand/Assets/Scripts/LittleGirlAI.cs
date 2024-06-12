@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,6 +25,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
     public delegate void AudioCallback();
     private bool moving = false;
     private int damage = 110;
+    private int fear = 40;
     [SerializeField] private GameObject hidingPoints;
     private int numberOfHidingPoints;
     private void StopCounting()
@@ -32,6 +34,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
         {
             animator.SetBool("Moving", true);
             currentState = States.chasing;
+            Managers.Player.AddFear(100);
             targetInput.toggleDetectedByLittleGirl(true);
             audioSource.PlayOneShot(foundYouClip, 0.3f);
         }
@@ -39,6 +42,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
         {
             Settings.canSave = true;
             currentState = States.hiding;
+            Managers.Player.AddFear(-fear);
         }
         
     }
@@ -104,6 +108,7 @@ public class LittleGirlAI : MonoBehaviour, IDataPersistenceSave{
             {
                 lastPoint = target.transform.position;
                 //Debug.Log("Ti vidu " + lastPoint);
+                Managers.Player.AddFear(fear);
                 StartCounting();
             }
             else

@@ -94,7 +94,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
                 actualFear += 1 ;
                 count = 0;
                 Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear, MessengerMode.DONT_REQUIRE_LISTENER);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.5f);
             }else if(maxFear<actualFear){
                 count += 1;
                 actualFear -= 1;

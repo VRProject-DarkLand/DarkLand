@@ -43,6 +43,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         private bool inSight = false;
         //it can be activated without using the trigger
         private bool awaken = false;
+        private bool reachable;
         private int fear = 60;
     #endregion
 
@@ -142,7 +143,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                     {
                         detectionDistance /= 4;
                     }
-                    if (awaken && Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore))
+                    if (reachable && Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore))
                     {
                         Debug.DrawRay(startRaycast, direction, Color.yellow);
                         if (hit.collider.gameObject.tag == Settings.PLAYER_TAG)
@@ -166,7 +167,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                         else
                         {
                             inSight = false;
-                            if (awaken && chasing && distance < 10f)
+                            if (reachable && chasing && distance < 10f)
                             {
                                 navMeshAgent.speed = 2 * defaultSpeed;
                                 navMeshAgent.SetDestination(target.transform.position);
@@ -187,9 +188,9 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                 }
 
                 NavMeshPath navMeshPath = new NavMeshPath();
-                if (navMeshAgent.CalculatePath(target.transform.position, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathPartial)
+                if (navMeshAgent.CalculatePath(target.transform.position, navMeshPath))
                 {
-                    awaken = false;
+                    reachable = navMeshPath.status == NavMeshPathStatus.PathComplete;
                     chasing = false;
                 }
 
