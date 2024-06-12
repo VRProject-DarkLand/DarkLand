@@ -12,7 +12,9 @@ public class DialogsKeeper : MonoBehaviour
         ENTITY_NAME_AND_DIALOG = new Dictionary<string, string>
         {
             {"NPC_1", "ASEREJE A A EHE"},
-            {"NPC_2", "second text"}
+            {"NPC_2", "second text"},
+            {"ForestBoardFirst", "To the employer:\n DO NOT GO INTO THE FOREST, THOSE CRAETURES ARE HORRIBLE.\nIN CASE YOU DECIDE TO GO...GOOD LUCK AND HIDE INTO THE BIG BUSHES AS THIS BEHIND"},
+            {"WeaponBoard", "Somewhere around here I left a gun and some boxes.\nCollect them.\n\nSincerely,\nDR. Eam"}
         };
 
         INTERACTION_LABEL = new Dictionary<GameEvent.InteractWithMessage, string>{

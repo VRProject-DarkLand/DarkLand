@@ -8,19 +8,20 @@ public class ScaryGirlTrigger : MonoBehaviour
 {
     
     private List<GameObject> scaryGirls;
-    [SerializeField] private GameObject sceneScaryGirl;
+    [SerializeField] private GameObject[] sceneScaryGirls;
 
     void Start(){
         scaryGirls = new List<GameObject>();
-        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor)
-            scaryGirls.Add(sceneScaryGirl);
+        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor){
+            foreach(var sceneScaryGirl in sceneScaryGirls)
+                scaryGirls.Add(sceneScaryGirl);
+        }
     }
     private void OnTriggerEnter(Collider other) {
         Debug.Log("TriggerScaryGirl");
         foreach(GameObject girl in scaryGirls){
             if (other.CompareTag(Settings.PLAYER_TAG)){
                 girl.GetComponent<ScaryGirlAI>().WakeUp();
-                Debug.Log("ADSAD");
             }
         }
     }

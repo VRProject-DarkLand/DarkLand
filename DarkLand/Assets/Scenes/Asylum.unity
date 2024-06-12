@@ -1414,6 +1414,14 @@ PrefabInstance:
       propertyPath: sceneScaryGirl
       value: 
       objectReference: {fileID: 610110210}
+    - target: {fileID: 1306912452099970507, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
+      propertyPath: sceneScaryGirls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1306912452099970507, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
+      propertyPath: sceneScaryGirls.Array.data[0]
+      value: 
+      objectReference: {fileID: 610110210}
     - target: {fileID: 1553107781990054683, guid: beef3bcde1610f04aa96275436147bb9, type: 3}
       propertyPath: m_Enabled
       value: 0
