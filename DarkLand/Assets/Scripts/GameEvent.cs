@@ -13,6 +13,7 @@ public class GameEvent : MonoBehaviour{
     public const string INTERACTION_ENABLED_MESSAGE = "CAN_INTERACT";
     public const string INTERACTION_DISABLED_MESSAGE = "CANNOT_INTERACT";
     public const string OPEN_DIALOG = "OPEN_DIALOG";
+    public const string OPEN_DIALOG_WITHOUT_TALK_TO_TEXT = "OPEN_DIALOG_WITHOUT_TALK_TO_TEXT";
     public const string OPERATE_ON_LIGHTS = "OPERATE_LIGHTS";
     public const string PREDICT_TRAJECTORY = "PREDICT_TRAJECTORY";
     public const string CANCEL_TRAJECTORY = "CANCEL_TRAJECTORY";

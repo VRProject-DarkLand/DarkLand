@@ -38,6 +38,7 @@ public class UsableAxe : IUsableObject{
             _animator.SetBool("hitting", true);
             //Debug.Log("hitting with axe");
             _damaged = false;
+            Managers.AudioManager.PlaySound(useSound);
             StartCoroutine(Hit());
         }
     }

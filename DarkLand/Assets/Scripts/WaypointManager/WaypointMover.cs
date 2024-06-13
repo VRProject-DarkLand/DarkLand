@@ -9,6 +9,7 @@ using static UnityEngine.UI.Image;
 using UnityEngine.UIElements;
 using Unity.AI.Navigation;
 using UnityEngine.SceneManagement;
+using System.Diagnostics;
 
 
 [RequireComponent(typeof(AudioSource))]
@@ -49,6 +50,8 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     private float viewAngle = 30f;
     private const float distanceBehind = 0.5f;
 
+    private AudioClip _hurtClip;
+    AudioSource _source;
     // Start is called before the first frame update
     void Start(){
         target = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
@@ -146,7 +149,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         isAttacking = true;
         yield return new WaitForSeconds(0.6f);
         RaycastHit hit;
-        Debug.DrawRay(transform.position + new Vector3(0f,0.5f,0f), transform.forward, Color.magenta,2f);
+        //Debug.DrawRay(transform.position + new Vector3(0f,0.5f,0f), transform.forward, Color.magenta,2f);
         if(Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward , out hit, 3, ~LayerMask.GetMask("Ignore Raycast"))){
             if(hit.collider.gameObject == target)
             {
@@ -158,6 +161,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         yield return new WaitForSeconds(3f);
     }
     public void Hurt(int damage){
+        _source.PlayOneShot(_hurtClip);
         _health -= damage;
         Messenger.Broadcast(GameEvent.ENEMY_DAMAGED);
         //Debug.Log("spider damaged Current life " + _health);
@@ -181,7 +185,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
         {
             currentRendered.material.color = Color.Lerp(start, end, count);
             count += Time.deltaTime/5f;
-            Debug.Log(count);
+            //Debug.Log(count);
             yield return null;
         }
         if(GameObject.Find("Spider 1")  == null || GameObject.Find("Spider 2") == null) {
@@ -208,7 +212,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
 
     public void Die(){
         Managers.Player.RemoveEnemy(GetInstanceID(),fear);
-        GetComponent<AudioSource>().Stop();
+        _source.Stop();
         foreach(SpiderTrigger t in spiderTriggers){
             t.RemoveSpider(gameObject);
         }
@@ -219,12 +223,13 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
     }
     public void WakeUp(){
         alive = true;
-        AudioSource source = GetComponent<AudioSource>();
-        source.clip = ResourceLoader.GetSound(Settings.AudioSettings.SPIDER_SOUND);
-        source.loop = true;
-        source.volume = 1f;
-        source.spatialBlend = 1;
-        source.Play();
+        _source = GetComponent<AudioSource>();
+        _source.clip = ResourceLoader.GetSound(Settings.AudioSettings.SPIDER_SOUND);
+        _hurtClip = ResourceLoader.GetSound(Settings.AudioSettings.SPIDER_HURT_SOUND);
+        _source.loop = true;
+        _source.volume = 1f;
+        _source.spatialBlend = 1;
+        _source.Play();
     }
     private void RotateTowardsDestination()
     {

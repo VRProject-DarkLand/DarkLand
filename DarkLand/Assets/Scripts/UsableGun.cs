@@ -39,27 +39,27 @@ public class UsableGun : IUsableObject{
         Messenger<bool>.Broadcast(GameEvent.IS_USING_GUN, true);
         _animator.SetBool("selected", true);
         StartCoroutine(PickupTime());
-        Debug.Log("Pistol selected");
+        //Debug.Log("Pistol selected");
     }
 
     //shoot with the gun
     public override void Use(){
-        Debug.Log("Calling use");
+        //Debug.Log("Calling use");
         if(_shootingBehaviour == null){
             _shootingBehaviour = GetComponentInChildren<ShootingBehaviour>();
-            Debug.Log("Shooting behaviour is null");
+            //Debug.Log("Shooting behaviour is null");
         }
         if(_readyToFire){
             _shootingBehaviour.Shoot();
-            Debug.Log("Calling shoot");
+            //Debug.Log("Calling shoot");
         }
     }
     public override void SecondaryUse(){
-        Camera.main.fieldOfView = 40;
+        Camera.main.fieldOfView = Settings.AIM_FOV;
         Messenger<bool>.Broadcast(GameEvent.AIMING, true, MessengerMode.DONT_REQUIRE_LISTENER);
     }
     public override void UndoSecondaryUse(){
-        Camera.main.fieldOfView = 60;
+        Camera.main.fieldOfView = Settings.DEFAULT_FOV;
         Messenger<bool>.Broadcast(GameEvent.AIMING, false, MessengerMode.DONT_REQUIRE_LISTENER);
     }
     void CreateAnimatorIfNull(){

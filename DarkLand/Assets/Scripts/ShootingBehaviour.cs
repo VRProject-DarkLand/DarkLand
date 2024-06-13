@@ -17,10 +17,13 @@ public class ShootingBehaviour : MonoBehaviour
     [SerializeField] private float _bulletRange = 100f;
     private Animator _animator;
     [SerializeField] private GameObject _bulletSource;
-    [SerializeField] private AudioClip _shootAudioClip;
+    private AudioClip _shootAudioClip;
+    private AudioClip _shootNoAmmoAudioClip;
     [SerializeField] private GameObject bulletHolePrefab;
     private void Start(){
         _camera = Camera.main;
+        _shootAudioClip = ResourceLoader.GetSound(Settings.AudioSettings.GUN_SHOOT);
+        _shootNoAmmoAudioClip = ResourceLoader.GetSound(Settings.AudioSettings.NO_AMMO);
     }
     public void Shoot(){
         if(_animator == null){
@@ -28,6 +31,7 @@ public class ShootingBehaviour : MonoBehaviour
         }
         int bulletsLeft = Managers.Inventory.GetItemCount("Ammo Box");
         if(bulletsLeft == 0){
+            Managers.AudioManager.PlaySound(_shootNoAmmoAudioClip);
             return;
         }
        if(!_animator.GetBool("shooting")){
@@ -38,20 +42,20 @@ public class ShootingBehaviour : MonoBehaviour
             //do not shoot if the pistol is behind some object
             //e.g. there is an object between the camera and the bullet source (maybe a wall)
             if(hitTowardsBulletSource.transform != null){
-                Debug.Log("Cannot shoot, something is between camera and bullet source");
+                //Debug.Log("Cannot shoot, something is between camera and bullet source");
                 return;
             }
             //now it is possible to shoot
             if(shootingMode == ShootingMode.Single){
                 _animator.SetBool("shooting", true);
                 StartCoroutine(ResetShooting());
-                Managers.Inventory.ConsumeItem("Ammo Box");
+                Managers.Inventory.ConsumeItem(Settings.AMMO_NAME);
                 //Debug.Log("Shooting in single mode");
             }
             else if(shootingMode == ShootingMode.Auto){
                 _animator.SetBool("shooting", true);
                 StartCoroutine(ResetShooting());
-                Managers.Inventory.ConsumeItem("Ammo Box");
+                Managers.Inventory.ConsumeItem(Settings.AMMO_NAME);
                 //Debug.Log("Shooting in auto mode");
             }
             Vector3 point = new Vector3(_camera.pixelWidth/2, _camera.pixelHeight/2, 0);

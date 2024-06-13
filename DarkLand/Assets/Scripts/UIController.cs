@@ -59,6 +59,8 @@ public class UIController : MonoBehaviour
     }
 
     private void ActivateSaveNotify(){
+        if(GameEvent.OpenedSceneDoor)
+            return;
         if(SavedNotify!=null)
             SavedNotify.SetActive(true);
         StartCoroutine(DisableNotify());

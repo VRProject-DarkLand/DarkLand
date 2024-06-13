@@ -20,12 +20,15 @@ public class Settings
     public static bool GameFinished = false;
     public static string SAVE_DIR = Application.persistentDataPath;
     public const string HEALTH = "Adrenaline";
+    public const string AMMO_NAME = "Ammo Box";
 
     public static float MinSensibility = 1f;
     public static float MaxSensibility = 15f; 
     public static float AimSensibility = 4.5f; 
     public static float Sensibility = 9.0f;
 
+    public static float DEFAULT_FOV = 65;
+    public static float AIM_FOV = 40;
 
     public const string SOUND_FOLDER_NAME = "Sound";
     public const string INVENTORY_SPRITES_FOLDER_NAME = "InventoryIcons";
@@ -38,6 +41,9 @@ public class Settings
         public static bool soundOn = true;
         public static string SLIDING_CRATE = "boxOpen";
         public const string SPIDER_SOUND = "spiderSound";
+        public const string SPIDER_HURT_SOUND = "spiderHurt";
+        public const string GUN_SHOOT = "gun-shots-pistol-1";
+        public const string NO_AMMO = "noAmmo";
         public const string DOOR_OPEN_SOUND = "DoorOpensSound";
         public const string DOOR_CLOSE_SOUND = "DoorClosesSound";
     }

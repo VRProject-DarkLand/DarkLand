@@ -19,6 +19,7 @@ public class WakeUp : MonoBehaviour
             player.GetComponent<CharacterController>().enabled = true;
             player.GetComponent<MouseLook>().enabled = true;
             Destroy(gameObject);
+            Messenger<string>.Broadcast(GameEvent.OPEN_DIALOG_WITHOUT_TALK_TO_TEXT, "Help");
         }
     }
     public void StartWakeUpAnimation(){

@@ -25,7 +25,7 @@ public class DialogsManager : MonoBehaviour
         //Messenger<string, string>.AddListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.AddListener(GameEvent.OPEN_DIALOG, CreateDialog);
         Messenger<string>.AddListener(GameEvent.CLOSE_DIALOG, CloseDialog);
-       
+        Messenger<string>.AddListener(GameEvent.OPEN_DIALOG_WITHOUT_TALK_TO_TEXT, CreateInstantDialogDialog);
     }
 
 
@@ -36,6 +36,7 @@ public class DialogsManager : MonoBehaviour
         //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.RemoveListener(GameEvent.CLOSE_DIALOG, CloseDialog);
         Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG, CreateDialog);
+        Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG_WITHOUT_TALK_TO_TEXT, CreateInstantDialogDialog);
     }
     void ActivateTalkToText(string entityName,  GameEvent.InteractWithMessage interactionType, bool possibleAction){
         if(talkToTextVisible){
@@ -81,11 +82,22 @@ public class DialogsManager : MonoBehaviour
         }
     }
 
+    public void CreateInstantDialogDialog(string entityName){
+        GameEvent.isInDialog = true;
+        Managers.PointerManager.UnlockCursor();
+        GameObject currentDialog = Instantiate(dialogPrefab, canvas.transform);
+        DialogHandler dialogHandler = currentDialog.GetComponent<DialogHandler>();
+        if(dialogHandler!= null){
+            dialogHandler.OpenDialog(entityName);
+        }
+    }
     public void CloseDialog(string entityName){
         GameEvent.isInDialog = false;
         //reactivate talkToDialog  
-        Managers.PointerManager.LockCursor(); 
-        talkToTextVisible = true;
-        talkToText.SetActive(true);
+        Managers.PointerManager.LockCursor();
+        if(talkToText != null){
+            talkToTextVisible = true;
+            talkToText.SetActive(true);
+        }
     }
 }

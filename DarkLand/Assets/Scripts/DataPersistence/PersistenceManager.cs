@@ -52,14 +52,16 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         _collectablePersistenceObject = FindAllCollectableObjects();
         //Debug.Log("Found " + _collectablePersistenceObject.Count +" collectables");
         // Dictionary<string, Collectable> toLoadObjects = new Dictionary<string, Collectable>();
-        for(int i = 0; i < _collectablePersistenceObject.Count; ++i){
-            if(_collectablePersistenceObject[i].transform.parent == null){
-                //Debug.Log("Destroyed collectable WITH EMPTY PARENT" + _collectablePersistenceObject[i].name);
-                Destroy(_collectablePersistenceObject[i].gameObject);
-            }
-            if(!_collectablePersistenceObject[i].transform.parent.CompareTag("Prototype")){
-                Destroy(_collectablePersistenceObject[i].gameObject);
-                //Debug.Log("Destroyed collectable " + _collectablePersistenceObject[i].name);
+        if(!GameEvent.OpenedSceneDoor){
+            for(int i = 0; i < _collectablePersistenceObject.Count; ++i){
+                if(_collectablePersistenceObject[i].transform.parent == null){
+                    //Debug.Log("Destroyed collectable WITH EMPTY PARENT" + _collectablePersistenceObject[i].name);
+                    Destroy(_collectablePersistenceObject[i].gameObject);
+                }
+                if(!_collectablePersistenceObject[i].transform.parent.CompareTag("Prototype")){
+                    Destroy(_collectablePersistenceObject[i].gameObject);
+                    //Debug.Log("Destroyed collectable " + _collectablePersistenceObject[i].name);
+                }
             }
         }
         GameObject objPrefab;
