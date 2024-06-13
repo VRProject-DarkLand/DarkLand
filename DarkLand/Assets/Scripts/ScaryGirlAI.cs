@@ -158,7 +158,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                             navMeshAgent.SetDestination(target.transform.position);
                             if (navMeshAgent.isOnOffMeshLink)
                             {
-                                navMeshAgent.speed = 2.5f;
+                                navMeshAgent.speed = 2.65f;
                             }
 
                             yield return new WaitForSeconds(0.2f);
@@ -172,7 +172,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                                 navMeshAgent.SetDestination(target.transform.position);
                                 if (navMeshAgent.isOnOffMeshLink)
                                 {
-                                    navMeshAgent.speed = 2.5f;
+                                    navMeshAgent.speed = 2.65f;
                                 }
                                 yield return null;
                             }
@@ -230,9 +230,10 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
        
         animator.SetBool("Attack", true);
         isAttacking = true;
-        yield return new WaitForSeconds(0.2f);
+        gameObject.transform.LookAt(target.transform);
+        yield return new WaitForSeconds(0.1f);
         RaycastHit hit;
-        if(Physics.SphereCast(transform.position, 0.2f ,transform.forward , out hit, attackThreshold, ~LayerMask.GetMask("Ignore Raycast"), QueryTriggerInteraction.Ignore )){
+        if(Physics.SphereCast(transform.position, 0.3f ,transform.forward , out hit, attackThreshold, ~LayerMask.GetMask("Ignore Raycast"), QueryTriggerInteraction.Ignore )){
             if(hit.collider.gameObject == target.gameObject)
             {
                 target.Hurt(attackDamage);
@@ -240,7 +241,7 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
         }
         audioSource.Stop();
         audioSource.PlayOneShot(attackingSound,1f);
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.4f);
         animator.SetBool("Attack", false);
         yield return new WaitForSeconds(0.5f);
         audioSource.Play();

@@ -55,12 +55,10 @@ public class UIController : MonoBehaviour
     private IEnumerator DisableNotify(){
         yield return new WaitForSeconds(5f);
         if(SavedNotify!=null)
-            SavedNotify.SetActive(false);
+            SavedNotify.SetActive(false); 
     }
 
     private void ActivateSaveNotify(){
-        if(GameEvent.OpenedSceneDoor)
-            return;
         if(SavedNotify!=null)
             SavedNotify.SetActive(true);
         StartCoroutine(DisableNotify());

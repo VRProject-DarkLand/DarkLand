@@ -12,8 +12,7 @@ public class FinalBossTrigger : MonoBehaviour
 
     void Start(){
         bosses = new List<GameObject>();
-        if(!Settings.LoadedFromSave)
-            bosses.Add(boss);
+        bosses.Add(boss);
     }
     private void OnTriggerEnter(Collider other) {
         foreach(GameObject boss in bosses){

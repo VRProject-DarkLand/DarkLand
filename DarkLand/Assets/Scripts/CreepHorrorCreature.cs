@@ -182,7 +182,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
                         isVulnerable = true;
                         creepMaterial.color = Color.red;
                     }
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(3.5f);
                     charging = false;
                     Walk(reachable);
                 }                

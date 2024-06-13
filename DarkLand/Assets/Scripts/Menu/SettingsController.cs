@@ -31,8 +31,7 @@ public class SettingsController : MonoBehaviour
 
     void Awake(){
        
-        musicNumber.text = Mathf.RoundToInt(musicSlider.value*100).ToString();
-        soundNumber.text = Mathf.RoundToInt(soundSlider.value*100).ToString();
+      
         sensibilitySlider.value = Mathf.Round(Settings.Sensibility*Settings.MinSensibility/Settings.MaxSensibility);
         aimingSlider.value = Settings.AimSensibility*Settings.MinSensibility/Settings.MaxSensibility;
         sensibilityNumber.text = Settings.Sensibility.ToString();
@@ -64,6 +63,8 @@ public class SettingsController : MonoBehaviour
         soundToggle.isOn = Managers.AudioManager.AllSoundOn;
         soundSlider.value = Managers.AudioManager.soundVolume;
         musicSlider.value = Managers.AudioManager.musicVolume;
+        musicNumber.text = Mathf.RoundToInt(musicSlider.value*100).ToString();
+        soundNumber.text = Mathf.RoundToInt(soundSlider.value*100).ToString();
         resolutionDropdown.AddOptions(resOpt);
         resolutionDropdown.value = currentResolution;
         resolutionDropdown.RefreshShownValue(); 
@@ -96,11 +97,11 @@ public class SettingsController : MonoBehaviour
     }
 
     public void OnMusicChange(float value){
-         musicNumber.text = Mathf.RoundToInt(musicSlider.value*100).ToString();
+         musicNumber.text = Mathf.RoundToInt(value*100).ToString();
     }
 
     public void OnSoundChange(float value){
-         soundNumber.text = Mathf.RoundToInt(musicSlider.value*100).ToString();
+         soundNumber.text = Mathf.RoundToInt(value*100).ToString();
     }
 
 
