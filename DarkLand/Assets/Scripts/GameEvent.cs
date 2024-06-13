@@ -56,6 +56,9 @@ public class GameEvent : MonoBehaviour{
         SAVE_GAME,
         OPEN_AMMO_BOX,
         UNLOCK_AMMO_BOX,
+        OPEN_GATE,
+        UNLOCK_GATE,
+        CLOSE_GATE,
     };
 
 }

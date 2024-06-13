@@ -48,6 +48,7 @@ public class PauseManager : MonoBehaviour, IGameManager
         paused = false;
         Time.timeScale = 1;
         AudioListener.pause = false;
+        Settings.LoadedFromSave = true;
         SceneManager.LoadScene(currentScene.path);
     }
 

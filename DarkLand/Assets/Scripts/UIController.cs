@@ -203,6 +203,7 @@ public class UIController : MonoBehaviour
         Messenger<int>.RemoveListener(GameEvent.FEAR_CHANGED, OnFearChanged);
         Messenger<int>.RemoveListener(GameEvent.CHANGED_SELECTABLE, OnSelectableChanged);
         Messenger<bool>.RemoveListener(GameEvent.PAUSED, Paused);
+        Messenger.RemoveListener(GameEvent.SAVE_FINISHED, ActivateSaveNotify);
         Messenger.RemoveListener(GameEvent.ALL_MANAGERS_LOADED, LoadedManagers);
     }
 

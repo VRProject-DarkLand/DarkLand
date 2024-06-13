@@ -36,6 +36,9 @@ public class DialogsKeeper : MonoBehaviour
             {GameEvent.InteractWithMessage.EXIT_DOOR, "Exit"},
             {GameEvent.InteractWithMessage.OPEN_AMMO_BOX, "Open box"},
             {GameEvent.InteractWithMessage.UNLOCK_AMMO_BOX, "Unlock box"},
+            {GameEvent.InteractWithMessage.OPEN_GATE, "Open gate"},
+            {GameEvent.InteractWithMessage.CLOSE_GATE, "Close gate"},
+            {GameEvent.InteractWithMessage.UNLOCK_GATE, "Unlock gate"},
         };
 
     }

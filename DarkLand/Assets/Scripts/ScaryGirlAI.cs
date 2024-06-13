@@ -145,7 +145,6 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                     }
                     if (reachable && Physics.Raycast(startRaycast, direction, out hit, detectionDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore))
                     {
-                        Debug.DrawRay(startRaycast, direction, Color.yellow);
                         if (hit.collider.gameObject.tag == Settings.PLAYER_TAG)
                         {
                             inSight = true;

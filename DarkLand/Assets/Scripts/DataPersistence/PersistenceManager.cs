@@ -33,9 +33,9 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         return _allCollectablesContainer;
     }
     public IEnumerator SaveGame(){
-        foreach(Transform t in _collectablePrototypes.transform){
-            Destroy(t.GetComponent<Collectable>());
-        }
+        // foreach(Transform t in _collectablePrototypes.transform){
+        //     Destroy(t.GetComponent<Collectable>());
+        // }
         yield return null;
         Settings.gameData = new GameData();
         _dataPersistenceObjects = FindAllDataPersistenceObjects();
@@ -197,8 +197,9 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         return new List<IDataPersistenceSave>(data);
     }
     private List<Collectable> FindAllCollectableObjects(){
-        IEnumerable<Collectable> data = FindObjectsOfType<MonoBehaviour>().OfType<Collectable>();
-        return new List<Collectable>(data);
+        return _allCollectablesContainer.GetComponentsInChildren<Collectable>().ToList();
+        // IEnumerable<Collectable> data = FindObjectsOfType<MonoBehaviour>().OfType<Collectable>();
+        // return new List<Collectable>(data);
     }
     
     private List<ScaryGirlTrigger> FindAllScaryGirlTriggers(){

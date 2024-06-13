@@ -207,7 +207,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         isAttacking = true;
         yield return new WaitForSeconds(0.2f);
         RaycastHit hit;
-        if(Physics.SphereCast(transform.position, 0.65f ,transform.forward , out hit, attackThreshold, 63 )){
+        if(Physics.SphereCast(transform.position, 0.2f ,transform.forward , out hit, attackThreshold, Settings.RAYCAST_MASK )){
             if(hit.collider.gameObject == target.gameObject)
             {
                 target.Hurt(attackDamage);

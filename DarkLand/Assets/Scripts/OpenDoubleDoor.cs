@@ -20,7 +20,7 @@ public class OpenDoubleDoor :  IInteractableObject
     [SerializeField] private GameObject left;
     [SerializeField] private GameObject right;
     [SerializeField] private NavMeshLink link;
-    
+    [SerializeField] private bool isGate = false;
     private IEnumerator coroutine;
     private bool fixedSound = false;
     [SerializeField] private bool requireKey = false;
@@ -37,9 +37,9 @@ public class OpenDoubleDoor :  IInteractableObject
         interactableTrigger = GetComponent<InteractableTrigger>();
          interactableTrigger = GetComponent<InteractableTrigger>();
         if(!requireKey)
-            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+            interactableTrigger.SetInteractionMessage(!isGate?GameEvent.InteractWithMessage.OPEN_DOOR:GameEvent.InteractWithMessage.OPEN_GATE);
         else
-            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.UNLOCK);
+            interactableTrigger.SetInteractionMessage(!isGate?GameEvent.InteractWithMessage.UNLOCK:GameEvent.InteractWithMessage.UNLOCK_GATE);
         close  = Tuple.Create(left.transform.rotation, right.transform.rotation);
         open = Tuple.Create(close.Item1*Quaternion.Euler(0, left.transform.rotation.y+left_rotation, 0), close.Item2*Quaternion.Euler(0, right.transform.rotation.y+right_rotation, 0));
     }
@@ -84,7 +84,7 @@ public class OpenDoubleDoor :  IInteractableObject
             left.transform.rotation =open.Item1;
             right.transform.rotation = open.Item2;
             opened = true;
-            interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+            interactableTrigger.SetInteractionMessage(!isGate?GameEvent.InteractWithMessage.CLOSE_DOOR:GameEvent.InteractWithMessage.CLOSE_GATE);
         }
     }
 
@@ -97,7 +97,7 @@ public class OpenDoubleDoor :  IInteractableObject
                     if(link != null)
                         link.enabled = true;
                     //Managers.Inventory.ConsumeItem(key);
-                    interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                    interactableTrigger.SetInteractionMessage(!isGate?GameEvent.InteractWithMessage.OPEN_DOOR:GameEvent.InteractWithMessage.OPEN_GATE);
                     return;
                  }
               }
@@ -109,12 +109,12 @@ public class OpenDoubleDoor :  IInteractableObject
                 //     right.transform.rotation = open.Item2 ;
                 // }
             if(opened){
-                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.OPEN_DOOR);
+                interactableTrigger.SetInteractionMessage(!isGate?GameEvent.InteractWithMessage.OPEN_DOOR:GameEvent.InteractWithMessage.OPEN_GATE);
                 if(!fixedSound)
                     interactionSound = ResourceLoader.GetSound(Settings.AudioSettings.DOOR_CLOSE_SOUND);
                 
             }   else {
-                interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.CLOSE_DOOR);
+                interactableTrigger.SetInteractionMessage(!isGate?GameEvent.InteractWithMessage.CLOSE_DOOR:GameEvent.InteractWithMessage.CLOSE_GATE);
                 if(!fixedSound)
                     interactionSound =  ResourceLoader.GetSound(Settings.AudioSettings.DOOR_OPEN_SOUND);
             }

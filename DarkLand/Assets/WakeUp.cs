@@ -15,11 +15,12 @@ public class WakeUp : MonoBehaviour
         {
             playerCamera.enabled = true;
             wakeUpCamera.enabled = false;
+            Managers.Persistence.SaveGame();
             player.GetComponent<FPSInput>().enabled = true;
             player.GetComponent<CharacterController>().enabled = true;
             player.GetComponent<MouseLook>().enabled = true;
-            Destroy(gameObject);
             Messenger<string>.Broadcast(GameEvent.OPEN_DIALOG_WITHOUT_TALK_TO_TEXT, "Help");
+            Destroy(gameObject);
         }
     }
     public void StartWakeUpAnimation(){
