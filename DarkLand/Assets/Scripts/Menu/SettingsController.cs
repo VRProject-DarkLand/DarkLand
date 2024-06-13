@@ -32,9 +32,9 @@ public class SettingsController : MonoBehaviour
     void Awake(){
        
       
-        sensibilitySlider.value = Mathf.Round(Settings.Sensibility*Settings.MinSensibility/Settings.MaxSensibility);
-        aimingSlider.value = Settings.AimSensibility*Settings.MinSensibility/Settings.MaxSensibility;
-        sensibilityNumber.text = Settings.Sensibility.ToString();
+        sensibilitySlider.value = (Settings.Sensibility-Settings.MinSensibility)/(Settings.MaxSensibility-Settings.MinSensibility);
+        aimingSlider.value = (Settings.AimSensibility-Settings.MinSensibility)/(Settings.MaxSensibility-Settings.MinSensibility);
+        sensibilityNumber.text = Mathf.RoundToInt(Settings.Sensibility).ToString();
         aimingNumber.text = Settings.AimSensibility.ToString("F1");
        
     }

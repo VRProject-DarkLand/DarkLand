@@ -133,7 +133,13 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
     private void MovePlayer(Vector3 movement) {
         if (blocked)
             return;
-
+        if(onGround ){
+            if(_charController.velocity.y<=_terminalVelocity)
+                Hurt(_health);
+            else if(_charController.velocity.y<-12){
+                Hurt(50);
+            }
+        }
          if (_charController.velocity.magnitude > 1f && _step && moveAction) {
             _soundSource.PlayOneShot(footStepSound);
             StartCoroutine(WaitForFootSteps());
