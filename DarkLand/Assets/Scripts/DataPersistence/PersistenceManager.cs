@@ -40,8 +40,8 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         Settings.gameData = new GameData();
         _dataPersistenceObjects = FindAllDataPersistenceObjects();
         foreach(IDataPersistenceSave dataPersObj in _dataPersistenceObjects){
-            
-           dataPersObj?.SaveData();
+            if(dataPersObj != null)
+                dataPersObj.SaveData();
            //Debug.Log(dataPersObj);
         }
         FileDataHandler.Save(_fileName);

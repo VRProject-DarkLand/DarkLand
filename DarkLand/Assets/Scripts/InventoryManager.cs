@@ -102,7 +102,11 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
         for(int i = 0; i < Settings.gameData.inventoryItemsNames.Count; ++i){
             GameObject obj = Managers.Persistence.CreateInventoryItem(Settings.gameData.inventoryItemsPrefabs[i]);
             obj.name = Settings.gameData.inventoryItemsNames[i];
-            AddItem(obj, obj.GetComponent<Collectable>().GetMaxUsages());
+            int quantity ;
+            if(!int.TryParse(Settings.gameData.inventoryItemsQuantities[i], out quantity)){
+                quantity = obj.GetComponent<Collectable>().GetMaxUsages();
+            }
+            AddItem(obj, quantity);
             //Collectable coll = obj.GetComponent<Collectable>();
             //Debug.Log("Destroy inv obj " + obj.name);
             Destroy(obj);
