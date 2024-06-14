@@ -74,11 +74,14 @@ public class Managers : MonoBehaviour
         //a saving that has been loaded. This is done only if the game is loading a save
         if(Settings.LoadedFromSave){
             //create monsters and collectables
-            Persistence.SetLoadedData();
+            if(Persistence != null)
+                Persistence.SetLoadedData();
             //set stats to player
-            Player.SetLoadGameData();
+            if(Player != null)
+                Player.SetLoadGameData();
             //create inventory from snapshot
-            Inventory.SetLoadedGameData();
+            if(Inventory != null)
+                Inventory.SetLoadedGameData();
         } 
         Time.timeScale = 1f;
         Messenger.Broadcast(GameEvent.ALL_MANAGERS_LOADED,  MessengerMode.DONT_REQUIRE_LISTENER);

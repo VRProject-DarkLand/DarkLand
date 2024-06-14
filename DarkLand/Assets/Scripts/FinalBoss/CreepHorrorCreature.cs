@@ -54,10 +54,8 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         spawnPosition = gameObject.transform.position;
         creepMaterial = GetComponentInChildren<Renderer>().material;
         audioSource = GetComponent<AudioSource>();
-        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor){
-            finalBossTriggers.Add(finalBossTrigger);
-            ActivateNavMeshAndAnimator();
-        }
+        finalBossTriggers.Add(finalBossTrigger);
+        ActivateNavMeshAndAnimator();
     }
 
     private void ActivateNavMeshAndAnimator(){
