@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class SpiderTrigger : MonoBehaviour
 {
     private List<GameObject> spiders;
     [SerializeField] private GameObject[] _sceneSpider;
     void Start(){
         spiders = new List<GameObject>();
-        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor){
+        if(!Settings.LoadedFromSave || GameEvent.OpenedSceneDoor || SceneManager.GetActiveScene().name == Settings.ASYLUM_NAME){
             foreach(GameObject obj in _sceneSpider)
             {
                 spiders.Add(obj);

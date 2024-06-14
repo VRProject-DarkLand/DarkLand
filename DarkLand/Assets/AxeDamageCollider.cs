@@ -15,7 +15,7 @@ public class AxeDamageCollider : MonoBehaviour{
         //axe collider is only enabled during hit and it is
         //only enabled when the interactable trigger is disabled
         //Debug.Log("Axe collided");
-        if(other.transform.gameObject.CompareTag(Settings.ENEMY_TAG))
-            _usableAxe.Damage(other.gameObject);
+        //if(other.transform.gameObject.CompareTag(Settings.ENEMY_TAG))
+        _usableAxe.Damage(other.gameObject);
     }
 }

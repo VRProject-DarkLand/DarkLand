@@ -124,17 +124,18 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
                 float distance = direction.magnitude;
                 if (GameEvent.isHiding)
                 {
-                    if (!inSight)
-                        chasing = false;
-                    else
-                    {
-                        if (distance < attackThreshold && !isAttacking)
-                        {
-                            StartCoroutine(Attack());
-                        }
-                        navMeshAgent.SetDestination(target.transform.position);
-                        yield return null;
-                    }
+                    chasing = false;
+                    // if (!inSight)
+                    //     chasing = false;
+                    // else
+                    // {
+                    //     if (distance < attackThreshold && !isAttacking)
+                    //     {
+                    //         StartCoroutine(Attack());
+                    //     }
+                    //     navMeshAgent.SetDestination(target.transform.position);
+                    //     yield return null;
+                    // }
                 }
                 else
                 {

@@ -87,8 +87,19 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         if(!GameEvent.exitingCurrentScene){
             _allMonsters = FindAllMonsters();
             foreach(GameObject monster in _allMonsters){
-                //Debug.Log("Deleting scary girl");
-                Destroy(monster);
+                LittleGirlAI ai = monster.GetComponentInChildren<LittleGirlAI>();
+                WaypointMover mover = monster.GetComponentInChildren<WaypointMover>();
+                //do not destroy little girl - we decided not to persist such a monster
+                //do not destroy spiders in asylum - see comment below
+                if(ai == null){
+                    if(mover == null)
+                        Destroy(monster);
+                    else{
+                        if(SceneManager.GetActiveScene().name != Settings.ASYLUM_NAME){
+                            Destroy(monster);
+                        }
+                    }
+                }
             }
             _scaryGirlTriggers = FindAllScaryGirlTriggers();
             //Debug.Log("Found " +_scaryGirlTriggers.Count + " triggers");
@@ -106,24 +117,27 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
                     ai.LoadFromData(data);
                 }
             }
-            GameObject littleGirl;
-            foreach(LittleGirlAI.LittleGirlSavingData data in Settings.gameData.littleGirlsData){
-                //Debug.Log("Creating little girl");
-                littleGirl = Instantiate(_monsterPrototypes._littleGirlPrefab);
-                littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
-            }
-            GameObject spider;
-            List<SpiderTrigger> SpiderTriggers = FindAllSpiderTriggers();
-            foreach(WaypointMover.SpiderData data in Settings.gameData.spidersData){
-                  Debug.Log("Creating spider");
-                //Debug.Log("Creating little girl");
-                spider = Instantiate(_monsterPrototypes._spiderPrefab);
-                spider.GetComponentInChildren<WaypointMover>().LoadFromData(data);
-                foreach(SpiderTrigger t in SpiderTriggers){
-                    t.AddSpider(spider.transform.GetChild(0).gameObject);
-                    spider.GetComponentInChildren<WaypointMover>().AddSpiderTrigger(t);
+            // GameObject littleGirl;
+            // foreach(LittleGirlAI.LittleGirlSavingData data in Settings.gameData.littleGirlsData){
+            //     //Debug.Log("Creating little girl");
+            //     littleGirl = Instantiate(_monsterPrototypes._littleGirlPrefab);
+            //     littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
+            // }
+            //we decided not to load spiders in asylum. Spiders are too complex and require references to the scene to work
+            if(SceneManager.GetActiveScene().name != Settings.ASYLUM_NAME){
+                GameObject spider;
+                List<SpiderTrigger> SpiderTriggers = FindAllSpiderTriggers();
+                foreach(WaypointMover.SpiderData data in Settings.gameData.spidersData){
+                    Debug.Log("Creating spider");
+                    //Debug.Log("Creating little girl");
+                    spider = Instantiate(_monsterPrototypes._spiderPrefab);
+                    spider.GetComponentInChildren<WaypointMover>().LoadFromData(data);
+                    foreach(SpiderTrigger t in SpiderTriggers){
+                        t.AddSpider(spider.transform.GetChild(0).gameObject);
+                        spider.GetComponentInChildren<WaypointMover>().AddSpiderTrigger(t);
+                    }
+                    //littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
                 }
-                //littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
             }
             //open all boxes that were opened in the save
             Dictionary<string, bool> boxToState = new Dictionary<string, bool>();
@@ -140,7 +154,7 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             }
         }
         //set lights to off only when inside asylum
-        if(ScenesController.instance._currentScene == Settings.ASYLUM_SCENE && !Settings.gameData.allLightsStatus){
+        if(SceneManager.GetActiveScene().name == Settings.ASYLUM_NAME && !Settings.gameData.allLightsStatus){
             Messenger<bool>.Broadcast(GameEvent.OPERATE_ON_LIGHTS, false, MessengerMode.DONT_REQUIRE_LISTENER);
         }
 

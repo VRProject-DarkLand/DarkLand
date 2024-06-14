@@ -9,7 +9,7 @@ using static UnityEngine.UI.Image;
 using UnityEngine.UIElements;
 using Unity.AI.Navigation;
 using UnityEngine.SceneManagement;
-using System.Diagnostics;
+
 
 
 [RequireComponent(typeof(AudioSource))]
@@ -66,7 +66,7 @@ public class WaypointMover : MonoBehaviour, IDataPersistenceSave, IDamageableEnt
             _renderer = GetComponentInChildren<Renderer>().gameObject;
         }
         startRotation = transform.parent.localEulerAngles;
-        if(!Settings.LoadedFromSave){
+        if(!Settings.LoadedFromSave || SceneManager.GetActiveScene().name == Settings.ASYLUM_NAME){
             spiderTriggers.Add(sceneTrigger);
         }
     }
