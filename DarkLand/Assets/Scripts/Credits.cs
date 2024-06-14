@@ -9,6 +9,7 @@ public class Credits : MonoBehaviour
     void Start()
     {
         button.SetActive(false);
+        Settings.LoadedFromSave = false;
     }
 
 
