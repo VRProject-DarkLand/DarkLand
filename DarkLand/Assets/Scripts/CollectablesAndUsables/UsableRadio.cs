@@ -19,6 +19,10 @@ public class UsableRadio : IUsableObject
         gameObject.transform.localEulerAngles = new Vector3(0,-90,0);
     }
 
+    
+    /// <summary>
+    ///1Change scene to the scene passed as serializefield
+    /// </summary>
     public override void Use(){
        Settings.GameFinished = true;
        ScenesController.instance.ChangeScene(changeScene);

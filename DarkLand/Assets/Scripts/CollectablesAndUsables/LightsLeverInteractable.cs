@@ -24,6 +24,9 @@ public class LightsLeverInteractable : IInteractableObject, IDataPersistenceSave
             interactableTrigger.SetInteractionMessage(GameEvent.InteractWithMessage.TURN_ON);
     }
 
+    /// <summary>
+    /// Animate the lever and send a message to turn off or on the lights, depending on the contrary of the internal state 
+    /// </summary>
     public override void Interact(){
         gameObject.GetComponent<Animator>().SetBool("On", !manager.on);
         Messenger<bool>.Broadcast(GameEvent.OPERATE_ON_LIGHTS, !manager.on);

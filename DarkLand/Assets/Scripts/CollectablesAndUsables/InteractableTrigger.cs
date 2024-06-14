@@ -17,22 +17,17 @@ public class InteractableTrigger : MonoBehaviour{
 
     public bool isCollectable  {get; internal set;} = false;
 
-    // public void OnTriggerEnter(Collider other){
-    //     enteredInRange = true;
-    //     Messenger<string, string>.Broadcast(_toSendEnterMessage.ToString(), gameObject.name, _interactionMessage.ToString());
-    //     //Debug.Log("Sending enter trigger into " + gameObject.name);
-
-    // }
-    // public void OnTriggerExit(Collider other){ 
-    //     Messenger<string, string>.Broadcast(_toSendExitMessage.ToString(), gameObject.name, _interactionMessage.ToString());
-    //     //Debug.Log("Sending exit trigger from " + gameObject.name);
-    // }
 
     void Start() {
         //OpenDoor openDoor;
         interactableObject = GetComponent<IInteractableObject>();
 
     }
+    /// <summary>
+    /// if the player entered in the trigger, it computes a looking score, if the player can interact with the interactable object, then it tries to set it as
+    /// the selected interactable. If looking score is not sufficient, it tries to deselect the object from the selected interactable in the manager
+    /// </summary>
+    /// <param name="isInventoryOpen">actual state of the inventory type</param>
     void Update(){
         if(enteredInRange){
             float lookingScore = LookingCondition(playerTransform, gameObject.transform);
@@ -54,6 +49,12 @@ public class InteractableTrigger : MonoBehaviour{
             }
         }     
     }
+
+    /// <summary>
+    /// If the player entered the trigger, it updates its internal states and enable the possibility to be selected 
+    /// if an a reactive enemy entered the trigger it calls the reactive interaction of the interactable object
+    /// </summary>
+    /// <param name="Collider">object that triggered the event</param>
    void OnTriggerEnter(Collider collider){
         if(collider.tag == Settings.PLAYER_TAG){
             enteredInRange = true;
@@ -66,6 +67,10 @@ public class InteractableTrigger : MonoBehaviour{
         }
 
     }
+    /// <summary>
+    /// If the player exited the trigger, it tries to deselect itself 
+    /// </summary>
+    /// <param name="Collider">object that triggered the event</param>
     void OnTriggerExit(Collider collider){
         if(collider.tag == Settings.PLAYER_TAG){
             enteredInRange = false;
@@ -91,6 +96,13 @@ public class InteractableTrigger : MonoBehaviour{
         InteractableManager.DeselectInteractableGameObject(this);
     }
 
+    /// <summary>
+    /// Computes a values that indicates how likely is the source to select the item by looking to it
+    /// if the object ignores this value, it return 0.9 as default.
+    /// </summary>
+    /// <param name="source">object transform  that can select the item</param>
+    /// <param name="target">object transform of the candidate selectable item</param>
+    /// <return name=float>a value between 0 and 1 whene 0 is the oppposite direction and 1 is the direct looking by the source</return>
     public float LookingCondition(Transform source, Transform target){
         if(ignoreLookingScore)
             return 0.9f;

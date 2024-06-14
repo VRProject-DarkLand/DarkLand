@@ -9,6 +9,10 @@ public class Adrenaline : IUsableObject
         if(player == null)
             player = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>();
     }
+
+     /// <summary>
+    /// If fear is greater than 0 or health is less than 100, it consume the item and increse the health by 50 and decrease fear by -50 
+    /// </summary>
     public override void Use()
     {
         if(player != null){

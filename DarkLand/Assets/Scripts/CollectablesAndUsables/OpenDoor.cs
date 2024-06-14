@@ -6,6 +6,7 @@ using UnityEngine;
 
 
 public class OpenDoor : IInteractableObject{
+    #region Private
     private Quaternion open;
     private Quaternion close;
     private bool opened ;
@@ -13,11 +14,14 @@ public class OpenDoor : IInteractableObject{
     private float speed;
     private float timeCount;
     private IEnumerator coroutine;
+    #endregion
+    #region SerializeField
     [SerializeField] private float rotation = -90f;
     [SerializeField] private GameObject door;
     [SerializeField] private bool requireKey = false;
     [SerializeField] private string key = "Key";
     [SerializeField] private NavMeshLink link = null; 
+    #endregion
 
     // Start is called before the first frame update
     void Start(){
@@ -40,30 +44,9 @@ public class OpenDoor : IInteractableObject{
         
     }
 
-    // Update is called once per frame
-    // void Update(){
-    //     if(isMoving){
-    //         Quaternion begin = open;
-    //         Quaternion end = close;
-    //         if(opened){
-    //             begin = close;
-    //             end = open;
-    //         }
-    //         door.transform.rotation = Quaternion.Lerp(begin, end,  timeCount * speed);
-    //         timeCount += Time.deltaTime;
-    //         if(door.transform.rotation == end){
-    //             isMoving = false;
-    //             timeCount = 0;
-    //         }
-    //     }
-    // }
-
-    /* *
-    * <summary><\summary> 
-    * <param name=""><\param>
-    * <return><\return>
-    *
-    */
+    /// <summary>
+    /// Aniamte the door to rotate to the open angle if it is closed and viceversa
+    /// </summary>
     private IEnumerator AnimateDoor(){
         Quaternion begin = open;
         Quaternion end = close;
@@ -106,6 +89,10 @@ public class OpenDoor : IInteractableObject{
         }
     }
 
+    /// <summary>
+    /// Change the states of the door, check if the key is required and unlock if it is in the inventory.
+    /// Eventually change the door state and change the interaction message. 
+    /// </summary>
     public void ChangeState(){
             if(CanInteract()){
                 if(requireKey){

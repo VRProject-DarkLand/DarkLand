@@ -63,6 +63,15 @@ public class ThrowableObject : IUsableObject
         gameObject.transform.localEulerAngles = Vector3.zero;
     }
 
+
+    /// <summary>
+    ///1. Check if object can be thrown by raycasting. It cannot be thrown if there is an object between it and the player.
+    ///2. Copy the object and modify layers, set its Rigidbody to not cinematic, enabling colliders and restoring Collectable to its initial state.
+    ///3. Apply an impulse force in the forward direction with the force specified as SerializedField
+    ///4. Apply relative torque in direction (1, -1, 1), with the force specified divided by 10.
+    ///5. Play the throwing sound
+    ///6. Consume the item
+    /// </summary>
     public override void Use(){
         RaycastHit hitTowardsTrowableObj;
         Vector3 toCheckDirection = transform.position -  _camera.transform.position;
@@ -109,6 +118,11 @@ public class ThrowableObject : IUsableObject
         UndoSecondaryUse();
         base.Deselect();
     }
+
+    
+    /// <summary>
+    /// Send a message with filled ThrowableInfo struct in order to draw trajectory
+    /// </summary>
     public override void SecondaryUse()
     {
         ThrowableInfo info = new ThrowableInfo();
@@ -120,6 +134,10 @@ public class ThrowableObject : IUsableObject
         _isAiming = true;
     }
 
+
+    /// <summary>
+    ///Play a sound if impact relativevelocity is greater than 2
+    /// </summary>
     void OnCollisionEnter(Collision collision){
         if(!hasAudio)
             return;

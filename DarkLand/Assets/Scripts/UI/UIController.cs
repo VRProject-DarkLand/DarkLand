@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    #region SerializeField
     [SerializeField] private Slider _healthBar;
     [SerializeField] private Slider _fearBar;
     [SerializeField] private Image damageImage;
@@ -19,11 +20,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private InventoryViewer inventory;
     [SerializeField] private GameObject SavedNotify;
     [SerializeField] private GameObject SettingsOptions;
+    #endregion
+    #region Private
     private GameObject leftMenu;
     private List<UsableSpot> spots = new List<UsableSpot>();
     private int currentIndex = 0;
     private int animatingDamageTimeElapsed = 0;
-    private Image currentImage;    
+    private Image currentImage;
+    #endregion    
     // Start is called before the first frame update
     void Start()
     {
@@ -79,6 +83,13 @@ public class UIController : MonoBehaviour
         spots[pos].SetItem(sprite);
     }
 
+    /// <summary>
+    /// When it is called, it update the health bar by increasing or decreasing based on the parameter health<\br>
+    /// Then if damaged is false, it shows the wound image, otherwise it shows the cure image<\br>
+    /// It reset the fade away state and call a coroutine to make the image fade away
+    /// </summary>
+    /// <param name="health">health value that is involved in incresing or decreasing</param>
+    /// <param name="damaged">represents if the health changes for a damage or a cure</param>
     public void OnHealthChanged(float health, bool damaged){
         _healthBar.value = _healthBar.maxValue * health/Managers.Player.maxHealth;
         bool startFade = false;
@@ -101,6 +112,10 @@ public class UIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// make the image appears and slowly reduce alpha to fade away
+    /// </summary>
+    /// <return type="IEnumerator">Coroutine return type</return>
     private IEnumerator FadeAwayImage(){
         float a = 1;
         float speed = 0.015f;
@@ -161,6 +176,10 @@ public class UIController : MonoBehaviour
     public void OnQuit(){
         ConfirmationPopup.SetActive(true);
     }
+    /// <summary>
+    /// enable the inventory, if the actual state is closed and viceversa 
+    /// </summary>
+    /// <param name="isInventoryOpen">actual state of the inventory type</param>
     public void OnInventoryChange(bool isInventoryOpen){
         if(isInventoryOpen){
             inventory.Clean();

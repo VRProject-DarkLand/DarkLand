@@ -16,6 +16,9 @@ public class TeddyBear : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// if it hitted an object whose parent has a ScaryGirlAI component, it call hitbyteddybear on it
+    /// </summary>
     private void OnCollisionEnter(Collision collision)
     {
         // Check if the colliding object has the ScaryGirlAI script attached

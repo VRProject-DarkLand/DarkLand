@@ -31,6 +31,13 @@ public class HidingInteractable : IInteractableObject{
         
     }
 
+    /// <summary>
+    /// If not hiding, it set the state to hiding and put the player towards the object transform position , rotating it to look forward. makesthe player to crouch
+    /// if present a quad is moved in front of the object to simulate the hiding behaviour
+    ///If not hiding, it moves the quad away and makes it to disappear, the move the player away from transform position
+    /// The state is set to not hiding
+    ///Broadcast the hiding event status 
+    /// </summary>
     private IEnumerator AnimateHiding(){
         if(!isHiding)
             player.SendMessage("Crouch", SendMessageOptions.DontRequireReceiver);
@@ -116,7 +123,9 @@ public class HidingInteractable : IInteractableObject{
     {
         return  Managers.Player.GetChasingEnemies() == 0;
     }
-
+    /// <summary>
+    /// If not moving and not chased by enemies, it makes the player to Hide or Unhide with respect to state of hiding.
+    /// </summary>
     public override void Interact(){
         if(!CanInteract())
             return;

@@ -8,6 +8,9 @@ public class DialogsKeeper : MonoBehaviour
     public static readonly Dictionary<GameEvent.InteractWithMessage, string> INTERACTION_LABEL;
     //public  const string TALK_TO_TEXT = "[T] to talk";
     public  const string INTERACT_LABEL_TEXT = "[E] Interact";
+
+    //It stores an associatio between an object name and a text
+    // It stores an association between InteractWithMessage enum and a text, could be used for multiple languages?
     static DialogsKeeper(){
         ENTITY_NAME_AND_DIALOG = new Dictionary<string, string>
         {

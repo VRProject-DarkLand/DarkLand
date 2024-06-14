@@ -44,6 +44,7 @@ public class OpenDoubleDoor :  IInteractableObject
         open = Tuple.Create(close.Item1*Quaternion.Euler(0, left.transform.rotation.y+left_rotation, 0), close.Item2*Quaternion.Euler(0, right.transform.rotation.y+right_rotation, 0));
     }
 
+        
        private IEnumerator AnimateDoor(){
         Tuple<Quaternion,Quaternion> begin = close;
         Tuple<Quaternion,Quaternion> end = open;
@@ -88,7 +89,10 @@ public class OpenDoubleDoor :  IInteractableObject
         }
     }
 
-
+    /// <summary>
+    /// Change the states of the door, check if the key is required and unlock if it is in the inventory.
+    /// Eventually change the door state and change the interaction message. 
+    /// </summary>
     public void ChangeState(){
         if(left != null && right != null){
               if(CanInteract()){

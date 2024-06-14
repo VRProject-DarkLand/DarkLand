@@ -17,6 +17,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         //save if the enemy has been awaken s.t. upon spawning
         [SerializeField] private FinalBossTrigger finalBossTrigger;
         [SerializeField] private int attackDamage = 60;
+        [SerializeField] private GameObject item;
     #endregion
     
     #region PrivateAttributes
@@ -35,7 +36,6 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         private bool isVulnerable = false;
         private int health = 250;
         private Vector3 freezeTargetPosition; 
-        [SerializeField] private GameObject item;
         private float _footStepSoundLength = 0.4f;
         private bool _step = true;
         private bool freeze = true;
@@ -106,6 +106,10 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
             freeze = true;
     }
 
+    /// <summary>
+    /// Save the position of the player and make the animator to run and the navmesh to go towards it. If not reachable, it goes towards th spawn point
+    /// </summary>
+    /// <param name="reachable">player reachability considering navmeshagent</param>
     private void Run(bool reachable){
             Vector3 direction = target.transform.position- gameObject.transform.position;
             Vector3 freezeTargetPosition = target.transform.position+direction.normalized*8;
@@ -148,6 +152,12 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         _step = true;
     }
 
+    /// <summary>
+    /// While it is alive, it makes the object to  run towards the player 
+    /// After reaching the destiantion it freezes and become vulnerable for 3.5 seconds
+    /// Then Walk closer to the target for 25 seconds, Freeze and go back to run.
+    /// </summary>
+    /// <return type="IEnumerator">Coroutine return type</return>
     private IEnumerator FollowMe(){
         audioSource.loop = false;
         audioSource.spatialBlend = 1;
@@ -201,6 +211,10 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
         }
     }
 
+    /// <summary>
+        /// It set the animator to attack and check if the target is closer, eventually call hurt on the target with damage of the monster
+    /// </summary>
+    /// <return type="IEnumerator">Coroutine return type</return>
     private IEnumerator Attack(){
        
         animator.SetBool("Attack", true);

@@ -15,6 +15,10 @@ public class DialogHandler : MonoBehaviour
 
     private string currentText = "";
 
+    /// <summary>
+    /// Takes the dialog content string and makes a new character appear in the Text Component every 0.05 seconds 
+    /// </summary>
+    /// <return type="IEnumerator">Coroutine return type</param>
     IEnumerator RevealText(){
         DialogScreenBackground.enabled = true;
         for (int i = 0; i <= dialogContentString.Length; i++){

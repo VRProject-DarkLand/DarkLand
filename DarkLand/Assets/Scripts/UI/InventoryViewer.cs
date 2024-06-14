@@ -26,6 +26,11 @@ public class InventoryViewer : MonoBehaviour
     {
     }
 
+    /// <summary>
+    /// It takes all the inventory items and create a new InventorySlot for each of them, then it adds a new event triggerr on click<\br>
+    /// The event trigger callback makes the objects selectable so that they can be showed in the right panel.<\br>
+    /// Eventually it adds all the elements in the gridPnale and select the first one
+    ///</summary>
     public void Show(){
         PanelShow(true);
         var items = Managers.Inventory.GetItemsKey();
@@ -57,6 +62,14 @@ public class InventoryViewer : MonoBehaviour
     public void OnInventoryPage(){
         PanelShow(true);
     }
+
+    /// <summary>
+    /// Given an object with an EventTrigger Component, the method adds a new Event Trigger of the specified type to the object <\br>
+    /// Thus it add as callback to the event trigger the parameter action
+    /// </summary>
+    /// <param name="obj">object with EventTrigger Component</param>
+    /// <param name="type">Type of the entry of the new event trigger trigger</param>
+    /// <param name="action">callback function that must be added</param>
     private void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action)
     {
         EventTrigger trigger = obj.GetComponent<EventTrigger>();

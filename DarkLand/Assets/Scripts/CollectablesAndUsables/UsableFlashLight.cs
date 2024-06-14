@@ -22,7 +22,10 @@ public class UsableFlashLight : IUsableObject{
         //gameObject.transform.position = 
         //set torch visible
     }
-
+    
+    /// <summary>
+    ///Enable or disable the torchlight if not in dialog. If isHiding is true, then it disables the torchlight 
+    /// </summary>
     public override void Use(){
         if(!GameEvent.isInDialog){
             Debug.Log("Changing light status");
