@@ -11,7 +11,7 @@ public class DialogsKeeper : MonoBehaviour
     static DialogsKeeper(){
         ENTITY_NAME_AND_DIALOG = new Dictionary<string, string>
         {
-            {"StartBoard", "I locked you inside, stay safe. At the first floor, next to the bathroom there are some cans... Eat or throw them."},
+            {"StartBoard", "I locked you inside, stay safe. At the first floor, next to the bathroom there are some cans... It's better to throw than eat them."},
             {"WeeklyBoard", "Hide the keys and pray."},
             {"ForestBoardFirst", "To the employer:\n DO NOT GO INTO THE FOREST, THOSE CRAETURES ARE HORRIBLE.\nIN CASE YOU DECIDE TO GO...GOOD LUCK AND HIDE INTO THE BIG BUSHES AS THIS BEHIND"},
             {"WeaponBoard", "Somewhere around here I left a gun and some boxes.\nCollect them.\n\nSincerely,\nDR. Eam"},
@@ -22,7 +22,7 @@ public class DialogsKeeper : MonoBehaviour
         };
 
         INTERACTION_LABEL = new Dictionary<GameEvent.InteractWithMessage, string>{
-            {GameEvent.InteractWithMessage.TALK_TO_NPC, "Talk"}, 
+            {GameEvent.InteractWithMessage.TALK_TO_NPC, "Read"}, 
             {GameEvent.InteractWithMessage.COLLECT_ITEM, "Collect"},
             {GameEvent.InteractWithMessage.INTERACT, "Interact"}, 
             {GameEvent.InteractWithMessage.HIDE, "Hide"},
