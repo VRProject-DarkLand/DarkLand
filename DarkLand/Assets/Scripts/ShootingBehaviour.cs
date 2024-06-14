@@ -20,10 +20,12 @@ public class ShootingBehaviour : MonoBehaviour
     private AudioClip _shootAudioClip;
     private AudioClip _shootNoAmmoAudioClip;
     [SerializeField] private GameObject bulletHolePrefab;
+    private GameObject _player;
     private void Start(){
         _camera = Camera.main;
         _shootAudioClip = ResourceLoader.GetSound(Settings.AudioSettings.GUN_SHOOT);
         _shootNoAmmoAudioClip = ResourceLoader.GetSound(Settings.AudioSettings.NO_AMMO);
+        _player = GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG);
     }
     public void Shoot(){
         if(_animator == null){
@@ -41,7 +43,8 @@ public class ShootingBehaviour : MonoBehaviour
             Physics.Raycast(_camera.transform.position, toCheckDirection, out hitTowardsBulletSource, cameraToBulletSourceDistance, Settings.RAYCAST_MASK, QueryTriggerInteraction.Ignore);
             //do not shoot if the pistol is behind some object
             //e.g. there is an object between the camera and the bullet source (maybe a wall)
-            if(hitTowardsBulletSource.transform != null){
+            //the camera appears to be on top of the player collider
+            if(hitTowardsBulletSource.transform != null && _player.gameObject != hitTowardsBulletSource.transform.gameObject){
                 //Debug.Log("Cannot shoot, something is between camera and bullet source");
                 return;
             }
