@@ -10,9 +10,9 @@ public class DropsManager : MonoBehaviour, IGameManager{
     public void Startup(){
        status = ManagerStatus.Started;
     }
-
+    //drop a random item between the available ones
+    //called when a sliding crate is opened by the player    
     public GameObject DropRandomItem(){
-        Debug.Log("Called drop");
         int index = Random.Range(0, items.Length);
         GameObject drop = Instantiate(items[index]);
         drop.name = items[index].name;

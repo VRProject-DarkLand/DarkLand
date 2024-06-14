@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This class keeps track of the data of all the persistence 
+// data objects and is used to serialize/deserialize data
 [System.Serializable]
 public class GameData{
     public Vector3 playerPosition;
     public Vector3 playerRotation;
-    // public Vector3 playerRotation {get; set;}
     public int playerHealth;
     
     public List<string> collectableItemsPrefabs;

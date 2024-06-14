@@ -15,10 +15,8 @@ public class DialogHandler : MonoBehaviour
 
     private string currentText = "";
 
-    /// <summary>
-    /// Takes the dialog content string and makes a new character appear in the Text Component every 0.05 seconds 
-    /// </summary>
-    /// <return type="IEnumerator">Coroutine return type</param>
+
+    //Takes the dialog content string and makes a new character appear in the Text Component every 0.05 seconds 
     IEnumerator RevealText(){
         DialogScreenBackground.enabled = true;
         for (int i = 0; i <= dialogContentString.Length; i++){
@@ -28,6 +26,8 @@ public class DialogHandler : MonoBehaviour
         } 
         DialogScreenBackground.enabled = false;
     }
+    //creates a dialog with the passed npc
+    //both content and button text for the dialog are taken from outside
     public void OpenDialog(string npcName){
         dialogContentString = DialogsKeeper.GetDialogContent(npcName);
         continueButtonString = DialogsKeeper.GetButtonContent(npcName);

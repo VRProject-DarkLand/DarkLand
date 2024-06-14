@@ -70,9 +70,14 @@ public class Managers : MonoBehaviour
             yield return null;
         }
         Debug.Log("All managers started up");
+        //once all managers have started up it is possible to set the data of
+        //a saving that has been loaded. This is done only if the game is loading a save
         if(Settings.LoadedFromSave){
+            //create monsters and collectables
             Persistence.SetLoadedData();
+            //set stats to player
             Player.SetLoadGameData();
+            //create inventory from snapshot
             Inventory.SetLoadedGameData();
         } 
         Time.timeScale = 1f;

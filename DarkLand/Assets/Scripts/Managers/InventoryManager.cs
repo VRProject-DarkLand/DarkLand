@@ -6,13 +6,11 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSave
 {
-    // Start is called before the first frame update
 
 
     public ManagerStatus status {get;private set;}
     private  Dictionary<string, InventoryItem> _items; 
     public void Startup(){
-        Debug.Log("Inventory manager starting...");
         status = ManagerStatus.Started;
         _items = new Dictionary<string, InventoryItem>();
     }
@@ -23,7 +21,8 @@ public class InventoryManager : MonoBehaviour, IGameManager, IDataPersistenceSav
 
     private void DisplayItems(){
     }
-
+    //adds an item to the inventory, and if the item is also usable it is also added
+    // to the usable inventory 
     public bool AddItem(GameObject obj, int usages){
         Collectable collectable = obj.GetComponent<Collectable>();
         collectable.enabled = false;

@@ -22,7 +22,6 @@ public class DialogsManager : MonoBehaviour
     void Awake(){
         Messenger<string, GameEvent.InteractWithMessage, bool>.AddListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
         Messenger.AddListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
-        //Messenger<string, string>.AddListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.AddListener(GameEvent.OPEN_DIALOG, CreateDialog);
         Messenger<string>.AddListener(GameEvent.CLOSE_DIALOG, CloseDialog);
         Messenger<string>.AddListener(GameEvent.OPEN_DIALOG_WITHOUT_TALK_TO_TEXT, CreateInstantDialogDialog);
@@ -32,12 +31,11 @@ public class DialogsManager : MonoBehaviour
     public void OnDestroy(){
         Messenger<string, GameEvent.InteractWithMessage, bool>.RemoveListener(GameEvent.INTERACTION_ENABLED_MESSAGE, ActivateTalkToText);
         Messenger.RemoveListener(GameEvent.INTERACTION_DISABLED_MESSAGE, DeactivateTalkToText);
-        //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_ENTERED_NPC_RANGE.ToString(), ActivateTalkToText);
-        //Messenger<string, string>.RemoveListener(GameEvent.DialogTypes.PLAYER_EXIT_NPC_RANGE.ToString(), DeactivateTalkToText);
         Messenger<string>.RemoveListener(GameEvent.CLOSE_DIALOG, CloseDialog);
         Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG, CreateDialog);
         Messenger<string>.RemoveListener(GameEvent.OPEN_DIALOG_WITHOUT_TALK_TO_TEXT, CreateInstantDialogDialog);
     }
+    //create interaction text with the selected interactable item
     void ActivateTalkToText(string entityName,  GameEvent.InteractWithMessage interactionType, bool possibleAction){
         if(talkToTextVisible){
             DeactivateTalkToText();
@@ -58,7 +56,6 @@ public class DialogsManager : MonoBehaviour
             talkToText.GetComponentInChildren<Text>().color = blockedInteractionColor;
         }
         talkToText.GetComponentInChildren<Text>().text = _interactionMessage;
-        //Debug.Log("Created talk to TEXT with name " + entityName);
         RectTransform uiElementRectTransform = talkToText.GetComponent<RectTransform>();
         uiElementRectTransform.anchoredPosition = new Vector2(0, 0);
         uiElementRectTransform.localScale = Vector3.one;
@@ -70,7 +67,7 @@ public class DialogsManager : MonoBehaviour
         }
         talkToTextVisible = false;
     }
-
+    //create dialog with the entity
     public void CreateDialog(string entityName){
         GameEvent.isInDialog = true;
         Managers.PointerManager.UnlockCursor();
@@ -81,7 +78,7 @@ public class DialogsManager : MonoBehaviour
             talkToText.SetActive(false);
         }
     }
-
+    //create dialog without setting the entity to which the player will talk
     public void CreateInstantDialogDialog(string entityName){
         GameEvent.isInDialog = true;
         Managers.PointerManager.UnlockCursor();

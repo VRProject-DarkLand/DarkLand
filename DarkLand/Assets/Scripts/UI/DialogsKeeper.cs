@@ -6,7 +6,6 @@ public class DialogsKeeper : MonoBehaviour
 {
     private static readonly Dictionary<string, string> ENTITY_NAME_AND_DIALOG;
     public static readonly Dictionary<GameEvent.InteractWithMessage, string> INTERACTION_LABEL;
-    //public  const string TALK_TO_TEXT = "[T] to talk";
     public  const string INTERACT_LABEL_TEXT = "[E] Interact";
 
     //It stores an associatio between an object name and a text
@@ -24,6 +23,9 @@ public class DialogsKeeper : MonoBehaviour
             {"Help", "Press TAB to show/hide inventory and commands"}
         };
 
+        //used to show the player what he can do with the item he is looking
+        //this message is completed with the key required to perform the action
+        //the key is added by the Interactable object (it may vary from one type of object and another)
         INTERACTION_LABEL = new Dictionary<GameEvent.InteractWithMessage, string>{
             {GameEvent.InteractWithMessage.TALK_TO_NPC, "Read"}, 
             {GameEvent.InteractWithMessage.COLLECT_ITEM, "Collect"},

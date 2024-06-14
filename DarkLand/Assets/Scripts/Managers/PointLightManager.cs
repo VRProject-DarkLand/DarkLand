@@ -16,9 +16,6 @@ public class LightsManager : MonoBehaviour
         Messenger.AddListener(GameEvent.ALL_MANAGERS_LOADED, ActivatePointLightManager); 
     }
     public void ActivatePointLightManager(){
-
-        //Debug.Log("Activating blinking manager");
-        //on = true;
         // Find the player GameObject (assuming it has a tag "Player")
         player = GameObject.FindGameObjectWithTag("Player");
         // Find all GameObjects with Light component
@@ -26,12 +23,11 @@ public class LightsManager : MonoBehaviour
         for(int i= 0;i<allLights.Count;++i){
             if (allLights[i].gameObject.tag == Settings.TORCH_TAG){
                     allLights.Remove(allLights[i]);
-                    //Debug.Log("Removed light from list");
-                    //break;
             }
         }
         StartCoroutine(BlinkManager());
     }
+    //make the a light near to the player to blink with a certain frequency
     IEnumerator Blink(GameObject selectedLight){
         GameObject parent = selectedLight.transform.parent.gameObject;
         Material emissiveMaterial = parent.GetComponent<Renderer>().material;
@@ -54,6 +50,8 @@ public class LightsManager : MonoBehaviour
             l.enabled = on;
         }
     }
+    //start the blink manager, which actually exectues during the entire
+    //lifetime of the scene and that will call the blink coroutine
     IEnumerator BlinkManager(){
         while(true){
             while(!on){
@@ -94,7 +92,8 @@ public class LightsManager : MonoBehaviour
             yield return new WaitForSeconds(Random.Range(3f, 12f));
         }
     }
-
+    //switch status of all the lights inside the asylum
+    //called by spiders when they die
     private void OperateOnLights(bool turnOn){
         if(allLights == null)
             ActivatePointLightManager();

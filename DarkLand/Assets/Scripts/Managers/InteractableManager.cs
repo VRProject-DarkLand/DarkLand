@@ -8,7 +8,8 @@ public class InteractableManager : MonoBehaviour{
     public static Tuple<InteractableTrigger, float, bool> selectedInteractable = new Tuple<InteractableTrigger, float, bool>(null, 0, true);
     
     private static bool interactableChanged = false;
-    
+    //Pass a new interactable object with its looking score
+    //and update the interactable if the new arrived has a higher looking score w.r.t. the current selected
     public static void SetInteractableGameObject(Tuple<InteractableTrigger, float, bool> interactable){
         if(interactable.Item1 == selectedInteractable.Item1 ){
             selectedInteractable = interactable;
@@ -21,7 +22,7 @@ public class InteractableManager : MonoBehaviour{
             interactableChanged = true;
         }
     }
-
+    //update the selected interactable by considering that interactable can no longer be selected
     public static void DeselectInteractableGameObject(InteractableTrigger interactable){
         if(selectedInteractable.Item1 != null){
             if(interactable == selectedInteractable.Item1){
@@ -31,13 +32,17 @@ public class InteractableManager : MonoBehaviour{
             }
         }
     }
+    //call interact on the current selected item
     public static void InteractWithSelectedItem(bool collectable){
         if(selectedInteractable.Item1 != null){
             if( collectable == selectedInteractable.Item1.isCollectable && selectedInteractable.Item3)
                 selectedInteractable.Item1.SendMessage("Interact");
         }
     }
-
+    //if the currentInteractable has changed during the frame that is being processed,
+    //change the interaction message that is shown to the player
+    //this is done in the late update to ensure that the setInteractable is called by
+    //all the interactables s.t. the player is inside their trigger 
     void LateUpdate(){
         if(selectedInteractable.Item1 != null && interactableChanged){
             //Debug.Log("Late update");

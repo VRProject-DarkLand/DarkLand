@@ -17,15 +17,14 @@ public class PlayerManager : MonoBehaviour, IGameManager
     private static HashSet<int> chasingSet = new();
     private int maxFear = 0;
     private int actualFear = 0;
-    // Start is called before the first frame update
+    
     void Start()
     {
         Messenger.AddListener(GameEvent.PLAYER_DEAD, Die);
         StartCoroutine(ActualFearChange());
     }
-
+    //setup player data to its defaults
     public void Startup(){
-        Debug.Log("Player manager starting...");
         maxHealth = 100;
         health = maxHealth;
         healthPackValue = 2;
@@ -37,6 +36,7 @@ public class PlayerManager : MonoBehaviour, IGameManager
         status = ManagerStatus.Started;
 
     }
+    //set player data basing on the load
     public void SetLoadGameData(){
         health = Settings.gameData.playerHealth;
         Vector3 pPos = Settings.gameData.playerPosition;
@@ -83,21 +83,25 @@ public class PlayerManager : MonoBehaviour, IGameManager
         Messenger.RemoveListener(GameEvent.PLAYER_DEAD,Die);
     }
 
+    //used to gradually increase the current fear level of the player
     private IEnumerator ActualFearChange(){
         //actualFear = Mathf.RoundToInt(Mathf.Lerp(actualFear, maxFear, Time.deltaTime));
         int count = 0;
         Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear, MessengerMode.DONT_REQUIRE_LISTENER);
         while(!dead){
+            //negative effects of fear
             Managers.AudioManager.PlayHearthBeat(actualFear>25);
             Managers.AudioManager.PlayWhisper(actualFear>90);
             if(maxFear>actualFear){
                 actualFear += 1 ;
                 count = 0;
+                //notify the UI
                 Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear, MessengerMode.DONT_REQUIRE_LISTENER);
                 yield return new WaitForSeconds(0.5f);
             }else if(maxFear<actualFear){
                 count += 1;
                 actualFear -= 1;
+                //notify the UI
                 Messenger<int>.Broadcast(GameEvent.FEAR_CHANGED, actualFear);
                 yield return count >10? new WaitForSeconds(0.25f) : new WaitForSeconds(0.5f);
             }

@@ -93,7 +93,12 @@ public class ScaryGirlAI : MonoBehaviour, IDataPersistenceSave, IDamageableEntit
     // private void SetAgentDestination(Vector3 point){
     //     NavMeshAgent
     // }
-
+    /// <summary>
+    /// While it is alive, it makes the object to follow the player 
+    /// if the player is in range, otherwise it makes the object navigate the 
+    /// NavMesh Surface by selecting a random point
+    /// </summary>
+    /// <return type="IEnumerator">Coroutine return type</return>
     private IEnumerator FollowMe(){
         navMeshAgent.SetDestination(spawnPosition);
         audioSource.clip = grunt;

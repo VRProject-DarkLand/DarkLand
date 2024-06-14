@@ -32,56 +32,49 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
     public GameObject GetAllCollectablesContainer(){
         return _allCollectablesContainer;
     }
+    //get all data persistent objects and write their data to
+    // a new instance of GameData
     public IEnumerator SaveGame(){
-        // foreach(Transform t in _collectablePrototypes.transform){
-        //     Destroy(t.GetComponent<Collectable>());
-        // }
+
         yield return null;
         Settings.gameData = new GameData();
         _dataPersistenceObjects = FindAllDataPersistenceObjects();
         foreach(IDataPersistenceSave dataPersObj in _dataPersistenceObjects){
             if(dataPersObj != null)
                 dataPersObj.SaveData();
-           //Debug.Log(dataPersObj);
         }
         FileDataHandler.Save(_fileName);
-        //Debug.Log("Saved data");
         Messenger.Broadcast(GameEvent.SAVE_FINISHED, MessengerMode.DONT_REQUIRE_LISTENER);
     }
     public void SetLoadedData(){
         _collectablePersistenceObject = FindAllCollectableObjects();
-        //Debug.Log("Found " + _collectablePersistenceObject.Count +" collectables");
-        // Dictionary<string, Collectable> toLoadObjects = new Dictionary<string, Collectable>();
         if(!GameEvent.OpenedSceneDoor){
+            //destroy all non-prototype collectable objects in the scene
             for(int i = 0; i < _collectablePersistenceObject.Count; ++i){
                 if(_collectablePersistenceObject[i].transform.parent == null){
-                    //Debug.Log("Destroyed collectable WITH EMPTY PARENT" + _collectablePersistenceObject[i].name);
                     Destroy(_collectablePersistenceObject[i].gameObject);
                 }
                 if(!_collectablePersistenceObject[i].transform.parent.CompareTag("Prototype")){
                     Destroy(_collectablePersistenceObject[i].gameObject);
-                    //Debug.Log("Destroyed collectable " + _collectablePersistenceObject[i].name);
                 }
             }
         }
+        //instantiate collectable objects from prototypes and restore their data (just position and rotation) 
         GameObject objPrefab;
         for(int i = 0; i < Settings.gameData.collectableItemsPrefabs.Count; ++i){
-            //Debug.Log("Positioning object with guid: " + Settings.gameData.collectableItemsPrefabs[i]);
             string prefabName = GetPrefabName(Settings.gameData.collectableItemsPrefabs[i]);
 
-            Debug.Log("Searching for: " + prefabName +" name was "+ Settings.gameData.collectableItemsPrefabs[i]);
             objPrefab = _collectablePrototypes.transform.Find(prefabName).gameObject;
             Vector3 objPos= Settings.gameData.collectableItemsPosition[i];
             Vector3 objRot = Settings.gameData.collectableItemsRotation[i];
             Vector3 objScale = Settings.gameData.collectableItemsScale[i];
             GameObject obj = Instantiate(objPrefab, objPos, Quaternion.identity);
-            Debug.Log("Restored object in scene");
             obj.transform.parent = _allCollectablesContainer.transform;
             obj.transform.localEulerAngles = objRot;
             obj.transform.localScale = objScale;
             obj.transform.name = Settings.gameData.collectableItemsNames[i];
         }
-        
+        //restore player data
         GameObject.FindGameObjectWithTag(Settings.PLAYER_TAG).GetComponent<FPSInput>().SetSaveData();
         //destroy all monsters in the scene and substitute them with those in the save file
         if(!GameEvent.exitingCurrentScene){
@@ -101,12 +94,11 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
                     }
                 }
             }
+            //create scary girls from saving and make the double register of scary girls to their triggers
+            //and of triggers to their scary girls
             _scaryGirlTriggers = FindAllScaryGirlTriggers();
-            //Debug.Log("Found " +_scaryGirlTriggers.Count + " triggers");
-            //restore scary girls
             GameObject scaryGirl;
             foreach(ScaryGirlAI.ScaryGirlSavingData data in Settings.gameData.scaryGirlsData){
-                Debug.Log("Creating scary girl");
                 if(!data.dead){
                     scaryGirl = Instantiate(_monsterPrototypes._scaryGirlPrefab);
                     ScaryGirlAI ai = scaryGirl.GetComponentInChildren<ScaryGirlAI>();
@@ -117,38 +109,34 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
                     ai.LoadFromData(data);
                 }
             }
-            // GameObject littleGirl;
-            // foreach(LittleGirlAI.LittleGirlSavingData data in Settings.gameData.littleGirlsData){
-            //     //Debug.Log("Creating little girl");
-            //     littleGirl = Instantiate(_monsterPrototypes._littleGirlPrefab);
-            //     littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
-            // }
             //we decided not to load spiders in asylum. Spiders are too complex and require references to the scene to work
             if(SceneManager.GetActiveScene().name != Settings.ASYLUM_NAME){
+                //create and set data to spiders
                 GameObject spider;
                 List<SpiderTrigger> SpiderTriggers = FindAllSpiderTriggers();
                 foreach(WaypointMover.SpiderData data in Settings.gameData.spidersData){
-                    Debug.Log("Creating spider");
-                    //Debug.Log("Creating little girl");
                     spider = Instantiate(_monsterPrototypes._spiderPrefab);
                     spider.GetComponentInChildren<WaypointMover>().LoadFromData(data);
                     foreach(SpiderTrigger t in SpiderTriggers){
                         t.AddSpider(spider.transform.GetChild(0).gameObject);
                         spider.GetComponentInChildren<WaypointMover>().AddSpiderTrigger(t);
                     }
-                    //littleGirl.GetComponentInChildren<LittleGirlAI>().LoadFromData(data);
                 }
             }
+
             //open all boxes that were opened in the save
+            //this is the only restore operation needed for boxes
+            //NOTE: if there are collectables that were left not picked from the player
+            //inside the boxes are restored by the code that restores collectables by
+            //creating them from prototypes
             Dictionary<string, bool> boxToState = new Dictionary<string, bool>();
             foreach(SlidingCrate.WeaponBoxData c in Settings.gameData.weaponBoxes){
-                Debug.Log("Found box with state " + c.used);
                 boxToState[c.name] = c.used;
             }
             List<SlidingCrate> boxes = FindAllBoxes();
+            //open box
             foreach(SlidingCrate box in boxes){
                 if(boxToState[box.name]){
-                    Debug.Log("Found open box");
                     box.ChangeState();
                 }
             }
@@ -159,12 +147,16 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         }
 
         //Make a preliminary save of the new scene
+        //it is used to keep track of the inventory, but does not save monsters
+        //since monsters in the new scene have to be kept as they are from the scene
+        //NOTE: another save is made when the player spawns inside the forest
         if(GameEvent.exitingCurrentScene){
             GameEvent.exitingCurrentScene = false;
             StartCoroutine(SaveGame());
         }
         
     }
+    //used to allow having more that one object with the same prefab
     private string GetPrefabName(string name){
         string prefabName = name;    
         if(prefabName.Contains("key", System.StringComparison.OrdinalIgnoreCase)){
@@ -176,6 +168,9 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
         return prefabName;
     }
 
+    //creates an item that was saved in the inventory
+    //inventory is restored by creating objects that were collected 
+    //in the last save and then collecting them 
     public GameObject CreateInventoryItem(string prefabName){
         GameObject objPrefab = null;
         Transform t =  _collectablePrototypes.transform.Find(prefabName);
@@ -185,8 +180,6 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             objPrefab = _collectablePrototypes.transform.Find(GetPrefabName(prefabName)).gameObject;
        
         GameObject obj = Instantiate(objPrefab);
-        //obj.name = objectName;
-        //Debug.Log("Created inventory item in scene " + obj.name);
 
         return obj;
     }
@@ -206,14 +199,14 @@ public class PersistenceManager : MonoBehaviour, IGameManager{
             Debug.Log("Unable to delete file");
         }
     }
+    //used to get all persistent objects before save
     private List<IDataPersistenceSave> FindAllDataPersistenceObjects(){
         IEnumerable<IDataPersistenceSave> data = FindObjectsOfType<MonoBehaviour>().OfType<IDataPersistenceSave>();
         return new List<IDataPersistenceSave>(data);
     }
+    //The following methods are used only upon load such that the items in the scene can be restored
     private List<Collectable> FindAllCollectableObjects(){
         return _allCollectablesContainer.GetComponentsInChildren<Collectable>().ToList();
-        // IEnumerable<Collectable> data = FindObjectsOfType<MonoBehaviour>().OfType<Collectable>();
-        // return new List<Collectable>(data);
     }
     
     private List<ScaryGirlTrigger> FindAllScaryGirlTriggers(){
