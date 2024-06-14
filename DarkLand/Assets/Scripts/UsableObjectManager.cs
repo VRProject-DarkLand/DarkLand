@@ -11,7 +11,7 @@ public class UsableObjectManager : MonoBehaviour, IGameManager, IDataPersistence
     private List<IUsableObject> _selectable;
     private IUsableObject _usableDummy;
     private bool _active = false;
-    public int _maxSize {get; private set;} = 6;
+    public int _maxSize {get; private set;} = 7;
 
     [SerializeField] private GameObject _usableParent;
     public ManagerStatus status {get; private set;}

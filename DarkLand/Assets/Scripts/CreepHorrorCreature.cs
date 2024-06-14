@@ -240,7 +240,7 @@ public class CreepHorrorCreature : MonoBehaviour, IDamageableEntity
     private void DropItems()
     {
         Debug.Log("DROPPED RADIO");
-        GameObject dropped = Instantiate(item,transform.position - new Vector3(2f,2f,0f), Quaternion.identity,GameObject.Find("AllCollectables").transform);
+        GameObject dropped = Instantiate(item,transform.position + new Vector3(2f,2f,0f), Quaternion.identity,GameObject.Find("AllCollectables").transform);
         dropped.AddComponent<Rigidbody>();
         dropped.name = item.name;
         

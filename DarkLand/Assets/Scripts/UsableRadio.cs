@@ -9,7 +9,6 @@ public class UsableRadio : IUsableObject
 
     public override void Select(){
         gameObject.SetActive(true);
-        gameObject.transform.localPosition = new Vector3(0.3f, -0.35f, 0.6f);
         Position();
 
     }
@@ -17,7 +16,7 @@ public class UsableRadio : IUsableObject
     public override void Position()
     {
         gameObject.transform.localPosition = new Vector3(0.3f, -0.35f, 0.66f);
-        gameObject.transform.localEulerAngles = new Vector3(0,90,0);
+        gameObject.transform.localEulerAngles = new Vector3(0,-90,0);
     }
 
     public override void Use(){
