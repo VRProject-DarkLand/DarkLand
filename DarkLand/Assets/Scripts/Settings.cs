@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Settings
@@ -18,7 +19,7 @@ public class Settings
     public const string OUTSIDE_SCENE = "Scenes/Forest";
     public static GameData gameData;
     public static bool GameFinished = false;
-    public static string SAVE_DIR = Application.persistentDataPath;
+    public static string SAVE_DIR = Path.Combine(Application.persistentDataPath,"GameSavings");
     public const string HEALTH = "Adrenaline";
     public const string AMMO_NAME = "Ammo Box";
 

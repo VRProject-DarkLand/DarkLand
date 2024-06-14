@@ -31,6 +31,11 @@ public class Menu : MonoBehaviour
     private  int selected = -1; 
     private List<FileSaving> savings = new List<FileSaving>();
     //{ "Ndria00_12-12-2024_16:59", "Ndria00_12-11-2024_16:59", "Ndria00_12-12-2014_16:59", "RTocco_14-12-2024_16:58"};
+    public void Awake(){
+        if(!Directory.Exists(Settings.SAVE_DIR)){
+            Directory.CreateDirectory(Settings.SAVE_DIR);   
+        }
+    }
     public void Start(){
         ReadSavings();
     }
