@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public class MouseLook : MonoBehaviour
@@ -45,6 +46,17 @@ public class MouseLook : MonoBehaviour
         this.aim = aim;
     }
 
+    private float InputY(){
+        float valY =  -Input.GetAxis("Axis6") ;
+        valY +=  Input.GetAxis("Mouse Y"); 
+        return valY;
+    }
+    private float InputX(){
+        float valueRotX =  Input.GetAxis("Axis3");
+        valueRotX +=  Input.GetAxis("Mouse X");
+        return valueRotX;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -54,11 +66,14 @@ public class MouseLook : MonoBehaviour
         if(axes == RotationAxes.MouseX){
             if( GameEvent.isHiding)
             {return;}
-            transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityHor, 0);
+            float valueRotX= InputX();
+            if(_rotationX == 0)
+            transform.Rotate(0, valueRotX * sensitivityHor, 0);
         }
         else if(axes == RotationAxes.MouseY){
 
-            _rotationX -=  Input.GetAxis("Mouse Y") * sensitivityVer;
+             _rotationX -=  InputY() * sensitivityVer;
+            
             
             if(!GameEvent.isHiding)
                 _rotationX = Mathf.Clamp(_rotationX, minimumVert, maximumVert);
@@ -70,10 +85,10 @@ public class MouseLook : MonoBehaviour
             transform.localEulerAngles = new Vector3(_rotationX,rotationY,0);
         }
         else {
-            _rotationX -=  Input.GetAxis("Mouse Y") * sensitivityVer;
+            _rotationX -=  InputY() * sensitivityVer;
             _rotationX = Mathf.Clamp(_rotationX, minimumVert, maximumVert);
 
-            float delta = Input.GetAxis("Mouse X") * sensitivityHor;
+            float delta = InputX() * sensitivityHor;
             float rotationY = transform.localEulerAngles.y + delta;
             
             transform.localEulerAngles = new Vector3(_rotationX,rotationY,0);

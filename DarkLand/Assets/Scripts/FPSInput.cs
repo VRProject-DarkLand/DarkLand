@@ -152,39 +152,39 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             dirX =  Input.GetAxis("Horizontal");
             dirZ =  Input.GetAxis("Vertical");
         }
-        if(Input.GetKeyDown(KeyCode.LeftControl)){
+        if(InputCrouch(true)){
             actions.Add(Actions.Crouch);
-        }else if(Input.GetKeyUp(KeyCode.LeftControl)){
+        }else if(InputCrouch(false)){
             actions.RemoveAll(x => x == Actions.Crouch);
         }
         
-        if (Input.GetKeyDown(KeyCode.LeftShift)){    
+        if (InputRun(true)){    
             actions.Add(Actions.Run);
-        }else if(Input.GetKeyUp(KeyCode.LeftShift)){
+        }else if(InputRun(false)){
             actions.RemoveAll(x => x == Actions.Run);
         }
 
-        if(Input.GetKeyDown(KeyCode.Escape)){
+        if(InputPause()){
                 Managers.Pause.Pause();
         }
 
-        if(Input.GetKeyDown(KeyCode.Tab)){
+        if( InputInventory()){
                 Managers.Inventory.ChangeInventoryVisibility();
         }
         
 
         if(onGround && ! blocked){
-            if(Input.GetKeyDown(KeyCode.E)){
+            if(InputInteract()){
                 InteractableManager.InteractWithSelectedItem(false);
             }
-            if(Input.GetKeyDown(KeyCode.C)){
+            if(InputCollect()){
                 InteractableManager.InteractWithSelectedItem(true);
             } 
             
            
         }
 
-        float scroll = Input.mouseScrollDelta.y;
+        float scroll = InputScroll();
         if ( scroll > 0){ // do shit here for scroll up
             Managers.UsableInventory.SelectionForward();
         } else if (scroll < 0 ){ // do shit here for scroll down 
@@ -224,13 +224,61 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         }
     }
 
+    private bool InputInventory(){
+        return Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Joystick1Button3);
+    }
+
+    private bool InputRun(bool active){
+        if(active)
+           return Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Joystick1Button10);
+        return  Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.Joystick1Button10); 
+    }
+
+    private bool InputCrouch(bool active){
+         if(active)
+           return Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.Joystick1Button11);
+        return  Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.Joystick1Button11); 
+    }
+
+    private bool InputInteract(){
+        return Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button0);
+    }
     
+    private bool InputCollect(){
+        return Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Joystick1Button0);
+    }
+
+    private bool InputPause(){
+        return Input.GetKeyDown(KeyCode.Escape)||Input.GetKeyDown(KeyCode.Joystick1Button9);
+    }
+
+    private bool InputJump(){
+        return Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Joystick1Button1);
+    }
+
+    private bool InputSecondaryUse(bool activate){
+        if(activate)
+            return Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Joystick1Button4);
+        return Input.GetMouseButton(1) || Input.GetKeyDown(KeyCode.Joystick1Button4);
+    }
+
+    private bool InputUse(){
+        return Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Joystick1Button5);
+    }
+
+    private float InputScroll(){
+         float scroll = Input.mouseScrollDelta.y;
+         if(scroll == 0){
+           scroll = Input.GetKeyDown(KeyCode.Joystick1Button6)?1:(Input.GetKeyDown(KeyCode.Joystick1Button7)?-1f:scroll); 
+         }
+         return scroll;
+    }
 
     // Update is called once per frame
     void Update()
     {
         if(Managers.Pause.paused && alive){
-            if(Input.GetKeyDown(KeyCode.Escape)){
+            if(InputPause()){
                 Managers.Pause.OnEscResume();
             }
             return;
@@ -239,15 +287,15 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
         onGround = detectOnGround();
         readActionFromInput();
         if(!(GameEvent.isInDialog || GameEvent.isHiding)){
-            if(Input.GetMouseButtonDown(0)){
+            if(InputUse()){
                 Managers.UsableInventory.Use();
             }
 
-            if(Input.GetMouseButton(1)){
+            if(InputSecondaryUse(true)){
                 secondaryUseCalled = true;
                 Managers.UsableInventory.SecondaryUse();
             }
-            else if(secondaryUseCalled || Input.GetMouseButtonUp(1)){
+            else if(secondaryUseCalled || InputSecondaryUse(false)){
                 secondaryUseCalled = true;
                 Managers.UsableInventory.UndoSecondaryUse();
             }
@@ -264,7 +312,7 @@ public class FPSInput : MonoBehaviour, IDataPersistenceSave{
             dirZ = 0;
         } 
         if(onGround){
-            if (Input.GetButtonDown("Jump")){
+            if (InputJump()){
                 if(!GameEvent.isInDialog){
                     Jump();
                     
